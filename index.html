@@ -524,7 +524,7 @@ function identifyWithClaude(b64){
       messages: [{
         role: "user",
         content: [
-          {type: "text", text: "What household or grocery item is this? Reply with ONLY a short generic name, 2–4 words, no brand name, no punctuation, no extra explanation. Examples: Dishwashing liquid, White rice, Eggs, Shampoo, Toilet paper, Laundry detergent, Cooking oil, Milk. If you cannot identify it, reply: unknown"},
+          {type: "text", text: "What household or grocery item is this? First read any text printed on the packaging itself, including non-English words — trust that over the visual style or color pattern. Reply with ONLY a short generic name, 2–4 words, no brand name, no punctuation, no extra explanation. Examples: Dishwashing liquid, White rice, Eggs, Shampoo, Toilet paper, Laundry detergent, Cooking oil, Milk, Coarse sugar. If you cannot identify it, reply: unknown"},
           {type: "image", source: {type: "base64", media_type: "image/jpeg", data: b64}}
         ]
       }]
