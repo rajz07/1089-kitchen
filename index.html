@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#DDF3E6">
+<title>Hemie's Kitchen</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Config (DB_URL, LIST_KEY) is in the script near the bottom */
+:root{
+  --ink:#1D1A2F; --paper:#FFFFFF; --tile:#DDF3E6; --grout:#C9E9D6;
+  --tomato:#FF5A3C; --mustard:#FFC93C; --mint:#3CCB8F; --berry:#4A4FE0; --soft:#6B6880;
+  --b:3px solid var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  color:var(--ink);
+  font-family:"Bricolage Grotesque",-apple-system,"Helvetica Neue",Arial,sans-serif;
+  -webkit-text-size-adjust:100%;
+  background-color:var(--tile);
+  background-image:
+    linear-gradient(var(--grout) 2px, transparent 2px),
+    linear-gradient(90deg, var(--grout) 2px, transparent 2px);
+  background-size:56px 56px;
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+}
+button,input{font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+button{cursor:pointer;border:var(--b);border-radius:16px;padding:12px 18px;font-weight:800;background:var(--paper);
+  box-shadow:4px 4px 0 var(--ink);-webkit-transition:transform .08s,box-shadow .08s;transition:transform .08s,box-shadow .08s}
+button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+input{border:var(--b);border-radius:16px;padding:13px 16px;background:var(--paper);width:100%;font-size:17px;font-weight:600}
+input::placeholder{color:#A19FB3;font-weight:400}
+input:focus{outline:none;box-shadow:0 0 0 4px var(--mustard)}
+button:focus-visible{outline:4px solid var(--berry);outline-offset:2px}
+.hidden{display:none !important}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px 40px}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:center}
+.logo{display:inline-block;background:var(--tomato);color:#fff;font-weight:800;font-size:24px;letter-spacing:-.03em;
+  padding:4px 14px 6px;border:var(--b);border-radius:14px;box-shadow:3px 3px 0 var(--ink);transform:rotate(-4deg)}
+@media (max-width:440px){.tag{display:none}}
+.tag{margin-left:14px;font-size:15px;color:var(--soft);font-weight:600;line-height:1.2}
+.switch{background:var(--paper);color:var(--ink);text-decoration:none;font-weight:800;font-size:15px;
+  border:var(--b);border-radius:999px;padding:8px 14px;box-shadow:3px 3px 0 var(--ink)}
+
+.setup{background:var(--paper);border:var(--b);border-radius:20px;padding:20px;line-height:1.5;box-shadow:6px 6px 0 var(--tomato)}
+
+/* ---------- scanner ---------- */
+.camBox{position:relative;width:100%;padding-top:66%;border:4px solid var(--ink);border-radius:30px;overflow:hidden;
+  background:#26233A;box-shadow:8px 8px 0 var(--ink)}
+.cam{position:absolute;top:0;left:0;right:0;bottom:0}
+.cam video,.cam canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam canvas.drawingBuffer{display:none}
+.corners{position:absolute;left:14%;right:14%;top:26%;bottom:26%;z-index:2;pointer-events:none}
+.corners i{position:absolute;width:44px;height:44px;border:6px solid var(--mustard)}
+.corners i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
+.corners i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
+.corners i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 14px}
+.corners i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 14px 0}
+.camBox.hit .corners i{border-color:var(--mint)}
+.camBox.hit{box-shadow:8px 8px 0 var(--mint)}
+.laser{position:absolute;left:16%;right:16%;top:50%;height:3px;background:var(--tomato);z-index:2;border-radius:3px;
+  box-shadow:0 0 12px var(--tomato);-webkit-animation:sweep 1.8s ease-in-out infinite alternate;animation:sweep 1.8s ease-in-out infinite alternate}
+@-webkit-keyframes sweep{from{-webkit-transform:translateY(-60px)}to{-webkit-transform:translateY(60px)}}
+@keyframes sweep{from{transform:translateY(-60px)}to{transform:translateY(60px)}}
+.idle .laser{display:none}
+.startBtn{position:absolute;top:50%;left:50%;z-index:3;transform:translate(-50%,-50%);
+  background:var(--mustard);font-size:24px;padding:18px 32px;border-radius:20px}
+.startBtn:active{transform:translate(-50%,-50%) translate(3px,3px)}
+.hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;z-index:2;color:#fff;font-weight:600;font-size:16px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+
+.status{display:table;margin:22px auto 0;background:var(--ink);color:#fff;border-radius:999px;padding:8px 18px;font-weight:600;font-size:16px;text-align:center}
+.status.bad{background:var(--tomato)}
+
+.last{position:relative;margin:26px 4px 0;background:var(--paper);border:var(--b);border-radius:24px;padding:20px 22px;
+  display:flex;align-items:center;min-height:110px;box-shadow:6px 6px 0 var(--ink)}
+.last .emo{font-size:52px;line-height:1;margin-right:16px}
+.last .txt{flex:1;font-size:26px;font-weight:800;line-height:1.15;letter-spacing:-.02em;word-break:break-word}
+.last .txt small{display:block;font-size:15px;font-weight:600;color:var(--soft);margin-top:4px;letter-spacing:0}
+.last .stamp{position:absolute;top:-16px;left:18px;background:var(--mint);border:var(--b);border-radius:10px;padding:2px 12px;
+  font-weight:800;font-size:15px;transform:rotate(-5deg)}
+.last.pop{-webkit-animation:pop .45s cubic-bezier(.2,1.6,.4,1);animation:pop .45s cubic-bezier(.2,1.6,.4,1);box-shadow:6px 6px 0 var(--mint)}
+@-webkit-keyframes pop{0%{-webkit-transform:scale(.92) rotate(-2deg)}100%{-webkit-transform:scale(1) rotate(0)}}
+@keyframes pop{0%{transform:scale(.92) rotate(-2deg)}100%{transform:scale(1) rotate(0)}}
+.undo{background:var(--tomato);color:#fff;font-size:18px;margin-left:12px}
+
+.panel{margin-top:26px;background:var(--paper);border:var(--b);border-radius:24px;padding:16px;box-shadow:6px 6px 0 var(--ink)}
+.row{display:flex}
+.row + .row{margin-top:10px}
+.row > input{flex:1;margin-right:10px}
+.berry{background:var(--berry);color:#fff}
+
+h2{font-size:20px;font-weight:800;letter-spacing:-.02em;margin:30px 0 12px;display:flex;align-items:center}
+h2 .count{display:inline-block;margin-left:10px;background:var(--mustard);border:var(--b);border-radius:999px;min-width:34px;
+  text-align:center;padding:1px 9px;font-size:16px}
+
+/* fridge magnets */
+.magnets{display:flex;flex-wrap:wrap;margin:-5px}
+.mag{margin:5px;border:var(--b);border-radius:14px;padding:8px 14px;font-weight:700;font-size:16px;box-shadow:3px 3px 0 var(--ink)}
+.mag:nth-child(4n+1){background:var(--mustard);transform:rotate(-2deg)}
+.mag:nth-child(4n+2){background:#FFB3A6;transform:rotate(1.5deg)}
+.mag:nth-child(4n+3){background:#A9E8CD;transform:rotate(-1deg)}
+.mag:nth-child(4n){background:#C4C6FF;transform:rotate(2deg)}
+.mag b{font-weight:800}
+
+/* ---------- name prompt ---------- */
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(29,26,47,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+.sheet{background:var(--paper);border:var(--b);border-radius:26px;padding:24px;width:100%;max-width:480px;box-shadow:8px 8px 0 var(--mustard)}
+.sheet .big{font-size:44px;margin-bottom:6px}
+.sheet h3{margin:0 0 6px;font-size:26px;letter-spacing:-.02em}
+.sheet p{margin:0 0 16px;color:var(--soft);font-weight:600}
+.sheet .btns{display:flex;justify-content:flex-end;margin-top:16px}
+.sheet .btns button{margin-left:10px}
+.mint{background:var(--mint)}
+
+/* ---------- phone list ---------- */
+.hero{margin:4px 0 20px}
+.hero h1{font-size:44px;line-height:1;letter-spacing:-.04em;margin:0;font-weight:800}
+.hero p{margin:8px 0 0;color:var(--soft);font-weight:600;font-size:16px}
+.addBar{background:var(--paper);border:var(--b);border-radius:20px;padding:8px;display:flex;box-shadow:5px 5px 0 var(--ink)}
+.addBar input{border:0;flex:1;margin-right:8px}
+.addBar input:focus{box-shadow:none}
+.addBar button{background:var(--berry);color:#fff;font-size:26px;line-height:1;padding:8px 18px;box-shadow:3px 3px 0 var(--ink)}
+
+ul{list-style:none;margin:0;padding:0}
+li.item{display:flex;align-items:center;background:var(--paper);border:var(--b);border-radius:18px;margin-bottom:12px;
+  padding:6px 6px 6px 12px;box-shadow:4px 4px 0 var(--ink);-webkit-user-select:none;user-select:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+li.item:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.check{width:30px;height:30px;border:var(--b);border-radius:10px;flex:none;margin-right:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;background:var(--paper)}
+li.item .emo{font-size:26px;margin-right:10px;flex:none}
+li.item .name{flex:1;font-size:18px;font-weight:700;padding:12px 0;word-break:break-word;line-height:1.2}
+li.item .qty{background:var(--mustard);border:var(--b);font-weight:800;border-radius:999px;padding:1px 10px;margin-left:8px;font-size:15px;flex:none}
+li.item .del{border:0;box-shadow:none;background:transparent;color:var(--soft);font-size:26px;padding:6px 12px;font-weight:600}
+li.item.done{background:#EEF6F1;box-shadow:2px 2px 0 var(--ink)}
+li.item.done .check{background:var(--mint)}
+li.item.done .name{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--tomato);text-decoration-thickness:3px;-webkit-text-decoration-color:var(--tomato)}
+li.item.done .emo{opacity:.5}
+.empty{text-align:center;padding:30px 16px;background:rgba(255,255,255,.7);border:3px dashed var(--ink);border-radius:20px;font-weight:600;color:var(--soft)}
+.empty .big{font-size:42px;display:block;margin-bottom:8px}
+.clear{width:100%;margin-top:6px;background:var(--paper)}
+.sync{font-size:13px;text-align:center;margin-top:26px;color:var(--soft);font-weight:600}
+
+/* ---------- idle screen (iPad) ---------- */
+.idle-screen{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;overflow:hidden;cursor:pointer;
+  background-color:var(--tile);
+  background-image:linear-gradient(var(--grout) 2px, transparent 2px),linear-gradient(90deg, var(--grout) 2px, transparent 2px);
+  background-size:56px 56px;
+  padding:calc(env(safe-area-inset-top,0px) + 28px) 32px calc(env(safe-area-inset-bottom,0px) + 28px);
+  display:flex;flex-direction:column;-webkit-transition:background-color .6s;transition:background-color .6s}
+.idle-screen .logo{align-self:flex-start}
+.clock{margin-top:5vh;font-weight:800;letter-spacing:-.06em;line-height:.85;font-size:190px;display:flex;align-items:flex-end}
+.clock .ap{font-size:44px;letter-spacing:-.02em;margin:0 0 18px 14px;background:var(--mustard);border:var(--b);border-radius:14px;padding:2px 12px 4px;transform:rotate(-4deg);box-shadow:3px 3px 0 var(--ink)}
+.date{font-size:30px;font-weight:700;margin-top:14px;color:var(--soft);letter-spacing:-.02em}
+.cards{margin-top:5vh}
+.card{background:var(--paper);border:var(--b);border-radius:26px;padding:22px 24px;box-shadow:7px 7px 0 var(--ink);margin-bottom:24px}
+.wx{display:flex;align-items:center}
+.wx .icon{font-size:84px;line-height:1;margin-right:20px}
+.wx .temp{font-size:64px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.wx .desc{font-size:20px;font-weight:700;color:var(--soft);margin-top:6px}
+.rain{display:inline-block;margin-top:16px;border:var(--b);border-radius:999px;padding:6px 16px;font-weight:800;font-size:18px;background:#A9E8CD}
+.rain.wet{background:var(--tomato);color:#fff}
+.peek .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.peek .head b{font-size:26px;letter-spacing:-.02em}
+.peek .big{font-size:56px;font-weight:800;line-height:1;letter-spacing:-.04em}
+.tapcue{margin-top:auto;align-self:center;background:var(--ink);color:#fff;border-radius:999px;padding:14px 30px;font-weight:800;font-size:22px;
+  -webkit-animation:breathe 2.4s ease-in-out infinite;animation:breathe 2.4s ease-in-out infinite}
+@-webkit-keyframes breathe{50%{-webkit-transform:scale(1.05)}}
+@keyframes breathe{50%{transform:scale(1.05)}}
+/* night: dim, dark, calm */
+.idle-screen.night{background-color:#07060C;background-image:none;color:#4A4760}
+.night .logo,.night .card,.night .tapcue,.night .clock .ap{background:transparent;border-color:#2A2838;box-shadow:none;color:#4A4760}
+.night .date,.night .wx .desc{color:#3A3850}
+.night .rain{background:transparent;border-color:#2A2838;color:#4A4760}
+.night .mag{background:transparent !important;border-color:#2A2838;box-shadow:none;color:#4A4760}
+.night .tapcue{-webkit-animation:none;animation:none}
+.night .wx .icon{opacity:.35}
+.night .cards{-webkit-filter:grayscale(1) brightness(.7);filter:grayscale(1) brightness(.7)}
+
+@media (prefers-reduced-motion: reduce){ .laser,.last.pop,.tapcue{-webkit-animation:none;animation:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand"><span class="logo">Hemie's Kitchen</span><span class="tag" id="tagline">Finished it?<br>It's on the list.</span></div>
+    <a id="switch" class="switch" href="?scan">📷 Scanner</a>
+  </div>
+
+  <div id="setup" class="setup hidden">
+    <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code> and <code>LIST_KEY</code> near the bottom.
+  </div>
+
+  <!-- ================= SCANNER (iPad) ================= -->
+  <section id="scanView" class="hidden">
+    <div id="camBox" class="camBox idle">
+      <div id="cam" class="cam"></div>
+      <div class="corners"><i></i><i></i><i></i><i></i></div>
+      <div class="laser"></div>
+      <button id="startBtn" class="startBtn">📷 Start scanning</button>
+      <div class="hint" id="hint">Barcode inside the box, 15–20 cm away</div>
+    </div>
+    <div style="text-align:center"><div id="status" class="status">Tap start, then scan a packet before you bin it</div></div>
+
+    <div id="last" class="last">
+      <span class="emo" id="lastEmo">🗑️</span>
+      <div class="txt" id="lastTxt">Nothing scanned yet<small>Empty packet? Show it to the camera.</small></div>
+      <button id="undoBtn" class="undo hidden">↩ Undo</button>
+    </div>
+
+    <div class="panel">
+      <div class="row"><input id="codeIn" inputmode="numeric" placeholder="Barcode won't scan? Type the number"><button id="codeBtn" class="berry">Add</button></div>
+      <div class="row"><input id="nameIn" placeholder="No barcode? Type the item"><button id="nameBtn" class="berry">Add</button></div>
+    </div>
+
+    <h2>On the list <span class="count" id="recentCount">0</span></h2>
+    <div id="recent" class="magnets"></div>
+  </section>
+
+  <!-- ================= CART (phone) ================= -->
+  <section id="cartView" class="hidden">
+    <div class="hero">
+      <h1>Shopping list</h1>
+      <p id="heroSub">Everything that ran out at home.</p>
+    </div>
+    <div class="addBar"><input id="addIn" placeholder="Add something…"><button id="addBtn" aria-label="Add">+</button></div>
+    <h2>To buy <span class="count" id="toBuyCount">0</span></h2>
+    <ul id="toBuy"></ul>
+    <div id="doneWrap" class="hidden">
+      <h2>In the trolley <span class="count" id="doneCount">0</span></h2>
+      <ul id="doneList"></ul>
+      <button id="clearBtn" class="clear">🧹 Clear ticked items</button>
+    </div>
+  </section>
+
+  <div id="sync" class="sync"></div>
+</div>
+
+<!-- name prompt -->
+<div id="modal" class="modal hidden">
+  <div class="sheet">
+    <div class="big">🤔</div>
+    <h3>What's this one?</h3>
+    <p id="modalCode"></p>
+    <input id="modalIn" placeholder="e.g. Milo 1kg">
+    <div class="btns">
+      <button id="modalSkip">Skip</button>
+      <button id="modalSave" class="mint">Save &amp; add</button>
+    </div>
+  </div>
+</div>
+
+<!-- idle screen (iPad only) -->
+<div id="idle" class="idle-screen hidden">
+  <span class="logo">Hemie's Kitchen</span>
+  <div class="clock"><span id="clkTime">--:--</span><span class="ap" id="clkAp">am</span></div>
+  <div class="date" id="clkDate"></div>
+  <div class="cards">
+    <div class="card" id="wxCard">
+      <div class="wx">
+        <span class="icon" id="wxIcon">⛅</span>
+        <div><div class="temp" id="wxTemp">--°</div><div class="desc" id="wxDesc">Loading weather…</div></div>
+      </div>
+      <span class="rain" id="wxRain">…</span>
+    </div>
+    <div class="card peek">
+      <div class="head"><b>🛒 To buy</b><span class="big" id="peekCount">0</span></div>
+      <div class="magnets" id="peek"></div>
+    </div>
+  </div>
+  <div class="tapcue" id="tapcue">👆 Tap anywhere to scan</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.12.1/dist/quagga.min.js"></script>
+<script>
+/* ===================== CONFIG — EDIT THESE TWO ===================== */
+var DB_URL   = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
+var LIST_KEY = "EtFnu4RVP0OF77liJLB7";
+/* Optional: idle screen settings */
+var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;   // Seremban. Change to your area if needed
+var IDLE_AFTER_SECONDS = 90;                         // go to the clock screen after this much inactivity
+var NIGHT_FROM = 23, NIGHT_TO = 6;                   // dim night mode hours (24h)
+/* =================================================================== */
+
+(function(){
+"use strict";
+function $(id){ return document.getElementById(id); }
+var isScan = /scan/.test(location.search);
+var items = {};       // id -> {name, qty, done, t, code}
+var products = {};    // barcode -> name (remembered)
+var undoStack = [];
+var busy = false;
+
+/* ---------- emoji guesser ---------- */
+var EMO = [
+  [/milk|susu|dutch lady|farm fresh/, "🥛"], [/egg|telur/, "🥚"], [/bread|roti|gardenia|massimo|bun/, "🍞"],
+  [/milo|chocolate|coklat|cocoa|ovaltine/, "🍫"], [/coffee|kopi|nescafe|aik cheong/, "☕"], [/\btea\b|teh|lipton|boh/, "🍵"],
+  [/rice|beras/, "🍚"], [/maggi|mee|noodle|ramen|pasta|spaghetti|bihun|kuey/, "🍜"], [/cereal|oat|corn flakes|koko krunch/, "🥣"],
+  [/biscuit|cookie|cracker|jacob|hup seng|oreo/, "🍪"], [/chips|snack|mamee|twisties|kerepek/, "🍿"], [/candy|sweet|gula-gula|gummy/, "🍬"],
+  [/sugar|gula/, "🍬"], [/salt|garam/, "🧂"], [/honey|madu|jam|kaya|nutella/, "🍯"], [/flour|tepung/, "🌾"],
+  [/oil|minyak|ghee/, "🍳"], [/sauce|sos|kicap|ketchup|chilli|cili|sambal/, "🌶️"], [/can|tin|sardin|tuna|baked beans/, "🥫"],
+  [/chicken|ayam|nugget/, "🍗"], [/beef|daging|meat|sausage|burger/, "🥩"], [/fish|ikan|prawn|udang/, "🐟"],
+  [/cheese|keju/, "🧀"], [/butter|marjerin|planta|yogurt|yoghurt/, "🥛"], [/ice cream|aiskrim/, "🍦"],
+  [/apple|epal/, "🍎"], [/banana|pisang/, "🍌"], [/orange|oren|limau/, "🍊"], [/tomato/, "🍅"], [/carrot|lobak/, "🥕"],
+  [/potato|kentang/, "🥔"], [/vege|sayur|cabbage|kobis|lettuce|spinach|bayam/, "🥬"], [/fruit|buah/, "🍇"],
+  [/water|air mineral|spritzer|cactus/, "💧"], [/juice|jus|drink|minuman|soda|cola|100plus|coke|pepsi/, "🥤"],
+  [/beer|wine/, "🍺"], [/tissue|tisu|toilet|napkin/, "🧻"], [/soap|sabun|hand wash|dishwash|sunlight|dettol/, "🧼"],
+  [/shampoo|conditioner|lotion|body wash|toothpaste|colgate|darlie|ubat gigi/, "🧴"], [/detergent|softener|dynamo|breeze|downy|clorox/, "🧺"],
+  [/cat|kucing|whiskas|dog|anjing|pedigree/, "🐾"], [/baby|diaper|lampin|pampers|huggies/, "🍼"], [/battery|bateri/, "🔋"]
+];
+function emojiFor(name){
+  var n = (name || "").toLowerCase();
+  if(/^unknown item/.test(n)) return "❓";
+  for(var i = 0; i < EMO.length; i++) if(EMO[i][0].test(n)) return EMO[i][1];
+  return "🛒";
+}
+
+/* ---------- Firebase REST ---------- */
+var base = DB_URL.replace(/\/$/, "") + "/lists/" + LIST_KEY;
+function api(method, path, body){
+  return fetch(base + path + ".json", {
+    method: method,
+    headers: {"Content-Type":"application/json"},
+    body: body === undefined ? undefined : JSON.stringify(body)
+  }).then(function(r){
+    if(!r.ok) throw new Error("Server said " + r.status);
+    return r.json();
+  });
+}
+function timeout(p, ms){
+  return Promise.race([p, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error("timeout")); }, ms); })]);
+}
+function setSync(msg){ $("sync").textContent = msg; }
+
+function refresh(){
+  return api("GET", "/items").then(function(d){
+    items = d || {};
+    render();
+    setSync("Synced " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}));
+  }).catch(function(e){ setSync("Can't reach the list (" + e.message + "). Retrying…"); });
+}
+
+/* ---------- adding / undo ---------- */
+function addItem(id, name, code){
+  return api("GET", "/items/" + id).then(function(cur){
+    var prev = cur ? JSON.parse(JSON.stringify(cur)) : null;
+    var next;
+    if(cur && !cur.done){ next = cur; next.qty = (cur.qty || 1) + 1; next.t = Date.now(); }
+    else { next = {name: name, qty: 1, done: false, t: Date.now()}; if(code) next.code = code; }
+    return api("PUT", "/items/" + id, next).then(function(){
+      items[id] = next;
+      undoStack.push({id: id, prev: prev});
+      showLast(next.name, next.qty); poke();
+      beep(); render();
+    });
+  }).catch(function(e){ status("Couldn't add: " + e.message, true); });
+}
+
+function undo(){
+  var u = undoStack.pop(); if(!u) return;
+  var p = u.prev ? api("PUT", "/items/" + u.id, u.prev) : api("DELETE", "/items/" + u.id);
+  p.then(function(){
+    if(u.prev) items[u.id] = u.prev; else delete items[u.id];
+    setLast("↩️", u.prev ? "Back to ×" + (u.prev.qty || 1) : "Removed", "That scan was undone.", null);
+    $("undoBtn").className = undoStack.length ? "undo" : "undo hidden";
+    render();
+  });
+}
+
+function setLast(emo, title, sub, stamp){
+  $("lastEmo").textContent = emo;
+  var t = $("lastTxt"); t.innerHTML = "";
+  t.appendChild(document.createTextNode(title));
+  var s = document.createElement("small"); s.textContent = sub; t.appendChild(s);
+  var box = $("last"), old = box.querySelector(".stamp"); if(old) box.removeChild(old);
+  if(stamp){ var st = document.createElement("span"); st.className = "stamp"; st.textContent = stamp; box.appendChild(st); }
+  box.className = "last"; void box.offsetWidth; box.className = stamp ? "last pop" : "last";
+}
+function showLast(name, qty){
+  setLast(emojiFor(name), name, qty > 1 ? "Now ×" + qty + " on the list" : "Added to the shopping list", qty > 1 ? "+1 more!" : "Added!");
+  $("undoBtn").className = "undo";
+}
+
+/* ---------- barcode → name ---------- */
+function handleCode(code){
+  if(busy) return; busy = true;
+  status("Looking up " + code + "…");
+  lookup(code).then(function(name){
+    if(name){ return addItem(code, name, code).then(function(){ status("Ready for the next one."); }); }
+    return askName(code);
+  }).then(function(){ busy = false; }, function(){ busy = false; });
+}
+
+function lookup(code){
+  if(products[code]) return Promise.resolve(products[code]);
+  return api("GET", "/products/" + code).then(function(saved){
+    if(saved){ products[code] = saved; return saved; }
+    return timeout(fetch("https://world.openfoodfacts.org/api/v2/product/" + code + ".json?fields=product_name,brands,quantity")
+      .then(function(r){ return r.json(); }), 6000)
+      .then(function(d){
+        var p = d && d.product; if(!p || !p.product_name) return null;
+        var brand = (p.brands || "").split(",")[0].trim();
+        var n = p.product_name;
+        if(brand && n.toLowerCase().indexOf(brand.toLowerCase()) < 0) n = brand + " " + n;
+        if(p.quantity) n += " " + p.quantity;
+        rememberName(code, n);
+        return n;
+      }).catch(function(){ return null; });
+  }).catch(function(){ return null; });
+}
+function rememberName(code, name){ products[code] = name; api("PUT", "/products/" + code, name).catch(function(){}); }
+
+function askName(code){
+  return new Promise(function(done){
+    pauseScan(true);
+    $("modalCode").textContent = "Barcode " + code + " is new to me. Name it once and I'll remember it forever.";
+    $("modalIn").value = ""; $("modal").className = "modal";
+    setTimeout(function(){ $("modalIn").focus(); }, 100);
+    function close(name){
+      $("modal").className = "modal hidden";
+      $("modalSave").onclick = $("modalSkip").onclick = null;
+      var p = Promise.resolve();
+      if(name){ rememberName(code, name); p = addItem(code, name, code); }
+      else p = addItem(code, "Unknown item (" + code + ")", code);
+      p.then(function(){ pauseScan(false); status("Ready for the next one."); done(); });
+    }
+    $("modalSave").onclick = function(){ close($("modalIn").value.trim()); };
+    $("modalSkip").onclick = function(){ close(""); };
+    $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
+  });
+}
+
+/* ---------- beep ---------- */
+var actx = null;
+function unlockAudio(){
+  try{ var C = window.AudioContext || window.webkitAudioContext; if(C && !actx) actx = new C(); }catch(e){}
+}
+function beep(){
+  if(!actx) return;
+  try{
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = 1320; o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(0.25, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.18);
+    o.start(); o.stop(actx.currentTime + 0.2);
+  }catch(e){}
+}
+
+/* ---------- camera scanning ---------- */
+var paused = false, lastSeen = "", seenCount = 0, recentAdds = {};
+function status(msg, bad){ var s = $("status"); s.textContent = msg; s.className = bad ? "status bad" : "status"; }
+function pauseScan(v){ paused = v; }
+
+var camOn = false, camStarting = false, detectBound = false;
+function stopScanner(){
+  if(!camOn) return;
+  try{ Quagga.stop(); }catch(e){}
+  camOn = false;
+  $("cam").innerHTML = "";
+  $("camBox").className = "camBox idle";
+}
+function startScanner(){
+  unlockAudio();
+  if(camOn || camStarting) return;
+  camStarting = true;
+  $("startBtn").className = "hidden";
+  status("Starting camera…");
+  Quagga.init({
+    inputStream: {
+      type: "LiveStream", target: $("cam"),
+      constraints: { facingMode: "user", width: {ideal: 640}, height: {ideal: 480} }
+    },
+    locator: { patchSize: "large", halfSample: true },
+    numOfWorkers: 0, frequency: 6, locate: true,
+    decoder: { readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"] }
+  }, function(err){
+    camStarting = false;
+    if(err){
+      $("startBtn").className = "startBtn";
+      status("Camera didn't start. Allow camera access in Settings → Safari → Camera, then tap Start again.", true);
+      return;
+    }
+    Quagga.start(); camOn = true;
+    if(idleOn){ stopScanner(); return; }
+    $("camBox").className = "camBox";
+    status("Scanning… show me an empty packet");
+  });
+  if(detectBound) return;
+  detectBound = true;
+  Quagga.onDetected(function(res){
+    if(paused || busy || !res || !res.codeResult) return;
+    var code = res.codeResult.code;
+    // reject low-confidence reads
+    var errs = res.codeResult.decodedCodes.filter(function(c){ return c.error !== undefined; }).map(function(c){ return c.error; });
+    var avg = errs.reduce(function(a, b){ return a + b; }, 0) / (errs.length || 1);
+    if(avg > 0.12) return;
+    // need the same code twice in a row to accept
+    if(code === lastSeen) seenCount++; else { lastSeen = code; seenCount = 1; }
+    if(seenCount < 2) return;
+    poke();
+    // ignore the same packet for 4s so it isn't added twice by accident
+    var now = Date.now();
+    if(recentAdds[code] && now - recentAdds[code] < 4000) return;
+    recentAdds[code] = now; seenCount = 0;
+    $("camBox").className = "camBox hit"; setTimeout(function(){ $("camBox").className = "camBox"; }, 700);
+    handleCode(code);
+  });
+}
+
+/* ---------- idle screen ---------- */
+var idleOn = false, lastActivity = Date.now();
+var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function pad(n){ return (n < 10 ? "0" : "") + n; }
+function isNight(h){ return NIGHT_FROM > NIGHT_TO ? (h >= NIGHT_FROM || h < NIGHT_TO) : (h >= NIGHT_FROM && h < NIGHT_TO); }
+
+function poke(){ lastActivity = Date.now(); }
+function enterIdle(){
+  if(idleOn || !$("modal").className.match(/hidden/)) return;
+  idleOn = true;
+  stopScanner();
+  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  tickClock(); renderPeek(); loadWeather(false);
+  $("idle").className = "idle-screen" + (isNight(new Date().getHours()) ? " night" : "");
+}
+function exitIdle(){
+  if(!idleOn) return;
+  idleOn = false; poke();
+  $("idle").className = "idle-screen hidden";
+  startScanner();
+}
+function tickClock(){
+  var d = new Date(), h = d.getHours();
+  $("clkTime").textContent = (h % 12 || 12) + ":" + pad(d.getMinutes());
+  $("clkAp").textContent = h < 12 ? "am" : "pm";
+  $("clkDate").textContent = DAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()];
+  if(idleOn) $("idle").className = "idle-screen" + (isNight(h) ? " night" : "");
+}
+function renderPeek(){
+  var ids = sortedIds(function(i){ return !i.done; });
+  $("peekCount").textContent = ids.length;
+  var box = $("peek"); box.innerHTML = "";
+  ids.slice(0, 8).forEach(function(id){
+    var m = document.createElement("span"); m.className = "mag";
+    m.textContent = emojiFor(items[id].name) + " " + items[id].name + (items[id].qty > 1 ? " ×" + items[id].qty : "");
+    box.appendChild(m);
+  });
+  if(ids.length > 8){ var more = document.createElement("span"); more.className = "mag"; more.textContent = "+" + (ids.length - 8) + " more"; box.appendChild(more); }
+  if(!ids.length){ var ok = document.createElement("span"); ok.className = "mag"; ok.textContent = "✨ All stocked up"; box.appendChild(ok); }
+}
+
+/* weather via Open-Meteo (free, no key) */
+var wxLoaded = 0;
+function wxInfo(code, day){
+  if(code === 0) return day ? ["☀️","Clear and sunny"] : ["🌙","Clear night"];
+  if(code <= 2) return day ? ["🌤️","Partly cloudy"] : ["☁️","Partly cloudy"];
+  if(code === 3) return ["☁️","Cloudy"];
+  if(code === 45 || code === 48) return ["🌫️","Hazy / foggy"];
+  if(code >= 51 && code <= 57) return ["🌦️","Light drizzle"];
+  if(code >= 61 && code <= 67) return ["🌧️","Raining"];
+  if(code >= 80 && code <= 82) return ["🌦️","Rain showers"];
+  if(code >= 95) return ["⛈️","Thunderstorm"];
+  return ["⛅","Mixed weather"];
+}
+function hourLabel(h){ return (h % 12 || 12) + (h < 12 ? "am" : "pm"); }
+function loadWeather(force){
+  if(!force && Date.now() - wxLoaded < 30 * 60 * 1000) return;
+  var url = "https://api.open-meteo.com/v1/forecast?latitude=" + WEATHER_LAT + "&longitude=" + WEATHER_LON +
+    "&current=temperature_2m,weather_code,is_day&hourly=precipitation_probability" +
+    "&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=2";
+  timeout(fetch(url).then(function(r){ return r.json(); }), 10000).then(function(d){
+    var c = d.current, info = wxInfo(c.weather_code, c.is_day === 1);
+    $("wxIcon").textContent = info[0];
+    $("wxTemp").textContent = Math.round(c.temperature_2m) + "°";
+    $("wxDesc").textContent = info[1] + " · " + Math.round(d.daily.temperature_2m_min[0]) + "° – " + Math.round(d.daily.temperature_2m_max[0]) + "°";
+    // rain alert: look at the next 12 hours
+    var now = new Date();
+    var key = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + "T" + pad(now.getHours()) + ":00";
+    var t = d.hourly.time, p = d.hourly.precipitation_probability, start = t.indexOf(key), msg = "🌂 No rain expected soon", wet = false;
+    if(c.weather_code >= 51){ msg = "☔ Raining now. Bring the laundry in!"; wet = true; }
+    else if(start >= 0){
+      for(var i = start + 1; i < Math.min(start + 13, t.length); i++){
+        if(p[i] >= 60){ msg = "☔ Rain likely around " + hourLabel(parseInt(t[i].substr(11, 2), 10)) + " (" + p[i] + "%)"; wet = true; break; }
+      }
+    }
+    $("wxRain").textContent = msg; $("wxRain").className = "rain" + (wet ? " wet" : "");
+    wxLoaded = Date.now();
+  }).catch(function(){
+    if(!wxLoaded){ $("wxDesc").textContent = "Weather unavailable right now"; $("wxRain").className = "hidden"; }
+  });
+}
+
+function setupIdle(){
+  ["touchstart","mousedown","keydown"].forEach(function(ev){ document.addEventListener(ev, poke, true); });
+  $("idle").addEventListener("click", function(e){ e.preventDefault(); exitIdle(); });
+  setInterval(function(){
+    if(idleOn){ tickClock(); loadWeather(false); }
+    else if(!busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
+  }, 5000);
+  enterIdle();   // start on the clock screen; first tap starts the camera
+}
+
+/* ---------- rendering ---------- */
+function sortedIds(filter){
+  return Object.keys(items).filter(function(id){ return items[id] && filter(items[id]); })
+    .sort(function(a, b){ return (items[b].t || 0) - (items[a].t || 0); });
+}
+function makeRow(id){
+  var it = items[id], li = document.createElement("li");
+  li.className = "item" + (it.done ? " done" : "");
+  var ck = document.createElement("span"); ck.className = "check"; ck.textContent = it.done ? "✓" : "";
+  var em = document.createElement("span"); em.className = "emo"; em.textContent = emojiFor(it.name);
+  var nm = document.createElement("span"); nm.className = "name"; nm.textContent = it.name;
+  li.appendChild(ck); li.appendChild(em); li.appendChild(nm);
+  if(it.qty > 1){ var q = document.createElement("span"); q.className = "qty"; q.textContent = "×" + it.qty; li.appendChild(q); }
+  var del = document.createElement("button"); del.className = "del"; del.setAttribute("aria-label", "Remove " + it.name); del.textContent = "×";
+  del.onclick = function(e){ e.stopPropagation(); delete items[id]; render(); api("DELETE", "/items/" + id).catch(refresh); };
+  li.appendChild(del);
+  li.onclick = function(){
+    it.done = !it.done; it.t = Date.now(); render();
+    api("PATCH", "/items/" + id, {done: it.done, t: it.t}).catch(refresh);
+  };
+  return li;
+}
+function emptyBox(emo, msg){ return '<div class="empty"><span class="big">' + emo + '</span>' + msg + '</div>'; }
+
+function render(){
+  if(isScan){
+    if(idleOn) renderPeek();
+    var all = sortedIds(function(i){ return !i.done; });
+    var box = $("recent"); box.innerHTML = "";
+    $("recentCount").textContent = all.length;
+    all.slice(0, 12).forEach(function(id){
+      var it = items[id], m = document.createElement("span"); m.className = "mag";
+      m.textContent = emojiFor(it.name) + " " + it.name;
+      if(it.qty > 1){ var b = document.createElement("b"); b.textContent = "  ×" + it.qty; m.appendChild(b); }
+      box.appendChild(m);
+    });
+    if(all.length > 12){ var more = document.createElement("span"); more.className = "mag"; more.textContent = "+" + (all.length - 12) + " more"; box.appendChild(more); }
+    if(!all.length) box.innerHTML = emptyBox("✨", "Fridge is happy. Nothing on the list.");
+    return;
+  }
+  var toBuy = sortedIds(function(i){ return !i.done; });
+  var done = sortedIds(function(i){ return i.done; });
+  var ul = $("toBuy"); ul.innerHTML = "";
+  toBuy.forEach(function(id){ ul.appendChild(makeRow(id)); });
+  if(!toBuy.length) ul.innerHTML = done.length ? emptyBox("🎉", "Everything's in the trolley. Go pay!") : emptyBox("🧺", "Nothing to buy. Scan packets in the kitchen, or add one above.");
+  $("toBuyCount").textContent = toBuy.length;
+  $("heroSub").textContent = toBuy.length ? toBuy.length + (toBuy.length === 1 ? " thing" : " things") + " ran out at home." : "All stocked up.";
+  var dl = $("doneList"); dl.innerHTML = "";
+  done.forEach(function(id){ dl.appendChild(makeRow(id)); });
+  $("doneCount").textContent = done.length;
+  $("doneWrap").className = done.length ? "" : "hidden";
+}
+
+/* ---------- wiring ---------- */
+function manualAdd(input){
+  var n = input.value.trim(); if(!n) return;
+  input.value = "";
+  var key = n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("m" + Date.now());
+  addItem("n-" + key, n);
+}
+function onEnter(input, fn){ input.onkeydown = function(e){ if(e.keyCode === 13) fn(); }; }
+
+function init(){
+  if(!DB_URL || !LIST_KEY){ $("setup").className = "setup"; return; }
+  if(isScan){
+    $("tagline").innerHTML = "Finished it?<br>Scan it.";
+    $("switch").textContent = "🛒 List"; $("switch").href = "./";
+    $("scanView").className = "";
+    $("startBtn").onclick = startScanner;
+    setupIdle();
+    $("undoBtn").onclick = undo;
+    var addCode = function(){ var c = $("codeIn").value.replace(/\D/g, ""); $("codeIn").value = ""; if(c) { unlockAudio(); handleCode(c); } };
+    $("codeBtn").onclick = addCode; onEnter($("codeIn"), addCode);
+    var addName = function(){ unlockAudio(); manualAdd($("nameIn")); };
+    $("nameBtn").onclick = addName; onEnter($("nameIn"), addName);
+  } else {
+    $("cartView").className = "";
+    var add = function(){ manualAdd($("addIn")); };
+    $("addBtn").onclick = add; onEnter($("addIn"), add);
+    $("clearBtn").onclick = function(){
+      var patch = {}; sortedIds(function(i){ return i.done; }).forEach(function(id){ patch[id] = null; delete items[id]; });
+      render(); api("PATCH", "/items", patch).catch(refresh);
+    };
+  }
+  refresh();
+  var tick = 0;
+  setInterval(function(){
+    tick++;
+    if(document.hidden || busy) return;
+    if(idleOn && tick % 5) return;   // idle: sync every ~20s instead of 4s
+    refresh();
+  }, 4000);
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) refresh(); });
+}
+init();
+})();
+</script>
+</body>
+</html>
