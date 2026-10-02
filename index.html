@@ -502,21 +502,21 @@ function startScanner(){
   Quagga.onDetected(function(res){
     if(paused || busy || !res || !res.codeResult) return;
     var code = res.codeResult.code;
-    var errs = res.codeResult.decodedCodes.filter(function(c){ return c.error !== undefined; }).map(function(c){ return c.error; });
-    var avg = errs.reduce(function(a, b){ return a + b; }, 0) / (errs.length || 1);
-    if(avg > 0.12) return;
+    if(!code || !/^\d{8,13}$/.test(code)) return;
+
+    var decoded = res.codeResult.decodedCodes || [];
+    var errs = decoded.filter(function(c){ return c && c.error !== undefined; }).map(function(c){ return c.error; });
+    var avg = errs.length ? errs.reduce(function(a, b){ return a + b; }, 0) / errs.length : 0;
+    if(avg > 0.18) return;
 
     var now = Date.now();
-    if(code === lastSeen && now - lastSeenAt < 900){
-      seenCount++;
-    } else {
-      lastSeen = code; lastSeenAt = now; seenCount = 1;
-    }
-    if(seenCount < 2 && now - lastSeenAt < 900) return;
+    if(recentAdds[code] && now - recentAdds[code] < 3500) return;
+    if(code === lastSeen && now - lastSeenAt < 800) return;
 
+    lastSeen = code;
+    lastSeenAt = now;
+    recentAdds[code] = now;
     poke();
-    if(recentAdds[code] && now - recentAdds[code] < 4000) return;
-    recentAdds[code] = now; seenCount = 0;
     $("camBox").className = "camBox hit"; setTimeout(function(){ $("camBox").className = "camBox"; }, 700);
     handleCode(code);
   });
