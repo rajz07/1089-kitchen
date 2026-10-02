@@ -361,9 +361,37 @@ function timeout(p, ms){
 }
 function setSync(msg){ $("sync").textContent = msg; }
 
+/* ---------- remembered item names (so repeat scans land on the same item) ---------- */
+var knownNames = {};
+function normalizeKey(s){ return (s || "").toLowerCase().replace(/[^a-z0-9 ]+/g, "").trim(); }
+function loadKnownNames(){
+  return api("GET", "/knownNames").then(function(d){ knownNames = d || {}; }).catch(function(){});
+}
+function rememberKnownName(name){
+  var norm = normalizeKey(name);
+  if(!norm) return;
+  var key = norm.replace(/\s+/g, "_");
+  knownNames[key] = name;
+  api("PUT", "/knownNames/" + key, name).catch(function(){});
+}
+function findKnownMatch(guess){
+  var gNorm = normalizeKey(guess);
+  if(!gNorm) return null;
+  var best = null;
+  Object.keys(knownNames).forEach(function(k){
+    var known = knownNames[k];
+    var kNorm = normalizeKey(known);
+    if(!kNorm) return;
+    if(kNorm === gNorm || kNorm.indexOf(gNorm) === 0 || gNorm.indexOf(kNorm) === 0){
+      if(!best || kNorm.length > normalizeKey(best).length) best = known;
+    }
+  });
+  return best;
+}
+
 function refresh(){
-  return api("GET", "/items").then(function(data){
-    items = data || {};
+  return Promise.all([api("GET", "/items"), loadKnownNames()]).then(function(results){
+    items = results[0] || {};
     render();
     setSync("Synced " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}));
   }).catch(function(e){ setSync("Can't reach the list (" + e.message + "). Retrying…"); });
@@ -495,8 +523,9 @@ function captureAndIdentify(){
     busy = false;
     $("captureBtn").disabled = false;
     if(name){
-      status("Found: " + name + ". Confirm below.");
-      showConfirm(name);
+      var matched = findKnownMatch(name);
+      status(matched ? "Matches an item you've scanned before." : "Found: " + name + ". Confirm below.");
+      showConfirm(matched || name);
     } else {
       status("Couldn't identify — type it below or try again.", true);
     }
@@ -548,6 +577,7 @@ function showConfirm(suggestedName){
     $("modalSave").onclick = $("modalSkip").onclick = $("modalIn").onkeydown = null;
     var finalName = (name || "").trim();
     if(!finalName){ status("Item skipped."); return; }
+    rememberKnownName(finalName);
     var key = "c-" + finalName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("c" + Date.now());
     addItem(key, finalName).then(function(){ status("Ready — point at the next item."); });
   }
@@ -708,6 +738,7 @@ function render(){
 function manualAdd(input){
   var n = input.value.trim(); if(!n) return;
   input.value = "";
+  rememberKnownName(n);
   var key = "n-" + n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("m" + Date.now());
   addItem(key, n);
 }
