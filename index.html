@@ -280,6 +280,7 @@ li.item.done .emo{opacity:.5}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.12.1/dist/quagga.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 /* ===================== CONFIG — EDIT THESE TWO ===================== */
 var DB_URL   = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -296,8 +297,12 @@ function $(id){ return document.getElementById(id); }
 var isScan = /scan/.test(location.search);
 var items = {};       // id -> {name, qty, done, t, code}
 var products = {};    // barcode -> name (remembered)
+var nameMemory = {};   // normalized label text -> canonical item name
 var undoStack = [];
 var busy = false;
+var ocrTimer = null;
+var lastOcrKey = "";
+var lastOcrAt = 0;
 
 /* ---------- emoji guesser ---------- */
 var EMO = [
@@ -340,9 +345,45 @@ function timeout(p, ms){
 }
 function setSync(msg){ $("sync").textContent = msg; }
 
+function normalizeName(raw){
+  return (raw || "").replace(/[^a-z0-9]+/gi, " ").replace(/\s+/g, " ").trim().toLowerCase();
+}
+function chooseOcrName(text){
+  if(!text) return "";
+  var parts = text.split(/\n+/).map(function(line){ return line.trim(); }).filter(Boolean);
+  var best = "";
+  for(var i = 0; i < parts.length; i++){
+    var line = parts[i];
+    var norm = normalizeName(line);
+    if(!norm || norm.length < 4) continue;
+    if(/barcode|serial|lot|batch|expiry|best before|made in|net wt|weight|contains|pack|product of|date|choose/i.test(line)) continue;
+    if(norm.split(/\s+/).length <= 8){
+      best = line;
+      break;
+    }
+    if(!best) best = line;
+  }
+  return (best || parts[0] || "").trim();
+}
+function rememberOcrName(name){
+  var clean = (name || "").trim();
+  if(!clean) return;
+  var key = normalizeName(clean);
+  if(!key) return;
+  nameMemory[key] = clean;
+  api("PUT", "/nameMemory/" + key, clean).catch(function(){});
+}
+function loadNameMemory(){
+  return api("GET", "/nameMemory").then(function(d){
+    nameMemory = d || {};
+  }).catch(function(){ return null; });
+}
 function refresh(){
-  return api("GET", "/items").then(function(d){
-    items = d || {};
+  return Promise.all([
+    api("GET", "/items"),
+    loadNameMemory()
+  ]).then(function(results){
+    items = results[0] || {};
     render();
     setSync("Synced " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}));
   }).catch(function(e){ setSync("Can't reach the list (" + e.message + "). Retrying…"); });
@@ -441,6 +482,26 @@ function askName(code){
     $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
   });
 }
+function askNameFromOcr(rawName){
+  return new Promise(function(done){
+    pauseScan(true);
+    var name = (rawName || "").trim();
+    $("modalCode").textContent = "I think this is: " + name + ". Save it and I’ll remember it for next time.";
+    $("modalIn").value = name; $("modal").className = "modal";
+    setTimeout(function(){ $("modalIn").focus(); $("modalIn").select(); }, 100);
+    function close(name){
+      $("modal").className = "modal hidden";
+      $("modalSave").onclick = $("modalSkip").onclick = null;
+      var finalName = (name || rawName || "Unknown item").trim();
+      rememberOcrName(finalName);
+      var key = "ocr-" + normalizeName(finalName);
+      addItem(key, finalName, key).then(function(){ pauseScan(false); status("Ready for the next one."); done(); });
+    }
+    $("modalSave").onclick = function(){ close($("modalIn").value.trim()); };
+    $("modalSkip").onclick = function(){ close(rawName); };
+    $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
+  });
+}
 
 /* ---------- beep ---------- */
 var actx = null;
@@ -465,11 +526,42 @@ function pauseScan(v){ paused = v; }
 
 var camOn = false, camStarting = false, detectBound = false;
 function stopScanner(){
+  if(ocrTimer){ clearInterval(ocrTimer); ocrTimer = null; }
   if(!camOn) return;
   try{ Quagga.stop(); }catch(e){}
   camOn = false;
   $("cam").innerHTML = "";
   $("camBox").className = "camBox idle";
+}
+function maybeRecognizeName(){
+  if(paused || busy || !camOn || idleOn || !window.Tesseract) return;
+  if(lastOcrKey && Date.now() - lastOcrAt > 15000){ lastOcrKey = ""; }
+  var video = $("cam").querySelector("video");
+  if(!video || video.videoWidth < 80) return;
+  var canvas = document.createElement("canvas");
+  canvas.width = Math.min(video.videoWidth, 640);
+  canvas.height = Math.min(video.videoHeight, 480);
+  var ctx = canvas.getContext("2d");
+  if(!ctx) return;
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  var data = canvas.toDataURL("image/jpeg", 0.7);
+  Tesseract.recognize(data, "eng").then(function(result){
+    var raw = (result && result.data && result.data.text) ? result.data.text : "";
+    var name = chooseOcrName(raw);
+    if(!name) return;
+    var key = normalizeName(name);
+    if(!key || key === lastOcrKey) return;
+    lastOcrKey = key;
+    lastOcrAt = Date.now();
+    if(nameMemory[key]){
+      if(recentAdds["ocr-" + key] && Date.now() - recentAdds["ocr-" + key] < 3500) return;
+      recentAdds["ocr-" + key] = Date.now();
+      addItem("ocr-" + key, nameMemory[key], "ocr-" + key);
+      return;
+    }
+    recentAdds["ocr-" + key] = Date.now();
+    askNameFromOcr(name).catch(function(){});
+  }).catch(function(){});
 }
 function startScanner(){
   unlockAudio();
@@ -496,6 +588,8 @@ function startScanner(){
     if(idleOn){ stopScanner(); return; }
     $("camBox").className = "camBox";
     status("Scanning… show me an empty packet");
+    if(ocrTimer) clearInterval(ocrTimer);
+    ocrTimer = setInterval(function(){ maybeRecognizeName(); }, 2600);
   });
   if(detectBound) return;
   detectBound = true;
