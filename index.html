@@ -54,6 +54,9 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:2px}
 /* ---------- camera box ---------- */
 .camBox{position:relative;width:100%;padding-top:66%;border:4px solid var(--ink);border-radius:30px;overflow:hidden;
   background:#26233A;box-shadow:8px 8px 0 var(--ink)}
+/* iPad Mini 2 / old Safari: border-radius+overflow:hidden on a live <video> forces
+   software compositing and tanks framerate. Drop clipping while actually streaming. */
+.camBox.streaming{border-radius:0;overflow:visible}
 .cam{position:absolute;top:0;left:0;right:0;bottom:0}
 .cam video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;transform:scaleX(-1)}
 /* guide frame */
@@ -445,7 +448,7 @@ function startCamera(){
   $("startBtn").className = "hidden";
   status("Starting camera…");
   navigator.mediaDevices.getUserMedia({
-    video: { facingMode: facingMode, width: {ideal:640}, height: {ideal:480} }
+    video: { facingMode: facingMode, width: {ideal:480, max:480}, height: {ideal:360, max:360}, frameRate: {ideal:15, max:15} }
   }).then(function(s){
     if(idleOn){ s.getTracks().forEach(function(t){ t.stop(); }); return; }
     stream = s;
@@ -456,7 +459,7 @@ function startCamera(){
     v.srcObject = s;
     $("cam").innerHTML = "";
     $("cam").appendChild(v);
-    $("camBox").className = "camBox";
+    $("camBox").className = "camBox streaming";
     $("captureBtn").className = "captureBtn";
     $("camSwitch").className = "camSwitch";
     status("Point at an item and tap 📷 Capture");
@@ -767,6 +770,7 @@ function init(){
     tick++;
     if(document.hidden || busy) return;
     if(idleOn && tick % 5) return;
+    if(stream && tick % 3) return; /* camera streaming: sync less often, keep CPU for video */
     refresh();
   }, 4000);
   document.addEventListener("visibilitychange", function(){ if(!document.hidden) refresh(); });
