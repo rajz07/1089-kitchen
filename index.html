@@ -88,6 +88,12 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:2px}
   border-radius:999px;padding:8px 14px;font-size:20px;box-shadow:2px 2px 0 var(--ink);border-width:2px}
 .camSwitch:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
 
+.countdown{position:absolute;inset:0;z-index:4;background:rgba(29,26,47,.55);display:flex;align-items:center;justify-content:center;
+  font-size:110px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5);
+  -webkit-animation:countPulse .75s ease-in-out;animation:countPulse .75s ease-in-out}
+@-webkit-keyframes countPulse{0%{-webkit-transform:scale(1.4);opacity:0}30%{-webkit-transform:scale(1);opacity:1}100%{-webkit-transform:scale(1);opacity:1}}
+@keyframes countPulse{0%{transform:scale(1.4);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
+
 .hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;z-index:2;color:#fff;font-weight:600;font-size:16px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
 .status{display:table;margin:22px auto 0;background:var(--ink);color:#fff;border-radius:999px;padding:8px 18px;font-weight:600;font-size:16px;text-align:center}
@@ -227,6 +233,7 @@ li.item.done .emo{opacity:.5}
       <button id="startBtn" class="startBtn">📷 Start camera</button>
       <button id="captureBtn" class="captureBtn hidden">📷 Capture</button>
       <button id="camSwitch" class="camSwitch hidden">🔄</button>
+      <div id="countdown" class="countdown hidden"></div>
     </div>
     <div style="text-align:center"><div id="status" class="status">Tap Start, point at an item, then tap Capture</div></div>
 
@@ -507,9 +514,31 @@ function captureAndIdentify(){
   busy = true;
   $("captureBtn").disabled = true;
 
+  var n = 2;
+  var cd = $("countdown");
+  function tick(){
+    cd.className = "countdown hidden";
+    void cd.offsetWidth;
+    cd.textContent = n;
+    cd.className = "countdown";
+  }
+  tick();
+  var timer = setInterval(function(){
+    n--;
+    if(n <= 0){
+      clearInterval(timer);
+      cd.className = "countdown hidden";
+      doCapture(v);
+    } else {
+      tick();
+    }
+  }, 750);
+}
+
+function doCapture(v){
   /* flash */
-  $("camBox").className = "camBox flash";
-  setTimeout(function(){ $("camBox").className = "camBox"; }, 300);
+  $("camBox").className = "camBox streaming flash";
+  setTimeout(function(){ $("camBox").className = "camBox streaming"; }, 300);
 
   var canvas = document.createElement("canvas");
   canvas.width = Math.min(v.videoWidth, 800);
