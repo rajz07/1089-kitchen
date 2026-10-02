@@ -403,8 +403,8 @@ function lookup(code){
   if(products[code]) return Promise.resolve(products[code]);
   return api("GET", "/products/" + code).then(function(saved){
     if(saved){ products[code] = saved; return saved; }
-    return timeout(fetch("https://world.openfoodfacts.org/api/v2/product/" + code + ".json?fields=product_name,brands,quantity")
-      .then(function(r){ return r.json(); }), 6000)
+    var openFoodRequest = fetch("https://world.openfoodfacts.org/api/v2/product/" + code + ".json?fields=product_name,brands,quantity")
+      .then(function(r){ return r.json(); })
       .then(function(d){
         var p = d && d.product; if(!p || !p.product_name) return null;
         var brand = (p.brands || "").split(",")[0].trim();
@@ -413,7 +413,11 @@ function lookup(code){
         if(p.quantity) n += " " + p.quantity;
         rememberName(code, n);
         return n;
-      }).catch(function(){ return null; });
+      });
+    return Promise.race([
+      openFoodRequest,
+      new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 1800); })
+    ]).catch(function(){ return null; });
   }).catch(function(){ return null; });
 }
 function rememberName(code, name){ products[code] = name; api("PUT", "/products/" + code, name).catch(function(){}); }
@@ -455,7 +459,7 @@ function beep(){
 }
 
 /* ---------- camera scanning ---------- */
-var paused = false, lastSeen = "", seenCount = 0, recentAdds = {};
+var paused = false, lastSeen = "", lastSeenAt = 0, seenCount = 0, recentAdds = {};
 function status(msg, bad){ var s = $("status"); s.textContent = msg; s.className = bad ? "status bad" : "status"; }
 function pauseScan(v){ paused = v; }
 
@@ -498,16 +502,19 @@ function startScanner(){
   Quagga.onDetected(function(res){
     if(paused || busy || !res || !res.codeResult) return;
     var code = res.codeResult.code;
-    // reject low-confidence reads
     var errs = res.codeResult.decodedCodes.filter(function(c){ return c.error !== undefined; }).map(function(c){ return c.error; });
     var avg = errs.reduce(function(a, b){ return a + b; }, 0) / (errs.length || 1);
     if(avg > 0.12) return;
-    // need the same code twice in a row to accept
-    if(code === lastSeen) seenCount++; else { lastSeen = code; seenCount = 1; }
-    if(seenCount < 2) return;
-    poke();
-    // ignore the same packet for 4s so it isn't added twice by accident
+
     var now = Date.now();
+    if(code === lastSeen && now - lastSeenAt < 900){
+      seenCount++;
+    } else {
+      lastSeen = code; lastSeenAt = now; seenCount = 1;
+    }
+    if(seenCount < 2 && now - lastSeenAt < 900) return;
+
+    poke();
     if(recentAdds[code] && now - recentAdds[code] < 4000) return;
     recentAdds[code] = now; seenCount = 0;
     $("camBox").className = "camBox hit"; setTimeout(function(){ $("camBox").className = "camBox"; }, 700);
