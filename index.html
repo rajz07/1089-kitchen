@@ -206,7 +206,7 @@ li.item.done .emo{opacity:.5}
   </div>
 
   <div id="setup" class="setup hidden">
-    <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code>, <code>LIST_KEY</code>, and <code>GEMINI_KEY</code> near the top of the script.
+    <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code>, <code>LIST_KEY</code>, and <code>CLAUDE_KEY</code> near the top of the script.
   </div>
 
   <!-- ================= SCANNER (iPad) ================= -->
@@ -292,7 +292,7 @@ li.item.done .emo{opacity:.5}
 /* ===================== CONFIG ===================== */
 var DB_URL     = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
 var LIST_KEY   = "EtFnu4RVP0OF77liJLB7";
-var GEMINI_KEY = "AQ.Ab8RN6II39ijNQPZA8wcLLje_jsDodqz31hSu8SNlkJb3KdDCw";
+var CLAUDE_KEY = "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";
 /* Optional settings */
 var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;
 var IDLE_AFTER_SECONDS = 90;
@@ -477,7 +477,7 @@ function captureAndIdentify(){
 
   status("AI is identifying…", false, true);
 
-  identifyWithGemini(b64).then(function(name){
+  identifyWithClaude(b64).then(function(name){
     busy = false;
     $("captureBtn").disabled = false;
     if(name){
@@ -493,23 +493,30 @@ function captureAndIdentify(){
   });
 }
 
-function identifyWithGemini(b64){
-  if(!GEMINI_KEY) return Promise.resolve(null);
-  var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" + GEMINI_KEY;
+function identifyWithClaude(b64){
+  if(!CLAUDE_KEY) return Promise.resolve(null);
+  var url = "https://api.anthropic.com/v1/messages";
   return timeout(fetch(url, {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": CLAUDE_KEY,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
     body: JSON.stringify({
-      contents: [{parts: [
-        {text: "What household or grocery item is this? Reply with ONLY a short generic name, 2–4 words, no brand name, no punctuation, no extra explanation. Examples: Dishwashing liquid, White rice, Eggs, Shampoo, Toilet paper, Laundry detergent, Cooking oil, Milk. If you cannot identify it, reply: unknown"},
-        {inline_data: {mime_type: "image/jpeg", data: b64}}
-      ]}],
-      generationConfig: {maxOutputTokens: 15, temperature: 0.1}
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 15,
+      messages: [{
+        role: "user",
+        content: [
+          {type: "text", text: "What household or grocery item is this? Reply with ONLY a short generic name, 2–4 words, no brand name, no punctuation, no extra explanation. Examples: Dishwashing liquid, White rice, Eggs, Shampoo, Toilet paper, Laundry detergent, Cooking oil, Milk. If you cannot identify it, reply: unknown"},
+          {type: "image", source: {type: "base64", media_type: "image/jpeg", data: b64}}
+        ]
+      }]
     })
   }).then(function(r){ return r.json(); }).then(function(d){
-    var text = d && d.candidates && d.candidates[0] &&
-               d.candidates[0].content && d.candidates[0].content.parts &&
-               d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text;
+    var text = d && d.content && d.content[0] && d.content[0].text;
     var name = (text || "").trim().replace(/^["'.]+|["'.]+$/g, "").trim();
     return (name && name.toLowerCase() !== "unknown") ? name : null;
   }), 12000);
