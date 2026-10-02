@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
-/* Config (DB_URL, LIST_KEY) is in the script near the bottom */
 :root{
   --ink:#1D1A2F; --paper:#FFFFFF; --tile:#DDF3E6; --grout:#C9E9D6;
   --tomato:#FF5A3C; --mustard:#FFC93C; --mint:#3CCB8F; --berry:#4A4FE0; --soft:#6B6880;
@@ -52,32 +51,44 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:2px}
 
 .setup{background:var(--paper);border:var(--b);border-radius:20px;padding:20px;line-height:1.5;box-shadow:6px 6px 0 var(--tomato)}
 
-/* ---------- scanner ---------- */
+/* ---------- camera box ---------- */
 .camBox{position:relative;width:100%;padding-top:66%;border:4px solid var(--ink);border-radius:30px;overflow:hidden;
   background:#26233A;box-shadow:8px 8px 0 var(--ink)}
 .cam{position:absolute;top:0;left:0;right:0;bottom:0}
-.cam video,.cam canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
-.cam canvas.drawingBuffer{display:none}
+.cam video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+/* guide frame */
 .corners{position:absolute;left:14%;right:14%;top:26%;bottom:26%;z-index:2;pointer-events:none}
 .corners i{position:absolute;width:44px;height:44px;border:6px solid var(--mustard)}
 .corners i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
 .corners i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
 .corners i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 14px}
 .corners i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 14px 0}
-.camBox.hit .corners i{border-color:var(--mint)}
-.camBox.hit{box-shadow:8px 8px 0 var(--mint)}
-.laser{position:absolute;left:16%;right:16%;top:50%;height:3px;background:var(--tomato);z-index:2;border-radius:3px;
-  box-shadow:0 0 12px var(--tomato);-webkit-animation:sweep 1.8s ease-in-out infinite alternate;animation:sweep 1.8s ease-in-out infinite alternate}
-@-webkit-keyframes sweep{from{-webkit-transform:translateY(-60px)}to{-webkit-transform:translateY(60px)}}
-@keyframes sweep{from{transform:translateY(-60px)}to{transform:translateY(60px)}}
-.idle .laser{display:none}
+/* flash on capture */
+.camBox.flash::after{content:"";position:absolute;inset:0;background:#fff;opacity:.7;z-index:5;pointer-events:none;
+  -webkit-animation:flashout .25s forwards;animation:flashout .25s forwards}
+@-webkit-keyframes flashout{to{opacity:0}}
+@keyframes flashout{to{opacity:0}}
+
 .startBtn{position:absolute;top:50%;left:50%;z-index:3;transform:translate(-50%,-50%);
   background:var(--mustard);font-size:24px;padding:18px 32px;border-radius:20px}
 .startBtn:active{transform:translate(-50%,-50%) translate(3px,3px)}
+
+/* capture button — big, bottom-centre */
+.captureBtn{position:absolute;bottom:16px;left:50%;z-index:3;transform:translateX(-50%);
+  background:var(--mustard);border-radius:999px;padding:14px 36px;font-size:22px;font-weight:800;
+  box-shadow:4px 4px 0 var(--ink);white-space:nowrap}
+.captureBtn:active{transform:translateX(-50%) translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.captureBtn:disabled{opacity:.5;pointer-events:none}
+
+.camSwitch{position:absolute;top:12px;right:12px;z-index:3;background:rgba(255,255,255,.85);
+  border-radius:999px;padding:8px 14px;font-size:20px;box-shadow:2px 2px 0 var(--ink);border-width:2px}
+.camSwitch:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
+
 .hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;z-index:2;color:#fff;font-weight:600;font-size:16px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
 .status{display:table;margin:22px auto 0;background:var(--ink);color:#fff;border-radius:999px;padding:8px 18px;font-weight:600;font-size:16px;text-align:center}
 .status.bad{background:var(--tomato)}
+.status.thinking{background:var(--berry)}
 
 .last{position:relative;margin:26px 4px 0;background:var(--paper);border:var(--b);border-radius:24px;padding:20px 22px;
   display:flex;align-items:center;min-height:110px;box-shadow:6px 6px 0 var(--ink)}
@@ -148,7 +159,7 @@ li.item.done .emo{opacity:.5}
 .clear{width:100%;margin-top:6px;background:var(--paper)}
 .sync{font-size:13px;text-align:center;margin-top:26px;color:var(--soft);font-weight:600}
 
-/* ---------- idle screen (iPad) ---------- */
+/* ---------- idle screen ---------- */
 .idle-screen{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;overflow:hidden;cursor:pointer;
   background-color:var(--tile);
   background-image:linear-gradient(var(--grout) 2px, transparent 2px),linear-gradient(90deg, var(--grout) 2px, transparent 2px);
@@ -174,7 +185,6 @@ li.item.done .emo{opacity:.5}
   -webkit-animation:breathe 2.4s ease-in-out infinite;animation:breathe 2.4s ease-in-out infinite}
 @-webkit-keyframes breathe{50%{-webkit-transform:scale(1.05)}}
 @keyframes breathe{50%{transform:scale(1.05)}}
-/* night: dim, dark, calm */
 .idle-screen.night{background-color:#07060C;background-image:none;color:#4A4760}
 .night .logo,.night .card,.night .tapcue,.night .clock .ap{background:transparent;border-color:#2A2838;box-shadow:none;color:#4A4760}
 .night .date,.night .wx .desc{color:#3A3850}
@@ -184,7 +194,7 @@ li.item.done .emo{opacity:.5}
 .night .wx .icon{opacity:.35}
 .night .cards{-webkit-filter:grayscale(1) brightness(.7);filter:grayscale(1) brightness(.7)}
 
-@media (prefers-reduced-motion: reduce){ .laser,.last.pop,.tapcue{-webkit-animation:none;animation:none} }
+@media (prefers-reduced-motion: reduce){ .last.pop,.tapcue{-webkit-animation:none;animation:none} }
 </style>
 </head>
 <body>
@@ -196,7 +206,7 @@ li.item.done .emo{opacity:.5}
   </div>
 
   <div id="setup" class="setup hidden">
-    <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code> and <code>LIST_KEY</code> near the bottom.
+    <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code>, <code>LIST_KEY</code>, and <code>GEMINI_KEY</code> near the top of the script.
   </div>
 
   <!-- ================= SCANNER (iPad) ================= -->
@@ -204,21 +214,20 @@ li.item.done .emo{opacity:.5}
     <div id="camBox" class="camBox idle">
       <div id="cam" class="cam"></div>
       <div class="corners"><i></i><i></i><i></i><i></i></div>
-      <div class="laser"></div>
-      <button id="startBtn" class="startBtn">📷 Start scanning</button>
-      <div class="hint" id="hint">Barcode inside the box, 15–20 cm away</div>
+      <button id="startBtn" class="startBtn">📷 Start camera</button>
+      <button id="captureBtn" class="captureBtn hidden">📷 Capture</button>
+      <button id="camSwitch" class="camSwitch hidden">🔄</button>
     </div>
-    <div style="text-align:center"><div id="status" class="status">Tap start, then scan a packet before you bin it</div></div>
+    <div style="text-align:center"><div id="status" class="status">Tap Start, point at an item, then tap Capture</div></div>
 
     <div id="last" class="last">
       <span class="emo" id="lastEmo">🗑️</span>
-      <div class="txt" id="lastTxt">Nothing scanned yet<small>Empty packet? Show it to the camera.</small></div>
+      <div class="txt" id="lastTxt">Nothing added yet<small>Point camera at any item and tap Capture.</small></div>
       <button id="undoBtn" class="undo hidden">↩ Undo</button>
     </div>
 
     <div class="panel">
-      <div class="row"><input id="codeIn" inputmode="numeric" placeholder="Barcode won't scan? Type the number"><button id="codeBtn" class="berry">Add</button></div>
-      <div class="row"><input id="nameIn" placeholder="No barcode? Type the item"><button id="nameBtn" class="berry">Add</button></div>
+      <div class="row"><input id="nameIn" placeholder="No camera? Type the item here"><button id="nameBtn" class="berry">Add</button></div>
     </div>
 
     <h2>On the list <span class="count" id="recentCount">0</span></h2>
@@ -244,21 +253,21 @@ li.item.done .emo{opacity:.5}
   <div id="sync" class="sync"></div>
 </div>
 
-<!-- name prompt -->
+<!-- confirm modal -->
 <div id="modal" class="modal hidden">
   <div class="sheet">
     <div class="big">🤔</div>
-    <h3>What's this one?</h3>
+    <h3 id="modalTitle">What's this one?</h3>
     <p id="modalCode"></p>
-    <input id="modalIn" placeholder="e.g. Milo 1kg">
+    <input id="modalIn" placeholder="e.g. Dishwashing liquid">
     <div class="btns">
       <button id="modalSkip">Ignore</button>
-      <button id="modalSave" class="mint">Use this item</button>
+      <button id="modalSave" class="mint">✓ Add to list</button>
     </div>
   </div>
 </div>
 
-<!-- idle screen (iPad only) -->
+<!-- idle screen -->
 <div id="idle" class="idle-screen hidden">
   <span class="logo">Hemie's Kitchen</span>
   <div class="clock"><span id="clkTime">--:--</span><span class="ap" id="clkAp">am</span></div>
@@ -279,32 +288,26 @@ li.item.done .emo{opacity:.5}
   <div class="tapcue" id="tapcue">👆 Tap anywhere to scan</div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.12.1/dist/quagga.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-/* ===================== CONFIG — EDIT THESE TWO ===================== */
-var DB_URL   = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
-var LIST_KEY = "EtFnu4RVP0OF77liJLB7";
-/* Optional: idle screen settings */
-var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;   // Seremban. Change to your area if needed
-var IDLE_AFTER_SECONDS = 90;                         // go to the clock screen after this much inactivity
-var NIGHT_FROM = 23, NIGHT_TO = 6;                   // dim night mode hours (24h)
-/* =================================================================== */
+/* ===================== CONFIG ===================== */
+var DB_URL     = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
+var LIST_KEY   = "EtFnu4RVP0OF77liJLB7";
+var GEMINI_KEY = "AQ.Ab8RN6K3pMgxLOIH0iT6YCjlbEvhQrBeyxRIt_qatr3R7Jbo6A";
+/* Optional settings */
+var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;
+var IDLE_AFTER_SECONDS = 90;
+var NIGHT_FROM = 23, NIGHT_TO = 6;
+/* ================================================== */
 
 (function(){
 "use strict";
 function $(id){ return document.getElementById(id); }
 var isScan = /scan/.test(location.search);
-var items = {};       // id -> {name, qty, done, t, code}
-var products = {};    // barcode -> name (remembered)
-var nameMemory = {};   // normalized label text -> canonical item name
+var items = {};
 var undoStack = [];
 var busy = false;
-var ocrTimer = null;
-var lastOcrKey = "";
-var lastOcrAt = 0;
 
-/* ---------- emoji guesser ---------- */
+/* ---------- emoji ---------- */
 var EMO = [
   [/milk|susu|dutch lady|farm fresh/, "🥛"], [/egg|telur/, "🥚"], [/bread|roti|gardenia|massimo|bun/, "🍞"],
   [/milo|chocolate|coklat|cocoa|ovaltine/, "🍫"], [/coffee|kopi|nescafe|aik cheong/, "☕"], [/\btea\b|teh|lipton|boh/, "🍵"],
@@ -317,13 +320,13 @@ var EMO = [
   [/apple|epal/, "🍎"], [/banana|pisang/, "🍌"], [/orange|oren|limau/, "🍊"], [/tomato/, "🍅"], [/carrot|lobak/, "🥕"],
   [/potato|kentang/, "🥔"], [/vege|sayur|cabbage|kobis|lettuce|spinach|bayam/, "🥬"], [/fruit|buah/, "🍇"],
   [/water|air mineral|spritzer|cactus/, "💧"], [/juice|jus|drink|minuman|soda|cola|100plus|coke|pepsi/, "🥤"],
-  [/beer|wine/, "🍺"], [/tissue|tisu|toilet|napkin/, "🧻"], [/soap|sabun|hand wash|dishwash|sunlight|dettol/, "🧼"],
-  [/shampoo|conditioner|lotion|body wash|toothpaste|colgate|darlie|ubat gigi/, "🧴"], [/detergent|softener|dynamo|breeze|downy|clorox/, "🧺"],
+  [/tissue|tisu|toilet|napkin/, "🧻"], [/soap|sabun|hand wash|dishwash|sunlight|dettol/, "🧼"],
+  [/shampoo|conditioner|lotion|body wash|toothpaste|colgate|darlie|ubat gigi/, "🧴"],
+  [/detergent|softener|dynamo|breeze|downy|clorox|washing/, "🧺"],
   [/cat|kucing|whiskas|dog|anjing|pedigree/, "🐾"], [/baby|diaper|lampin|pampers|huggies/, "🍼"], [/battery|bateri/, "🔋"]
 ];
 function emojiFor(name){
   var n = (name || "").toLowerCase();
-  if(/^unknown item/.test(n)) return "❓";
   for(var i = 0; i < EMO.length; i++) if(EMO[i][0].test(n)) return EMO[i][1];
   return "🛒";
 }
@@ -345,61 +348,25 @@ function timeout(p, ms){
 }
 function setSync(msg){ $("sync").textContent = msg; }
 
-function normalizeName(raw){
-  return (raw || "").replace(/[^a-z0-9]+/gi, " ").replace(/\s+/g, " ").trim().toLowerCase();
-}
-function chooseOcrName(text){
-  if(!text) return "";
-  var parts = text.split(/\n+/).map(function(line){ return line.trim(); }).filter(Boolean);
-  var best = "";
-  for(var i = 0; i < parts.length; i++){
-    var line = parts[i];
-    var norm = normalizeName(line);
-    if(!norm || norm.length < 4) continue;
-    if(/barcode|serial|lot|batch|expiry|best before|made in|net wt|weight|contains|pack|product of|date|choose/i.test(line)) continue;
-    if(norm.split(/\s+/).length <= 8){
-      best = line;
-      break;
-    }
-    if(!best) best = line;
-  }
-  return (best || parts[0] || "").trim();
-}
-function rememberOcrName(name){
-  var clean = (name || "").trim();
-  if(!clean) return;
-  var key = normalizeName(clean);
-  if(!key) return;
-  nameMemory[key] = clean;
-  api("PUT", "/nameMemory/" + key, clean).catch(function(){});
-}
-function loadNameMemory(){
-  return api("GET", "/nameMemory").then(function(d){
-    nameMemory = d || {};
-  }).catch(function(){ return null; });
-}
 function refresh(){
-  return Promise.all([
-    api("GET", "/items"),
-    loadNameMemory()
-  ]).then(function(results){
-    items = results[0] || {};
+  return api("GET", "/items").then(function(data){
+    items = data || {};
     render();
     setSync("Synced " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}));
   }).catch(function(e){ setSync("Can't reach the list (" + e.message + "). Retrying…"); });
 }
 
-/* ---------- adding / undo ---------- */
-function addItem(id, name, code){
+/* ---------- add / undo ---------- */
+function addItem(id, name){
   return api("GET", "/items/" + id).then(function(cur){
     var prev = cur ? JSON.parse(JSON.stringify(cur)) : null;
     var next;
     if(cur && !cur.done){ next = cur; next.qty = (cur.qty || 1) + 1; next.t = Date.now(); }
-    else { next = {name: name, qty: 1, done: false, t: Date.now()}; if(code) next.code = code; }
+    else { next = {name: name, qty: 1, done: false, t: Date.now()}; }
     return api("PUT", "/items/" + id, next).then(function(){
       items[id] = next;
       undoStack.push({id: id, prev: prev});
-      showLast(next.name, next.qty); poke();
+      showLast(next.name, next.qty);
       beep(); render();
     });
   }).catch(function(e){ status("Couldn't add: " + e.message, true); });
@@ -410,7 +377,7 @@ function undo(){
   var p = u.prev ? api("PUT", "/items/" + u.id, u.prev) : api("DELETE", "/items/" + u.id);
   p.then(function(){
     if(u.prev) items[u.id] = u.prev; else delete items[u.id];
-    setLast("↩️", u.prev ? "Back to ×" + (u.prev.qty || 1) : "Removed", "That scan was undone.", null);
+    setLast("↩️", u.prev ? "Back to ×" + (u.prev.qty || 1) : "Removed", "That one was undone.", null);
     $("undoBtn").className = undoStack.length ? "undo" : "undo hidden";
     render();
   });
@@ -430,82 +397,6 @@ function showLast(name, qty){
   $("undoBtn").className = "undo";
 }
 
-/* ---------- barcode → name ---------- */
-function handleCode(code){
-  if(busy) return; busy = true;
-  status("Looking up " + code + "…");
-  lookup(code).then(function(name){
-    if(name){ return addItem(code, name, code).then(function(){ status("Ready for the next one."); }); }
-    return askName(code);
-  }).then(function(){ busy = false; }, function(){ busy = false; });
-}
-
-function lookup(code){
-  if(products[code]) return Promise.resolve(products[code]);
-  return api("GET", "/products/" + code).then(function(saved){
-    if(saved){ products[code] = saved; return saved; }
-    var openFoodRequest = fetch("https://world.openfoodfacts.org/api/v2/product/" + code + ".json?fields=product_name,brands,quantity")
-      .then(function(r){ return r.json(); })
-      .then(function(d){
-        var p = d && d.product; if(!p || !p.product_name) return null;
-        var brand = (p.brands || "").split(",")[0].trim();
-        var n = p.product_name;
-        if(brand && n.toLowerCase().indexOf(brand.toLowerCase()) < 0) n = brand + " " + n;
-        if(p.quantity) n += " " + p.quantity;
-        rememberName(code, n);
-        return n;
-      });
-    return Promise.race([
-      openFoodRequest,
-      new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 1800); })
-    ]).catch(function(){ return null; });
-  }).catch(function(){ return null; });
-}
-function rememberName(code, name){ products[code] = name; api("PUT", "/products/" + code, name).catch(function(){}); }
-
-function askName(code){
-  return new Promise(function(done){
-    pauseScan(true);
-    $("modalCode").textContent = "Barcode " + code + " is new to me. Name it once and I'll remember it forever.";
-    $("modalIn").value = ""; $("modal").className = "modal";
-    setTimeout(function(){ $("modalIn").focus(); }, 100);
-    function close(name){
-      $("modal").className = "modal hidden";
-      $("modalSave").onclick = $("modalSkip").onclick = null;
-      var p = Promise.resolve();
-      if(name){ rememberName(code, name); p = addItem(code, name, code); }
-      else p = addItem(code, "Unknown item (" + code + ")", code);
-      p.then(function(){ pauseScan(false); status("Ready for the next one."); done(); });
-    }
-    $("modalSave").onclick = function(){ close($("modalIn").value.trim()); };
-    $("modalSkip").onclick = function(){ close(""); };
-    $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
-  });
-}
-function askNameFromOcr(rawName){
-  return new Promise(function(done){
-    pauseScan(true);
-    var name = (rawName || "").trim();
-    $("modalCode").textContent = "I think this is: " + name + ". Save it and I’ll remember it for next time.";
-    $("modalIn").value = name; $("modal").className = "modal";
-    setTimeout(function(){ $("modalIn").focus(); $("modalIn").select(); }, 100);
-    $("modalSave").textContent = "Use this item";
-    $("modalSkip").textContent = "Ignore";
-    function close(name){
-      $("modal").className = "modal hidden";
-      $("modalSave").onclick = $("modalSkip").onclick = null;
-      var finalName = (name || rawName || "Unknown item").trim();
-      if(!finalName || finalName === "Unknown item") { pauseScan(false); status("Item ignored."); done(); return; }
-      rememberOcrName(finalName);
-      var key = "ocr-" + normalizeName(finalName);
-      addItem(key, finalName, key).then(function(){ pauseScan(false); status("Ready for the next one."); done(); });
-    }
-    $("modalSave").onclick = function(){ close($("modalIn").value.trim()); };
-    $("modalSkip").onclick = function(){ close(""); };
-    $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
-  });
-}
-
 /* ---------- beep ---------- */
 var actx = null;
 function unlockAudio(){
@@ -522,101 +413,129 @@ function beep(){
   }catch(e){}
 }
 
-/* ---------- camera scanning ---------- */
-var paused = false, lastSeen = "", lastSeenAt = 0, seenCount = 0, recentAdds = {};
-function status(msg, bad){ var s = $("status"); s.textContent = msg; s.className = bad ? "status bad" : "status"; }
-function pauseScan(v){ paused = v; }
+/* ---------- camera ---------- */
+var stream = null, facingMode = "user";
+function status(msg, bad, thinking){
+  var s = $("status");
+  s.textContent = msg;
+  s.className = bad ? "status bad" : thinking ? "status thinking" : "status";
+}
 
-var camOn = false, camStarting = false, detectBound = false;
-function stopScanner(){
-  if(ocrTimer){ clearInterval(ocrTimer); ocrTimer = null; }
-  if(!camOn) return;
-  try{ Quagga.stop(); }catch(e){}
-  camOn = false;
+function stopCamera(){
+  if(stream){ stream.getTracks().forEach(function(t){ t.stop(); }); stream = null; }
   $("cam").innerHTML = "";
   $("camBox").className = "camBox idle";
+  $("captureBtn").className = "captureBtn hidden";
+  $("camSwitch").className = "camSwitch hidden";
+  $("startBtn").className = "startBtn";
 }
-function maybeRecognizeName(){
-  if(paused || busy || !camOn || idleOn || !window.Tesseract) return;
-  if(lastOcrKey && Date.now() - lastOcrAt > 15000){ lastOcrKey = ""; }
-  var video = $("cam").querySelector("video");
-  if(!video || video.videoWidth < 80) return;
-  var canvas = document.createElement("canvas");
-  canvas.width = Math.min(video.videoWidth, 640);
-  canvas.height = Math.min(video.videoHeight, 480);
-  var ctx = canvas.getContext("2d");
-  if(!ctx) return;
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  var data = canvas.toDataURL("image/jpeg", 0.7);
-  Tesseract.recognize(data, "eng").then(function(result){
-    var raw = (result && result.data && result.data.text) ? result.data.text : "";
-    var name = chooseOcrName(raw);
-    if(!name) return;
-    var key = normalizeName(name);
-    if(!key || key === lastOcrKey) return;
-    lastOcrKey = key;
-    lastOcrAt = Date.now();
-    if(nameMemory[key]){
-      if(recentAdds["ocr-" + key] && Date.now() - recentAdds["ocr-" + key] < 3500) return;
-      recentAdds["ocr-" + key] = Date.now();
-      askNameFromOcr(nameMemory[key]).catch(function(){});
-      return;
-    }
-    recentAdds["ocr-" + key] = Date.now();
-    askNameFromOcr(name).catch(function(){});
-  }).catch(function(){});
-}
-function startScanner(){
+
+function startCamera(){
   unlockAudio();
-  if(camOn || camStarting) return;
-  camStarting = true;
+  if(stream) return;
   $("startBtn").className = "hidden";
   status("Starting camera…");
-  Quagga.init({
-    inputStream: {
-      type: "LiveStream", target: $("cam"),
-      constraints: { facingMode: "user", width: {ideal: 640}, height: {ideal: 480} }
-    },
-    locator: { patchSize: "large", halfSample: true },
-    numOfWorkers: 0, frequency: 6, locate: true,
-    decoder: { readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"] }
-  }, function(err){
-    camStarting = false;
-    if(err){
-      $("startBtn").className = "startBtn";
-      status("Camera didn't start. Allow camera access in Settings → Safari → Camera, then tap Start again.", true);
-      return;
-    }
-    Quagga.start(); camOn = true;
-    if(idleOn){ stopScanner(); return; }
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: facingMode, width: {ideal:640}, height: {ideal:480} }
+  }).then(function(s){
+    if(idleOn){ s.getTracks().forEach(function(t){ t.stop(); }); return; }
+    stream = s;
+    var v = document.createElement("video");
+    v.setAttribute("playsinline", "");
+    v.setAttribute("autoplay", "");
+    v.muted = true;
+    v.srcObject = s;
+    $("cam").innerHTML = "";
+    $("cam").appendChild(v);
     $("camBox").className = "camBox";
-    status("Scanning… show me an empty packet");
-    if(ocrTimer) clearInterval(ocrTimer);
-    ocrTimer = setInterval(function(){ maybeRecognizeName(); }, 2600);
-  });
-  if(detectBound) return;
-  detectBound = true;
-  Quagga.onDetected(function(res){
-    if(paused || busy || !res || !res.codeResult) return;
-    var code = res.codeResult.code;
-    if(!code || !/^\d{8,13}$/.test(code)) return;
-
-    var decoded = res.codeResult.decodedCodes || [];
-    var errs = decoded.filter(function(c){ return c && c.error !== undefined; }).map(function(c){ return c.error; });
-    var avg = errs.length ? errs.reduce(function(a, b){ return a + b; }, 0) / errs.length : 0;
-    if(avg > 0.18) return;
-
-    var now = Date.now();
-    if(recentAdds[code] && now - recentAdds[code] < 3500) return;
-    if(code === lastSeen && now - lastSeenAt < 800) return;
-
-    lastSeen = code;
-    lastSeenAt = now;
-    recentAdds[code] = now;
+    $("captureBtn").className = "captureBtn";
+    $("camSwitch").className = "camSwitch";
+    status("Point at an item and tap 📷 Capture");
     poke();
-    $("camBox").className = "camBox hit"; setTimeout(function(){ $("camBox").className = "camBox"; }, 700);
-    handleCode(code);
+  }).catch(function(){
+    $("startBtn").className = "startBtn";
+    status("Camera didn't start. Allow camera in Settings → Safari → Camera, then tap Start again.", true);
   });
+}
+
+function captureAndIdentify(){
+  if(busy || !stream) return;
+  var v = $("cam").querySelector("video");
+  if(!v || !v.videoWidth) return;
+  busy = true;
+  $("captureBtn").disabled = true;
+
+  /* flash */
+  $("camBox").className = "camBox flash";
+  setTimeout(function(){ $("camBox").className = "camBox"; }, 300);
+
+  var canvas = document.createElement("canvas");
+  canvas.width = Math.min(v.videoWidth, 800);
+  canvas.height = Math.min(v.videoHeight, 600);
+  canvas.getContext("2d").drawImage(v, 0, 0, canvas.width, canvas.height);
+  var b64 = canvas.toDataURL("image/jpeg", 0.85).split(",")[1];
+
+  status("AI is identifying…", false, true);
+
+  identifyWithGemini(b64).then(function(name){
+    busy = false;
+    $("captureBtn").disabled = false;
+    if(name){
+      status("Found: " + name + ". Confirm below.");
+      showConfirm(name);
+    } else {
+      status("Couldn't identify — type it below or try again.", true);
+    }
+  }).catch(function(e){
+    busy = false;
+    $("captureBtn").disabled = false;
+    status("AI unavailable. Type the item below.", true);
+  });
+}
+
+function identifyWithGemini(b64){
+  if(!GEMINI_KEY) return Promise.resolve(null);
+  var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_KEY;
+  return timeout(fetch(url, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      contents: [{parts: [
+        {text: "What household or grocery item is this? Reply with ONLY a short generic name, 2–4 words, no brand name, no punctuation, no extra explanation. Examples: Dishwashing liquid, White rice, Eggs, Shampoo, Toilet paper, Laundry detergent, Cooking oil, Milk. If you cannot identify it, reply: unknown"},
+        {inline_data: {mime_type: "image/jpeg", data: b64}}
+      ]}],
+      generationConfig: {maxOutputTokens: 15, temperature: 0.1}
+    })
+  }).then(function(r){ return r.json(); }).then(function(d){
+    var text = d && d.candidates && d.candidates[0] &&
+               d.candidates[0].content && d.candidates[0].content.parts &&
+               d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text;
+    var name = (text || "").trim().replace(/^["'.]+|["'.]+$/g, "").trim();
+    return (name && name.toLowerCase() !== "unknown") ? name : null;
+  }), 12000);
+}
+
+function showConfirm(suggestedName){
+  $("modalTitle").textContent = "I think this is…";
+  $("modalCode").textContent = "Edit the name if needed, then tap Add.";
+  $("modalIn").value = suggestedName;
+  $("modal").className = "modal";
+  setTimeout(function(){ $("modalIn").focus(); $("modalIn").select(); }, 100);
+
+  function close(name){
+    $("modal").className = "modal hidden";
+    $("modalSave").onclick = $("modalSkip").onclick = $("modalIn").onkeydown = null;
+    var finalName = (name || "").trim();
+    if(!finalName){ status("Item skipped."); return; }
+    var key = "c-" + finalName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("c" + Date.now());
+    addItem(key, finalName).then(function(){ status("Ready — point at the next item."); });
+  }
+
+  $("modalSave").textContent = "✓ Add to list";
+  $("modalSkip").textContent = "Ignore";
+  $("modalSave").onclick = function(){ close($("modalIn").value.trim()); };
+  $("modalSkip").onclick = function(){ close(""); };
+  $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
 }
 
 /* ---------- idle screen ---------- */
@@ -625,12 +544,12 @@ var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturda
 var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 function pad(n){ return (n < 10 ? "0" : "") + n; }
 function isNight(h){ return NIGHT_FROM > NIGHT_TO ? (h >= NIGHT_FROM || h < NIGHT_TO) : (h >= NIGHT_FROM && h < NIGHT_TO); }
-
 function poke(){ lastActivity = Date.now(); }
+
 function enterIdle(){
   if(idleOn || !$("modal").className.match(/hidden/)) return;
   idleOn = true;
-  stopScanner();
+  stopCamera();
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   tickClock(); renderPeek(); loadWeather(false);
   $("idle").className = "idle-screen" + (isNight(new Date().getHours()) ? " night" : "");
@@ -639,7 +558,7 @@ function exitIdle(){
   if(!idleOn) return;
   idleOn = false; poke();
   $("idle").className = "idle-screen hidden";
-  startScanner();
+  startCamera();
 }
 function tickClock(){
   var d = new Date(), h = d.getHours();
@@ -661,7 +580,7 @@ function renderPeek(){
   if(!ids.length){ var ok = document.createElement("span"); ok.className = "mag"; ok.textContent = "✨ All stocked up"; box.appendChild(ok); }
 }
 
-/* weather via Open-Meteo (free, no key) */
+/* weather via Open-Meteo */
 var wxLoaded = 0;
 function wxInfo(code, day){
   if(code === 0) return day ? ["☀️","Clear and sunny"] : ["🌙","Clear night"];
@@ -685,7 +604,6 @@ function loadWeather(force){
     $("wxIcon").textContent = info[0];
     $("wxTemp").textContent = Math.round(c.temperature_2m) + "°";
     $("wxDesc").textContent = info[1] + " · " + Math.round(d.daily.temperature_2m_min[0]) + "° – " + Math.round(d.daily.temperature_2m_max[0]) + "°";
-    // rain alert: look at the next 12 hours
     var now = new Date();
     var key = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + "T" + pad(now.getHours()) + ":00";
     var t = d.hourly.time, p = d.hourly.precipitation_probability, start = t.indexOf(key), msg = "🌂 No rain expected soon", wet = false;
@@ -698,7 +616,7 @@ function loadWeather(force){
     $("wxRain").textContent = msg; $("wxRain").className = "rain" + (wet ? " wet" : "");
     wxLoaded = Date.now();
   }).catch(function(){
-    if(!wxLoaded){ $("wxDesc").textContent = "Weather unavailable right now"; $("wxRain").className = "hidden"; }
+    if(!wxLoaded){ $("wxDesc").textContent = "Weather unavailable"; $("wxRain").className = "hidden"; }
   });
 }
 
@@ -709,10 +627,10 @@ function setupIdle(){
     if(idleOn){ tickClock(); loadWeather(false); }
     else if(!busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
   }, 5000);
-  enterIdle();   // start on the clock screen; first tap starts the camera
+  enterIdle();
 }
 
-/* ---------- rendering ---------- */
+/* ---------- render ---------- */
 function sortedIds(filter){
   return Object.keys(items).filter(function(id){ return items[id] && filter(items[id]); })
     .sort(function(a, b){ return (items[b].t || 0) - (items[a].t || 0); });
@@ -756,7 +674,7 @@ function render(){
   var done = sortedIds(function(i){ return i.done; });
   var ul = $("toBuy"); ul.innerHTML = "";
   toBuy.forEach(function(id){ ul.appendChild(makeRow(id)); });
-  if(!toBuy.length) ul.innerHTML = done.length ? emptyBox("🎉", "Everything's in the trolley. Go pay!") : emptyBox("🧺", "Nothing to buy. Scan packets in the kitchen, or add one above.");
+  if(!toBuy.length) ul.innerHTML = done.length ? emptyBox("🎉", "Everything's in the trolley. Go pay!") : emptyBox("🧺", "Nothing to buy. Use the scanner in the kitchen.");
   $("toBuyCount").textContent = toBuy.length;
   $("heroSub").textContent = toBuy.length ? toBuy.length + (toBuy.length === 1 ? " thing" : " things") + " ran out at home." : "All stocked up.";
   var dl = $("doneList"); dl.innerHTML = "";
@@ -769,8 +687,8 @@ function render(){
 function manualAdd(input){
   var n = input.value.trim(); if(!n) return;
   input.value = "";
-  var key = n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("m" + Date.now());
-  addItem("n-" + key, n);
+  var key = "n-" + n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("m" + Date.now());
+  addItem(key, n);
 }
 function onEnter(input, fn){ input.onkeydown = function(e){ if(e.keyCode === 13) fn(); }; }
 
@@ -780,13 +698,17 @@ function init(){
     $("tagline").innerHTML = "Finished it?<br>Scan it.";
     $("switch").textContent = "🛒 List"; $("switch").href = "./";
     $("scanView").className = "";
-    $("startBtn").onclick = startScanner;
-    setupIdle();
+    $("startBtn").onclick = startCamera;
+    $("captureBtn").onclick = captureAndIdentify;
+    $("camSwitch").onclick = function(){
+      facingMode = (facingMode === "user") ? "environment" : "user";
+      stopCamera();
+      setTimeout(startCamera, 300);
+    };
     $("undoBtn").onclick = undo;
-    var addCode = function(){ var c = $("codeIn").value.replace(/\D/g, ""); $("codeIn").value = ""; if(c) { unlockAudio(); handleCode(c); } };
-    $("codeBtn").onclick = addCode; onEnter($("codeIn"), addCode);
     var addName = function(){ unlockAudio(); manualAdd($("nameIn")); };
     $("nameBtn").onclick = addName; onEnter($("nameIn"), addName);
+    setupIdle();
   } else {
     $("cartView").className = "";
     var add = function(){ manualAdd($("addIn")); };
@@ -801,7 +723,7 @@ function init(){
   setInterval(function(){
     tick++;
     if(document.hidden || busy) return;
-    if(idleOn && tick % 5) return;   // idle: sync every ~20s instead of 4s
+    if(idleOn && tick % 5) return;
     refresh();
   }, 4000);
   document.addEventListener("visibilitychange", function(){ if(!document.hidden) refresh(); });
