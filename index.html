@@ -252,8 +252,8 @@ li.item.done .emo{opacity:.5}
     <p id="modalCode"></p>
     <input id="modalIn" placeholder="e.g. Milo 1kg">
     <div class="btns">
-      <button id="modalSkip">Skip</button>
-      <button id="modalSave" class="mint">Save &amp; add</button>
+      <button id="modalSkip">Ignore</button>
+      <button id="modalSave" class="mint">Use this item</button>
     </div>
   </div>
 </div>
@@ -489,16 +489,19 @@ function askNameFromOcr(rawName){
     $("modalCode").textContent = "I think this is: " + name + ". Save it and I’ll remember it for next time.";
     $("modalIn").value = name; $("modal").className = "modal";
     setTimeout(function(){ $("modalIn").focus(); $("modalIn").select(); }, 100);
+    $("modalSave").textContent = "Use this item";
+    $("modalSkip").textContent = "Ignore";
     function close(name){
       $("modal").className = "modal hidden";
       $("modalSave").onclick = $("modalSkip").onclick = null;
       var finalName = (name || rawName || "Unknown item").trim();
+      if(!finalName || finalName === "Unknown item") { pauseScan(false); status("Item ignored."); done(); return; }
       rememberOcrName(finalName);
       var key = "ocr-" + normalizeName(finalName);
       addItem(key, finalName, key).then(function(){ pauseScan(false); status("Ready for the next one."); done(); });
     }
     $("modalSave").onclick = function(){ close($("modalIn").value.trim()); };
-    $("modalSkip").onclick = function(){ close(rawName); };
+    $("modalSkip").onclick = function(){ close(""); };
     $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
   });
 }
@@ -556,7 +559,7 @@ function maybeRecognizeName(){
     if(nameMemory[key]){
       if(recentAdds["ocr-" + key] && Date.now() - recentAdds["ocr-" + key] < 3500) return;
       recentAdds["ocr-" + key] = Date.now();
-      addItem("ocr-" + key, nameMemory[key], "ocr-" + key);
+      askNameFromOcr(nameMemory[key]).catch(function(){});
       return;
     }
     recentAdds["ocr-" + key] = Date.now();
