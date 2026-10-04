@@ -21,10 +21,30 @@
   --glow-rose:0 10px 32px rgba(251,113,133,.24);
   --glow-amber:0 10px 32px rgba(253,186,116,.26);
   --glow-red:0 10px 32px rgba(255,107,91,.26);
+  --clock-glow:0 0 50px rgba(179,136,235,.4);
   --b:1px solid var(--border);
   --sans:"Space Grotesk",-apple-system,"Helvetica Neue",Arial,sans-serif;
   --serif:"Fraunces",Georgia,"Times New Roman",serif;
 }
+/* ---------- light mode (before 7pm) ---------- */
+body.light{
+  --ink:#2B2420; --paper:rgba(255,255,255,.62); --tile:#FBF3E7; --soft:#8A7A6E;
+  --border:rgba(43,36,32,.14);
+  --shadow:0 8px 28px rgba(120,90,60,.16);
+  --glow-mint:0 8px 24px rgba(107,143,74,.18);
+  --glow-berry:0 8px 24px rgba(149,100,219,.2);
+  --glow-rose:0 8px 24px rgba(230,90,110,.2);
+  --glow-amber:0 8px 24px rgba(220,150,70,.22);
+  --glow-red:0 8px 24px rgba(220,90,70,.2);
+  --clock-glow:none;
+}
+body.light::after{display:none}
+body.light .aurora i{mix-blend-mode:multiply;opacity:.22}
+body.light .sheet,body.light .suggest{background:#FFFDF9}
+body.light .logo{color:var(--ink)}
+body.light .hero h1{background:linear-gradient(135deg,var(--ink),var(--mustard) 55%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+body.light .empty{background:rgba(43,36,32,.04);border-color:rgba(43,36,32,.16)}
+body.light input::placeholder{color:#A99584}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;height:100%}
 body{
@@ -188,6 +208,7 @@ li.item.done .emo{opacity:.5}
   padding:8px 18px;font-weight:500;font-size:14px;text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
 .status.bad{color:var(--tomato);border-color:rgba(255,107,91,.5);box-shadow:var(--glow-red)}
 .status.thinking{color:#D6C2F7;border-color:rgba(179,136,235,.5);box-shadow:var(--glow-berry)}
+body.light .status.thinking{color:#7C3AED}
 
 .last{position:relative;margin:26px 4px 0;background:var(--paper);border:var(--b);border-radius:20px;padding:20px 22px;
   display:flex;align-items:center;min-height:110px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
@@ -239,7 +260,7 @@ li.item.done .emo{opacity:.5}
   display:flex;flex-direction:column;-webkit-transition:background-color .6s;transition:background-color .6s}
 .idle-screen .logo{align-self:flex-start}
 .clock{margin-top:5vh;font-family:var(--serif);font-weight:600;letter-spacing:-.01em;line-height:.9;font-size:160px;display:flex;align-items:flex-end;
-  color:#fff;text-shadow:0 0 50px rgba(179,136,235,.4)}
+  color:var(--ink);text-shadow:var(--clock-glow)}
 .clock .ap{font-size:34px;letter-spacing:-.01em;margin:0 0 18px 14px;background:var(--paper);color:var(--mustard);border:1px solid rgba(253,186,116,.5);
   border-radius:14px;padding:2px 12px 4px;box-shadow:var(--glow-amber);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);font-family:var(--sans)}
 .date{font-size:22px;font-weight:500;margin-top:14px;color:var(--soft);letter-spacing:-.01em}
@@ -254,7 +275,7 @@ li.item.done .emo{opacity:.5}
 .rain.wet{border-color:rgba(255,107,91,.5);color:var(--tomato);box-shadow:var(--glow-red)}
 .peek .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .peek .head b{font-size:18px;letter-spacing:-.01em;color:var(--soft);font-weight:500;text-transform:uppercase}
-.peek .big{font-family:var(--serif);font-size:46px;font-weight:600;line-height:1;letter-spacing:-.01em;color:#fff;text-shadow:0 0 24px rgba(253,186,116,.4)}
+.peek .big{font-family:var(--serif);font-size:46px;font-weight:600;line-height:1;letter-spacing:-.01em;color:var(--ink);text-shadow:var(--clock-glow)}
 .tapcue{margin-top:auto;align-self:center;background:var(--paper);color:var(--ink);border:var(--b);border-radius:999px;padding:14px 30px;
   font-weight:600;font-size:16px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);
   -webkit-animation:breathe 2.4s ease-in-out infinite;animation:breathe 2.4s ease-in-out infinite}
@@ -391,6 +412,7 @@ var CLAUDE_KEY = "__CLAUDE_KEY__";
 var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;
 var IDLE_AFTER_SECONDS = 120;
 var NIGHT_FROM = 23, NIGHT_TO = 6;
+var LIGHT_UNTIL_HOUR = 19; /* light mode before 7pm, dark mode from 7pm onward */
 /* ================================================== */
 
 (function(){
@@ -785,6 +807,14 @@ function pad(n){ return (n < 10 ? "0" : "") + n; }
 function isNight(h){ return NIGHT_FROM > NIGHT_TO ? (h >= NIGHT_FROM || h < NIGHT_TO) : (h >= NIGHT_FROM && h < NIGHT_TO); }
 function poke(){ lastActivity = Date.now(); }
 
+/* ---------- light/dark theme by time of day ---------- */
+function applyTimeTheme(){
+  var light = new Date().getHours() < LIGHT_UNTIL_HOUR;
+  document.body.classList.toggle("light", light);
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content", light ? "#FBF3E7" : "#120D12");
+}
+
 function enterIdle(){
   if(idleOn || !$("modal").className.match(/hidden/)) return;
   idleOn = true;
@@ -861,7 +891,9 @@ function loadWeather(force){
 function setupIdle(){
   ["touchstart","mousedown","keydown"].forEach(function(ev){ document.addEventListener(ev, poke, true); });
   $("idle").addEventListener("click", function(e){ e.preventDefault(); exitIdle(); });
+  applyTimeTheme();
   setInterval(function(){
+    applyTimeTheme();
     if(idleOn){ tickClock(); loadWeather(false); }
     else if(!busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
   }, 5000);
