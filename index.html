@@ -556,7 +556,7 @@ function setupSuggest(input, box, onPick){
   input.addEventListener("input", function(){ show(getSuggestions(input.value, 6)); });
   input.addEventListener("focus", function(){ show(getSuggestions(input.value, 6)); });
   document.addEventListener("click", function(e){
-    if(wrap && !wrap.contains(e.target)) box.className = "suggest hidden";
+    if(wrap && !wrap.contains(e.target)){ box.className = "suggest hidden"; input.blur(); }
   });
 }
 
