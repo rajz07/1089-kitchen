@@ -4,28 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0A0A12">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#120D12">
 <title>Hemie's Kitchen</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#F3F0FA; --paper:rgba(255,255,255,.045); --tile:#0A0A12; --soft:#9A93B8;
-  --tomato:#FF6B7D; --mustard:#FBBF24; --mint:#2DD4BF; --berry:#8B5CF6; --rose:#FB7185;
+  --ink:#FBF6EF; --paper:rgba(255,255,255,.05); --tile:#120D12; --soft:#B6A99E;
+  --tomato:#FF6B5B; --mustard:#FDBA74; --mint:#A3C585; --berry:#B388EB; --rose:#FB7185;
   --border:rgba(255,255,255,.1);
-  --shadow:0 10px 36px rgba(0,0,0,.4);
-  --glow-mint:0 10px 32px rgba(45,212,191,.22);
-  --glow-berry:0 10px 32px rgba(139,92,246,.26);
+  --shadow:0 10px 36px rgba(0,0,0,.45);
+  --glow-mint:0 10px 32px rgba(163,197,133,.22);
+  --glow-berry:0 10px 32px rgba(179,136,235,.26);
   --glow-rose:0 10px 32px rgba(251,113,133,.24);
-  --glow-amber:0 10px 32px rgba(251,191,36,.22);
-  --glow-red:0 10px 32px rgba(255,107,125,.26);
+  --glow-amber:0 10px 32px rgba(253,186,116,.26);
+  --glow-red:0 10px 32px rgba(255,107,91,.26);
   --b:1px solid var(--border);
   --sans:"Space Grotesk",-apple-system,"Helvetica Neue",Arial,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%}
+html,body{margin:0;min-height:100%;height:100%}
 body{
   color:var(--ink);
   font-family:var(--sans);
@@ -35,15 +36,17 @@ body{
   position:relative;
   overflow-x:hidden;
 }
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 120% 90% at 50% 40%, transparent 50%, rgba(0,0,0,.55) 100%)}
 /* ---------- aurora background ---------- */
-.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--tile)}
-.aurora i{position:absolute;border-radius:50%;filter:blur(64px);opacity:.5;mix-blend-mode:screen;font-style:normal}
-.aurora i:nth-child(1){width:58vmax;height:58vmax;left:-22vmax;top:-26vmax;background:radial-gradient(circle,var(--mint),transparent 70%);
-  -webkit-animation:drift1 28s ease-in-out infinite;animation:drift1 28s ease-in-out infinite}
-.aurora i:nth-child(2){width:54vmax;height:54vmax;right:-20vmax;top:-14vmax;background:radial-gradient(circle,var(--berry),transparent 70%);
-  -webkit-animation:drift2 34s ease-in-out infinite;animation:drift2 34s ease-in-out infinite}
-.aurora i:nth-child(3){width:48vmax;height:48vmax;left:6vmax;bottom:-26vmax;background:radial-gradient(circle,var(--rose),transparent 70%);
-  -webkit-animation:drift3 40s ease-in-out infinite;animation:drift3 40s ease-in-out infinite}
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none;background:var(--tile)}
+.aurora i{position:absolute;border-radius:50%;filter:blur(64px);opacity:.45;mix-blend-mode:screen;font-style:normal}
+.aurora i:nth-child(1){width:58vmax;height:58vmax;left:-22vmax;top:-26vmax;background:radial-gradient(circle,var(--mustard),transparent 70%);
+  -webkit-animation:drift1 30s ease-in-out infinite;animation:drift1 30s ease-in-out infinite}
+.aurora i:nth-child(2){width:54vmax;height:54vmax;right:-20vmax;top:-14vmax;background:radial-gradient(circle,var(--rose),transparent 70%);
+  -webkit-animation:drift2 36s ease-in-out infinite;animation:drift2 36s ease-in-out infinite}
+.aurora i:nth-child(3){width:48vmax;height:48vmax;left:6vmax;bottom:-26vmax;background:radial-gradient(circle,var(--berry),transparent 70%);
+  -webkit-animation:drift3 42s ease-in-out infinite;animation:drift3 42s ease-in-out infinite}
 @-webkit-keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vmax,7vmax) scale(1.12)}}
 @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vmax,7vmax) scale(1.12)}}
 @-webkit-keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vmax,9vmax) scale(1.08)}}
@@ -59,33 +62,89 @@ button{cursor:pointer;border:var(--b);border-radius:16px;padding:12px 18px;font-
 button:active{transform:translateY(1px)}
 input{border:var(--b);border-radius:16px;padding:13px 16px;background:rgba(255,255,255,.04);width:100%;font-size:17px;font-weight:500;
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-input::placeholder{color:#6E6893;font-weight:400}
-input:focus{outline:none;border-color:rgba(139,92,246,.6);box-shadow:var(--glow-berry)}
-button:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+input::placeholder{color:#8A7A70;font-weight:400}
+input:focus{outline:none;border-color:rgba(179,136,235,.6);box-shadow:var(--glow-berry)}
+button:focus-visible{outline:2px solid var(--mustard);outline-offset:2px}
 .hidden{display:none !important}
-.wrap{max-width:720px;margin:0 auto;padding:18px 16px 40px}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px 110px}
 
 /* header */
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.brand{display:flex;align-items:center}
-.logo{display:inline-block;background:linear-gradient(135deg,rgba(45,212,191,.16),rgba(139,92,246,.16));color:#fff;font-weight:700;font-size:21px;letter-spacing:-.02em;
-  padding:6px 16px;border:var(--b);border-radius:14px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-@media (max-width:440px){.tag{display:none}}
-.tag{margin-left:14px;font-size:13px;color:var(--soft);font-weight:500;line-height:1.3}
-.switch{background:var(--paper);color:var(--ink);text-decoration:none;font-weight:600;font-size:14px;
-  border:var(--b);border-radius:999px;padding:9px 16px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{display:inline-block;background:linear-gradient(135deg,rgba(253,186,116,.16),rgba(179,136,235,.16));color:#fff;font-weight:600;font-size:19px;letter-spacing:-.01em;
+  padding:6px 16px;border:var(--b);border-radius:14px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);font-family:var(--serif)}
 
-.setup{background:var(--paper);border:1px solid rgba(255,107,125,.4);border-radius:18px;padding:20px;line-height:1.5;
+.setup{background:var(--paper);border:1px solid rgba(255,107,91,.4);border-radius:18px;padding:20px;line-height:1.5;
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--glow-red)}
+
+/* ---------- hero / list ---------- */
+.hero{margin:10px 0 20px}
+.hero h1{font-family:var(--serif);font-size:42px;line-height:1.05;letter-spacing:-.01em;margin:0;font-weight:600;
+  background:linear-gradient(135deg,#fff,var(--mustard) 55%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:8px 0 0;color:var(--soft);font-weight:500;font-size:15px}
+
+.fieldWrap{position:relative}
+.addBar{background:var(--paper);border:var(--b);border-radius:18px;padding:8px;display:flex;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
+.addBar input{border:0;flex:1;margin-right:8px;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+.addBar input:focus{box-shadow:none}
+.addBar button{background:linear-gradient(135deg,var(--berry),var(--mustard));color:#1A1116;font-size:24px;line-height:1;padding:8px 18px;border:none;box-shadow:var(--glow-berry)}
+.addBar .mic{background:var(--paper);color:var(--ink);font-size:18px;border-color:rgba(253,186,116,.5);box-shadow:var(--glow-amber);margin-right:8px}
+.addBar .mic.listening{border-color:rgba(255,107,91,.6);box-shadow:var(--glow-red);-webkit-animation:breathe 1s ease-in-out infinite;animation:breathe 1s ease-in-out infinite}
+
+.suggest{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:6;background:#1A1318;border:var(--b);border-radius:16px;
+  padding:6px;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 16px 40px rgba(0,0,0,.5),var(--glow-berry)}
+.suggestRow{display:flex;align-items:center;padding:10px 10px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.suggestRow:active{background:rgba(179,136,235,.18)}
+.suggestEmo{font-size:19px;margin-right:10px;flex:none}
+.suggestName{flex:1;font-size:15px;font-weight:500}
+
+h2{font-size:14px;font-weight:600;letter-spacing:.04em;margin:30px 0 12px;display:flex;align-items:center;color:var(--soft);text-transform:uppercase}
+h2 .count{display:inline-block;margin-left:10px;background:var(--paper);color:var(--mustard);border:1px solid rgba(253,186,116,.5);border-radius:999px;min-width:30px;
+  text-align:center;padding:1px 9px;font-size:13px;box-shadow:var(--glow-amber)}
+
+ul{list-style:none;margin:0;padding:0}
+li.item{display:flex;align-items:center;background:var(--paper);border:var(--b);border-radius:16px;margin-bottom:10px;
+  padding:6px 6px 6px 12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-user-select:none;user-select:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:border-color .15s,box-shadow .15s}
+li.item:active{border-color:rgba(179,136,235,.5);box-shadow:var(--glow-berry)}
+.check{width:28px;height:28px;border:1px solid rgba(255,255,255,.3);border-radius:9px;flex:none;margin-right:12px;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:16px;background:transparent;color:var(--mint)}
+li.item .emo{font-size:24px;margin-right:10px;flex:none}
+li.item .name{flex:1;font-size:17px;font-weight:500;padding:12px 0;word-break:break-word;line-height:1.2}
+li.item .qty{background:var(--paper);color:var(--mustard);border:1px solid rgba(253,186,116,.5);font-weight:600;border-radius:999px;padding:1px 10px;margin-left:8px;font-size:13px;flex:none}
+li.item .del{border:0;box-shadow:none;background:transparent;color:var(--soft);font-size:24px;padding:6px 12px;font-weight:500}
+li.item.done{background:rgba(163,197,133,.06);border-color:rgba(163,197,133,.3)}
+li.item.done .check{background:var(--mint);border-color:var(--mint);color:#1A1116;box-shadow:var(--glow-mint)}
+li.item.done .name{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--tomato);text-decoration-thickness:2px;-webkit-text-decoration-color:var(--tomato)}
+li.item.done .emo{opacity:.5}
+.empty{text-align:center;padding:30px 16px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.2);border-radius:18px;font-weight:500;color:var(--soft)}
+.empty .big{font-size:38px;display:block;margin-bottom:8px}
+.clear{width:100%;margin-top:6px;background:var(--paper);color:var(--tomato);border-color:rgba(255,107,91,.5);box-shadow:var(--glow-red)}
+.sync{font-size:12px;text-align:center;margin-top:26px;color:var(--soft);font-weight:500}
+
+/* ---------- floating scan button ---------- */
+.fab{position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);z-index:10;width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,var(--mustard),var(--rose));color:#1A1116;font-size:26px;display:flex;align-items:center;justify-content:center;
+  border:none;box-shadow:0 12px 32px rgba(251,113,133,.4),0 4px 14px rgba(0,0,0,.4);padding:0}
+.fab:active{transform:translateY(1px) scale(.97)}
+
+/* ---------- scan panel (full-screen overlay, no navigation) ---------- */
+.scanPanel{position:fixed;inset:0;z-index:15;background:var(--tile);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  -webkit-transform:translateY(100%);transform:translateY(100%);-webkit-transition:transform .32s cubic-bezier(.2,.8,.2,1);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.scanPanel.open{-webkit-transform:translateY(0);transform:translateY(0)}
+.scanInner{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px 40px}
+.scanTop{display:flex;align-items:center;margin-bottom:16px}
+.scanClose{width:40px;height:40px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px;margin-right:12px}
+.scanTitle{font-family:var(--serif);font-size:22px;font-weight:600}
 
 /* ---------- camera box ---------- */
 .camBox{position:relative;width:100%;padding-top:66%;border:var(--b);border-radius:24px;overflow:hidden;
-  background:rgba(10,10,18,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
+  background:rgba(10,8,10,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
 /* iPad Mini 2 / old Safari: border-radius+overflow:hidden on a live <video> forces
    software compositing and tanks framerate. Drop clipping while actually streaming. */
 .camBox.streaming{border-radius:0;overflow:visible}
 .camBox.streaming::before{content:"";position:absolute;left:0;right:0;height:2px;z-index:2;pointer-events:none;
-  background:linear-gradient(90deg,transparent,var(--mint),transparent);box-shadow:0 0 14px 2px rgba(45,212,191,.7);
+  background:linear-gradient(90deg,transparent,var(--mustard),transparent);box-shadow:0 0 14px 2px rgba(253,186,116,.7);
   -webkit-animation:scanSweep 2.8s linear infinite;animation:scanSweep 2.8s linear infinite}
 @-webkit-keyframes scanSweep{0%{top:4%}100%{top:94%}}
 @keyframes scanSweep{0%{top:4%}100%{top:94%}}
@@ -93,173 +152,121 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 .cam{position:absolute;top:0;left:0;right:0;bottom:0}
 .cam video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain}
 .cam.mirror video{transform:scaleX(-1)}
-/* guide frame */
 .corners{position:absolute;left:14%;right:14%;top:26%;bottom:26%;z-index:2;pointer-events:none}
-.corners i{position:absolute;width:38px;height:38px;border:3px solid rgba(255,255,255,.75);filter:drop-shadow(0 0 6px rgba(139,92,246,.6))}
+.corners i{position:absolute;width:38px;height:38px;border:3px solid rgba(255,255,255,.75);filter:drop-shadow(0 0 6px rgba(179,136,235,.6))}
 .corners i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
 .corners i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
 .corners i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 10px}
 .corners i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 10px 0}
-/* flash on capture */
 .camBox.flash::after{content:"";position:absolute;inset:0;background:#fff;opacity:.6;z-index:5;pointer-events:none;
   -webkit-animation:flashout .25s forwards;animation:flashout .25s forwards}
 @-webkit-keyframes flashout{to{opacity:0}}
 @keyframes flashout{to{opacity:0}}
 
 .startBtn{position:absolute;top:50%;left:50%;z-index:3;transform:translate(-50%,-50%);
-  background:linear-gradient(135deg,var(--mint),var(--berry));color:#0A0A12;font-size:19px;font-weight:700;padding:16px 28px;border-radius:999px;
+  background:linear-gradient(135deg,var(--mustard),var(--berry));color:#1A1116;font-size:19px;font-weight:700;padding:16px 28px;border-radius:999px;
   border:none;box-shadow:var(--glow-berry)}
 .startBtn:active{transform:translate(-50%,-50%) translateY(1px)}
 
-/* capture button — big, bottom-centre */
 .captureBtn{position:absolute;bottom:16px;left:50%;z-index:3;transform:translateX(-50%);
   background:linear-gradient(135deg,var(--berry),var(--rose));color:#fff;border-radius:999px;padding:14px 34px;font-size:18px;font-weight:700;
   border:none;box-shadow:var(--glow-rose);white-space:nowrap}
 .captureBtn:active{transform:translateX(-50%) translateY(1px)}
 .captureBtn:disabled{opacity:.45;pointer-events:none}
 
-.camSwitch{position:absolute;top:12px;right:12px;z-index:3;background:rgba(10,10,18,.6);
+.camSwitch{position:absolute;top:12px;right:12px;z-index:3;background:rgba(10,8,10,.6);
   border-radius:999px;padding:9px 14px;font-size:18px;box-shadow:var(--shadow);border:var(--b);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .camSwitch:active{transform:translateY(1px)}
 
-.countdown{position:absolute;inset:0;z-index:4;background:rgba(10,10,18,.6);display:flex;align-items:center;justify-content:center;
-  font-size:110px;font-weight:700;color:#fff;text-shadow:0 0 40px rgba(139,92,246,.7);
+.countdown{position:absolute;inset:0;z-index:4;background:rgba(10,8,10,.6);display:flex;align-items:center;justify-content:center;
+  font-size:110px;font-weight:700;color:#fff;font-family:var(--serif);text-shadow:0 0 40px rgba(179,136,235,.7);
   -webkit-animation:countPulse .75s ease-in-out;animation:countPulse .75s ease-in-out}
 @-webkit-keyframes countPulse{0%{-webkit-transform:scale(1.4);opacity:0}30%{-webkit-transform:scale(1);opacity:1}100%{-webkit-transform:scale(1);opacity:1}}
 @keyframes countPulse{0%{transform:scale(1.4);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
 
-.hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;z-index:2;color:#fff;font-weight:500;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-
 .status{display:table;margin:22px auto 0;background:var(--paper);color:var(--ink);border:var(--b);border-radius:999px;
   padding:8px 18px;font-weight:500;font-size:14px;text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.status.bad{color:var(--tomato);border-color:rgba(255,107,125,.5);box-shadow:var(--glow-red)}
-.status.thinking{color:#C4B5FD;border-color:rgba(139,92,246,.5);box-shadow:var(--glow-berry)}
+.status.bad{color:var(--tomato);border-color:rgba(255,107,91,.5);box-shadow:var(--glow-red)}
+.status.thinking{color:#D6C2F7;border-color:rgba(179,136,235,.5);box-shadow:var(--glow-berry)}
 
 .last{position:relative;margin:26px 4px 0;background:var(--paper);border:var(--b);border-radius:20px;padding:20px 22px;
   display:flex;align-items:center;min-height:110px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
 .last .emo{font-size:48px;line-height:1;margin-right:16px}
-.last .txt{flex:1;font-size:23px;font-weight:600;line-height:1.2;letter-spacing:-.01em;word-break:break-word}
-.last .txt small{display:block;font-size:14px;font-weight:500;color:var(--soft);margin-top:4px;letter-spacing:0}
-.last .stamp{position:absolute;top:-13px;left:18px;background:#0A0A12;color:var(--mint);border:1px solid rgba(45,212,191,.5);border-radius:999px;padding:2px 14px;
+.last .txt{flex:1;font-size:23px;font-weight:600;line-height:1.2;letter-spacing:-.01em;word-break:break-word;font-family:var(--serif)}
+.last .txt small{display:block;font-size:14px;font-weight:500;color:var(--soft);margin-top:4px;letter-spacing:0;font-family:var(--sans)}
+.last .stamp{position:absolute;top:-13px;left:18px;background:#1A1116;color:var(--mint);border:1px solid rgba(163,197,133,.5);border-radius:999px;padding:2px 14px;
   font-weight:600;font-size:13px;box-shadow:var(--glow-mint)}
-.last.pop{-webkit-animation:pop .4s ease-out;animation:pop .4s ease-out;box-shadow:var(--glow-mint);border-color:rgba(45,212,191,.5)}
+.last.pop{-webkit-animation:pop .4s ease-out;animation:pop .4s ease-out;box-shadow:var(--glow-mint);border-color:rgba(163,197,133,.5)}
 @-webkit-keyframes pop{0%{-webkit-transform:scale(.96)}100%{-webkit-transform:scale(1)}}
 @keyframes pop{0%{transform:scale(.96)}100%{transform:scale(1)}}
-.undo{background:var(--paper);color:var(--tomato);border-color:rgba(255,107,125,.5);box-shadow:var(--glow-red);font-size:16px;margin-left:12px}
+.undo{background:var(--paper);color:var(--tomato);border-color:rgba(255,107,91,.5);box-shadow:var(--glow-red);font-size:16px;margin-left:12px}
 
 .panel{margin-top:26px;background:var(--paper);border:var(--b);border-radius:20px;padding:16px;
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
 .row{display:flex}
-.row + .row{margin-top:10px}
 .row > input{flex:1;margin-right:10px}
-.berry{background:linear-gradient(135deg,var(--berry),var(--mint));color:#0A0A12;border:none;font-weight:700;box-shadow:var(--glow-berry)}
-
-.fieldWrap{position:relative}
-.suggest{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:6;background:#0E0E18;border:var(--b);border-radius:16px;
-  padding:6px;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 16px 40px rgba(0,0,0,.5),var(--glow-berry)}
-.suggestRow{display:flex;align-items:center;padding:10px 10px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.suggestRow:active{background:rgba(139,92,246,.18)}
-.suggestEmo{font-size:19px;margin-right:10px;flex:none}
-.suggestName{flex:1;font-size:15px;font-weight:500}
-.suggestMeta{font-size:12px;color:var(--soft);margin-left:8px;flex:none}
-
-h2{font-size:14px;font-weight:600;letter-spacing:.04em;margin:30px 0 12px;display:flex;align-items:center;color:var(--soft);text-transform:uppercase}
-h2 .count{display:inline-block;margin-left:10px;background:var(--paper);color:var(--mustard);border:1px solid rgba(251,191,36,.5);border-radius:999px;min-width:30px;
-  text-align:center;padding:1px 9px;font-size:13px;box-shadow:var(--glow-amber)}
-
-/* item chips */
-.magnets{display:flex;flex-wrap:wrap;margin:-5px}
-.mag{margin:5px;border:var(--b);border-radius:14px;padding:8px 14px;font-weight:500;font-size:15px;background:var(--paper);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.mag:nth-child(4n+1){border-color:rgba(45,212,191,.4)}
-.mag:nth-child(4n+2){border-color:rgba(139,92,246,.4)}
-.mag:nth-child(4n+3){border-color:rgba(251,113,133,.4)}
-.mag:nth-child(4n){border-color:rgba(251,191,36,.4)}
-.mag b{font-weight:700}
+.berry{background:linear-gradient(135deg,var(--berry),var(--mustard));color:#1A1116;border:none;font-weight:700;box-shadow:var(--glow-berry)}
 
 /* ---------- name prompt ---------- */
-.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,10,.7);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9;
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,7,9,.72);display:flex;align-items:center;justify-content:center;padding:20px;z-index:19;
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.sheet{background:#0E0E18;border:var(--b);border-radius:24px;padding:24px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.6),var(--glow-berry)}
+.sheet{background:#1A1318;border:var(--b);border-radius:24px;padding:24px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.6),var(--glow-berry)}
 .sheet .big{font-size:40px;margin-bottom:6px}
-.sheet h3{margin:0 0 6px;font-size:23px;letter-spacing:-.01em;font-weight:600}
+.sheet h3{margin:0 0 6px;font-size:24px;letter-spacing:-.01em;font-weight:600;font-family:var(--serif)}
 .sheet p{margin:0 0 16px;color:var(--soft);font-weight:500;font-size:14px}
 .sheet .btns{display:flex;justify-content:flex-end;margin-top:16px}
 .sheet .btns button{margin-left:10px}
-.mint{background:linear-gradient(135deg,var(--mint),#67E8F9);color:#0A0A12;border:none;font-weight:700;box-shadow:var(--glow-mint)}
+.mint{background:linear-gradient(135deg,var(--mint),#D7E8B8);color:#1A1116;border:none;font-weight:700;box-shadow:var(--glow-mint)}
 .modalInRow{display:flex;align-items:center}
 .modalInRow input{flex:1}
-.mic{flex:none;margin-left:8px;padding:12px 16px;font-size:18px;background:var(--paper);border-color:rgba(251,191,36,.5);box-shadow:var(--glow-amber)}
-.mic.listening{border-color:rgba(255,107,125,.6);box-shadow:var(--glow-red);-webkit-animation:breathe 1s ease-in-out infinite;animation:breathe 1s ease-in-out infinite}
+.mic{flex:none;margin-left:8px;padding:12px 16px;font-size:18px;background:var(--paper);border-color:rgba(253,186,116,.5);box-shadow:var(--glow-amber)}
+.mic.listening{border-color:rgba(255,107,91,.6);box-shadow:var(--glow-red);-webkit-animation:breathe 1s ease-in-out infinite;animation:breathe 1s ease-in-out infinite}
 
-/* ---------- phone list ---------- */
-.hero{margin:4px 0 20px}
-.hero h1{font-size:38px;line-height:1.05;letter-spacing:-.03em;margin:0;font-weight:700;
-  background:linear-gradient(135deg,#fff,var(--mint) 50%,var(--berry));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{margin:8px 0 0;color:var(--soft);font-weight:500;font-size:15px}
-.addBar{background:var(--paper);border:var(--b);border-radius:18px;padding:8px;display:flex;
+/* item chips (idle "to buy" peek) */
+.magnets{display:flex;flex-wrap:wrap;margin:-5px}
+.mag{margin:5px;border:var(--b);border-radius:14px;padding:8px 14px;font-weight:500;font-size:15px;background:var(--paper);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.addBar input{border:0;flex:1;margin-right:8px;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
-.addBar input:focus{box-shadow:none}
-.addBar button{background:linear-gradient(135deg,var(--berry),var(--mint));color:#0A0A12;font-size:24px;line-height:1;padding:8px 18px;border:none;box-shadow:var(--glow-berry)}
-.addBar .mic{background:var(--paper);color:var(--ink);font-size:18px;border-color:rgba(251,191,36,.5);box-shadow:var(--glow-amber);margin-right:8px}
-.addBar .mic.listening{border-color:rgba(255,107,125,.6);box-shadow:var(--glow-red);-webkit-animation:breathe 1s ease-in-out infinite;animation:breathe 1s ease-in-out infinite}
+.mag:nth-child(4n+1){border-color:rgba(253,186,116,.4)}
+.mag:nth-child(4n+2){border-color:rgba(179,136,235,.4)}
+.mag:nth-child(4n+3){border-color:rgba(251,113,133,.4)}
+.mag:nth-child(4n){border-color:rgba(163,197,133,.4)}
+.mag b{font-weight:700}
 
-ul{list-style:none;margin:0;padding:0}
-li.item{display:flex;align-items:center;background:var(--paper);border:var(--b);border-radius:16px;margin-bottom:10px;
-  padding:6px 6px 6px 12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-user-select:none;user-select:none;cursor:pointer;
-  -webkit-tap-highlight-color:transparent;transition:border-color .15s,box-shadow .15s}
-li.item:active{border-color:rgba(139,92,246,.5);box-shadow:var(--glow-berry)}
-.check{width:28px;height:28px;border:1px solid rgba(255,255,255,.3);border-radius:9px;flex:none;margin-right:12px;display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:16px;background:transparent;color:var(--mint)}
-li.item .emo{font-size:24px;margin-right:10px;flex:none}
-li.item .name{flex:1;font-size:17px;font-weight:500;padding:12px 0;word-break:break-word;line-height:1.2}
-li.item .qty{background:var(--paper);color:var(--mustard);border:1px solid rgba(251,191,36,.5);font-weight:600;border-radius:999px;padding:1px 10px;margin-left:8px;font-size:13px;flex:none}
-li.item .del{border:0;box-shadow:none;background:transparent;color:var(--soft);font-size:24px;padding:6px 12px;font-weight:500}
-li.item.done{background:rgba(45,212,191,.05);border-color:rgba(45,212,191,.3)}
-li.item.done .check{background:var(--mint);border-color:var(--mint);color:#0A0A12;box-shadow:var(--glow-mint)}
-li.item.done .name{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--tomato);text-decoration-thickness:2px;-webkit-text-decoration-color:var(--tomato)}
-li.item.done .emo{opacity:.5}
-.empty{text-align:center;padding:30px 16px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.2);border-radius:18px;font-weight:500;color:var(--soft)}
-.empty .big{font-size:38px;display:block;margin-bottom:8px}
-.clear{width:100%;margin-top:6px;background:var(--paper);color:var(--tomato);border-color:rgba(255,107,125,.5);box-shadow:var(--glow-red)}
-.sync{font-size:12px;text-align:center;margin-top:26px;color:var(--soft);font-weight:500}
-
-/* ---------- idle screen ---------- */
+/* ---------- idle screen (screensaver) ---------- */
 .idle-screen{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;overflow:hidden;cursor:pointer;
   background-color:var(--tile);
   padding:calc(env(safe-area-inset-top,0px) + 28px) 32px calc(env(safe-area-inset-bottom,0px) + 28px);
   display:flex;flex-direction:column;-webkit-transition:background-color .6s;transition:background-color .6s}
 .idle-screen .logo{align-self:flex-start}
-.clock{margin-top:5vh;font-weight:700;letter-spacing:-.02em;line-height:.85;font-size:170px;display:flex;align-items:flex-end;
-  color:#fff;text-shadow:0 0 50px rgba(139,92,246,.45)}
-.clock .ap{font-size:38px;letter-spacing:-.01em;margin:0 0 18px 14px;background:var(--paper);color:var(--mustard);border:1px solid rgba(251,191,36,.5);
-  border-radius:14px;padding:2px 12px 4px;box-shadow:var(--glow-amber);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-.date{font-size:24px;font-weight:500;margin-top:14px;color:var(--soft);letter-spacing:-.01em}
+.clock{margin-top:5vh;font-family:var(--serif);font-weight:600;letter-spacing:-.01em;line-height:.9;font-size:160px;display:flex;align-items:flex-end;
+  color:#fff;text-shadow:0 0 50px rgba(179,136,235,.4)}
+.clock .ap{font-size:34px;letter-spacing:-.01em;margin:0 0 18px 14px;background:var(--paper);color:var(--mustard);border:1px solid rgba(253,186,116,.5);
+  border-radius:14px;padding:2px 12px 4px;box-shadow:var(--glow-amber);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);font-family:var(--sans)}
+.date{font-size:22px;font-weight:500;margin-top:14px;color:var(--soft);letter-spacing:-.01em}
 .cards{margin-top:5vh}
 .card{background:var(--paper);border:var(--b);border-radius:22px;padding:22px 24px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);margin-bottom:24px}
 .wx{display:flex;align-items:center}
 .wx .icon{font-size:76px;line-height:1;margin-right:20px}
-.wx .temp{font-size:56px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.wx .temp{font-family:var(--serif);font-size:52px;font-weight:600;letter-spacing:-.01em;line-height:1}
 .wx .desc{font-size:17px;font-weight:500;color:var(--soft);margin-top:6px}
-.rain{display:inline-block;margin-top:16px;border:1px solid rgba(45,212,191,.5);color:var(--mint);border-radius:999px;padding:6px 16px;font-weight:600;font-size:15px;
+.rain{display:inline-block;margin-top:16px;border:1px solid rgba(163,197,133,.5);color:var(--mint);border-radius:999px;padding:6px 16px;font-weight:600;font-size:15px;
   background:var(--paper);box-shadow:var(--glow-mint)}
-.rain.wet{border-color:rgba(255,107,125,.5);color:var(--tomato);box-shadow:var(--glow-red)}
+.rain.wet{border-color:rgba(255,107,91,.5);color:var(--tomato);box-shadow:var(--glow-red)}
 .peek .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .peek .head b{font-size:18px;letter-spacing:-.01em;color:var(--soft);font-weight:500;text-transform:uppercase}
-.peek .big{font-size:48px;font-weight:700;line-height:1;letter-spacing:-.02em;color:#fff;text-shadow:0 0 24px rgba(45,212,191,.5)}
+.peek .big{font-family:var(--serif);font-size:46px;font-weight:600;line-height:1;letter-spacing:-.01em;color:#fff;text-shadow:0 0 24px rgba(253,186,116,.4)}
 .tapcue{margin-top:auto;align-self:center;background:var(--paper);color:var(--ink);border:var(--b);border-radius:999px;padding:14px 30px;
   font-weight:600;font-size:16px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);
   -webkit-animation:breathe 2.4s ease-in-out infinite;animation:breathe 2.4s ease-in-out infinite}
 @-webkit-keyframes breathe{50%{-webkit-transform:scale(1.05)}}
 @keyframes breathe{50%{transform:scale(1.05)}}
-.idle-screen.night{background-color:#030306;color:#39425E}
-.night .logo,.night .card,.night .tapcue,.night .clock .ap{background:transparent;border-color:#1A1A2A;box-shadow:none;color:#39425E}
-.night .date,.night .wx .desc{color:#2A2A40}
-.night .rain{background:transparent;border-color:#1A1A2A;color:#39425E}
-.night .mag{background:transparent !important;border-color:#1A1A2A;box-shadow:none;color:#39425E}
-.night .clock{color:#39425E;text-shadow:none}
-.night .peek .big{color:#39425E;text-shadow:none}
+.idle-screen.night{background-color:#07050A;color:#453B4A}
+.night .logo,.night .card,.night .tapcue,.night .clock .ap{background:transparent;border-color:#241C29;box-shadow:none;color:#453B4A}
+.night .date,.night .wx .desc{color:#332A38}
+.night .rain{background:transparent;border-color:#241C29;color:#453B4A}
+.night .mag{background:transparent !important;border-color:#241C29;box-shadow:none;color:#453B4A}
+.night .clock{color:#453B4A;text-shadow:none}
+.night .peek .big{color:#453B4A;text-shadow:none}
 .night .tapcue{-webkit-animation:none;animation:none}
 .night .wx .icon{opacity:.3}
 .night .cards{-webkit-filter:grayscale(1) brightness(.6);filter:grayscale(1) brightness(.6)}
@@ -270,28 +277,57 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-<div class="wrap">
 
+<!-- ================= HOME: shopping list ================= -->
+<div class="wrap" id="listView">
   <div class="top">
-    <div class="brand"><span class="logo">Hemie's Kitchen</span><span class="tag" id="tagline">Finished it?<br>It's on the list.</span></div>
-    <a id="switch" class="switch" href="?scan">📷 Scanner</a>
+    <span class="logo">Hemie's Kitchen</span>
   </div>
 
   <div id="setup" class="setup hidden">
     <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code>, <code>LIST_KEY</code>, and <code>CLAUDE_KEY</code> near the top of the script.
   </div>
 
-  <!-- ================= SCANNER (iPad) ================= -->
-  <section id="scanView" class="hidden">
+  <div class="hero">
+    <h1>Shopping list</h1>
+    <p id="heroSub">Everything that ran out at home.</p>
+  </div>
+
+  <div class="fieldWrap">
+    <div class="addBar"><input id="addIn" placeholder="Add something…" autocomplete="off"><button id="addMic" class="mic hidden" aria-label="Voice input">🎤</button><button id="addBtn" aria-label="Add">+</button></div>
+    <div id="addSuggest" class="suggest hidden"></div>
+  </div>
+
+  <h2>To buy <span class="count" id="toBuyCount">0</span></h2>
+  <ul id="toBuy"></ul>
+  <div id="doneWrap" class="hidden">
+    <h2>In the trolley <span class="count" id="doneCount">0</span></h2>
+    <ul id="doneList"></ul>
+    <button id="clearBtn" class="clear">🧹 Clear ticked items</button>
+  </div>
+
+  <div id="sync" class="sync"></div>
+</div>
+
+<button id="fab" class="fab" aria-label="Scan an item">📷</button>
+
+<!-- ================= SCAN PANEL (overlay, no navigation) ================= -->
+<div id="scanPanel" class="scanPanel hidden">
+  <div class="scanInner">
+    <div class="scanTop">
+      <button id="scanClose" class="scanClose" aria-label="Close scanner">✕</button>
+      <span class="scanTitle">Scan an item</span>
+    </div>
+
     <div id="camBox" class="camBox idle">
       <div id="cam" class="cam"></div>
       <div class="corners"><i></i><i></i><i></i><i></i></div>
-      <button id="startBtn" class="startBtn">📷 Start camera</button>
+      <button id="startBtn" class="startBtn hidden">📷 Start camera</button>
       <button id="captureBtn" class="captureBtn hidden">📷 Capture</button>
       <button id="camSwitch" class="camSwitch hidden">🔄</button>
       <div id="countdown" class="countdown hidden"></div>
     </div>
-    <div style="text-align:center"><div id="status" class="status">Tap Start, point at an item, then tap Capture</div></div>
+    <div style="text-align:center"><div id="status" class="status">Starting camera…</div></div>
 
     <div id="last" class="last">
       <span class="emo" id="lastEmo">🗑️</span>
@@ -305,31 +341,7 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
         <div id="nameSuggest" class="suggest hidden"></div>
       </div>
     </div>
-
-    <h2>On the list <span class="count" id="recentCount">0</span></h2>
-    <div id="recent" class="magnets"></div>
-  </section>
-
-  <!-- ================= CART (phone) ================= -->
-  <section id="cartView" class="hidden">
-    <div class="hero">
-      <h1>Shopping list</h1>
-      <p id="heroSub">Everything that ran out at home.</p>
-    </div>
-    <div class="fieldWrap">
-      <div class="addBar"><input id="addIn" placeholder="Add something…" autocomplete="off"><button id="addMic" class="mic hidden" aria-label="Voice input">🎤</button><button id="addBtn" aria-label="Add">+</button></div>
-      <div id="addSuggest" class="suggest hidden"></div>
-    </div>
-    <h2>To buy <span class="count" id="toBuyCount">0</span></h2>
-    <ul id="toBuy"></ul>
-    <div id="doneWrap" class="hidden">
-      <h2>In the trolley <span class="count" id="doneCount">0</span></h2>
-      <ul id="doneList"></ul>
-      <button id="clearBtn" class="clear">🧹 Clear ticked items</button>
-    </div>
-  </section>
-
-  <div id="sync" class="sync"></div>
+  </div>
 </div>
 
 <!-- confirm modal -->
@@ -349,7 +361,7 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
   </div>
 </div>
 
-<!-- idle screen -->
+<!-- idle screen (screensaver) -->
 <div id="idle" class="idle-screen hidden">
   <span class="logo">Hemie's Kitchen</span>
   <div class="clock"><span id="clkTime">--:--</span><span class="ap" id="clkAp">am</span></div>
@@ -367,7 +379,7 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
       <div class="magnets" id="peek"></div>
     </div>
   </div>
-  <div class="tapcue" id="tapcue">👆 Tap anywhere to scan</div>
+  <div class="tapcue" id="tapcue">👆 Tap anywhere to continue</div>
 </div>
 
 <script>
@@ -377,14 +389,13 @@ var LIST_KEY   = "EtFnu4RVP0OF77liJLB7";
 var CLAUDE_KEY = "__CLAUDE_KEY__";
 /* Optional settings */
 var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;
-var IDLE_AFTER_SECONDS = 90;
+var IDLE_AFTER_SECONDS = 120;
 var NIGHT_FROM = 23, NIGHT_TO = 6;
 /* ================================================== */
 
 (function(){
 "use strict";
 function $(id){ return document.getElementById(id); }
-var isScan = /scan/.test(location.search);
 var items = {};
 var undoStack = [];
 var busy = false;
@@ -463,8 +474,6 @@ function findKnownMatch(guess){
     var overlap = kWords.filter(function(w){ return gSet[w]; }).length;
     var minLen = Math.min(gWords.length, kWords.length);
     var score = overlap / minLen;
-    /* require strong word overlap (not just a shared prefix) so "Brand A white sugar"
-       still matches "white sugar" even though the brand is prepended, not appended */
     if(score >= 0.66 && overlap >= 1 && score > bestScore){
       bestScore = score; best = known;
     }
@@ -477,10 +486,10 @@ function scoreSuggestion(q, name){
   var n = normalizeKey(name);
   if(!n) return -1;
   if(n === q) return 100;
-  if(n.indexOf(q) === 0) return 90;                 /* starts with the query */
+  if(n.indexOf(q) === 0) return 90;
   var words = n.split(/\s+/);
-  for(var i = 0; i < words.length; i++){ if(words[i].indexOf(q) === 0) return 70; } /* a word starts with it */
-  if(n.indexOf(q) >= 0) return 50;                   /* appears anywhere */
+  for(var i = 0; i < words.length; i++){ if(words[i].indexOf(q) === 0) return 70; }
+  if(n.indexOf(q) >= 0) return 50;
   return -1;
 }
 function getSuggestions(query, limit){
@@ -608,7 +617,7 @@ function stopCamera(){
   $("camBox").className = "camBox idle";
   $("captureBtn").className = "captureBtn hidden";
   $("camSwitch").className = "camSwitch hidden";
-  $("startBtn").className = "startBtn";
+  $("startBtn").className = "startBtn hidden";
 }
 
 function startCamera(){
@@ -619,7 +628,7 @@ function startCamera(){
   navigator.mediaDevices.getUserMedia({
     video: { facingMode: facingMode, width: {ideal:480, max:480}, height: {ideal:360, max:360}, frameRate: {ideal:15, max:15} }
   }).then(function(s){
-    if(idleOn){ s.getTracks().forEach(function(t){ t.stop(); }); return; }
+    if(idleOn || !scanOpen){ s.getTracks().forEach(function(t){ t.stop(); }); return; }
     stream = s;
     var v = document.createElement("video");
     v.setAttribute("playsinline", "");
@@ -752,7 +761,23 @@ function showConfirm(suggestedName){
   $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
 }
 
-/* ---------- idle screen ---------- */
+/* ---------- scan panel open/close (no page navigation) ---------- */
+var scanOpen = false;
+function openScan(){
+  scanOpen = true;
+  poke();
+  $("scanPanel").className = "scanPanel open";
+  startCamera();
+}
+function closeScan(){
+  scanOpen = false;
+  stopCamera();
+  $("scanPanel").className = "scanPanel hidden";
+  poke();
+  refresh();
+}
+
+/* ---------- idle screen (screensaver) ---------- */
 var idleOn = false, lastActivity = Date.now();
 var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -763,7 +788,7 @@ function poke(){ lastActivity = Date.now(); }
 function enterIdle(){
   if(idleOn || !$("modal").className.match(/hidden/)) return;
   idleOn = true;
-  stopCamera();
+  if(scanOpen) closeScan();
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   tickClock(); renderPeek(); loadWeather(false);
   $("idle").className = "idle-screen" + (isNight(new Date().getHours()) ? " night" : "");
@@ -772,7 +797,6 @@ function exitIdle(){
   if(!idleOn) return;
   idleOn = false; poke();
   $("idle").className = "idle-screen hidden";
-  startCamera();
 }
 function tickClock(){
   var d = new Date(), h = d.getHours();
@@ -841,7 +865,7 @@ function setupIdle(){
     if(idleOn){ tickClock(); loadWeather(false); }
     else if(!busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
   }, 5000);
-  poke(); /* fresh page load: show the camera/start screen, not idle clock */
+  poke();
 }
 
 /* ---------- render ---------- */
@@ -869,32 +893,18 @@ function makeRow(id){
 function emptyBox(emo, msg){ return '<div class="empty"><span class="big">' + emo + '</span>' + msg + '</div>'; }
 
 function render(){
-  if(isScan){
-    if(idleOn) renderPeek();
-    var all = sortedIds(function(i){ return !i.done; });
-    var box = $("recent"); box.innerHTML = "";
-    $("recentCount").textContent = all.length;
-    all.slice(0, 12).forEach(function(id){
-      var it = items[id], m = document.createElement("span"); m.className = "mag";
-      m.textContent = emojiFor(it.name) + " " + it.name;
-      if(it.qty > 1){ var b = document.createElement("b"); b.textContent = "  ×" + it.qty; m.appendChild(b); }
-      box.appendChild(m);
-    });
-    if(all.length > 12){ var more = document.createElement("span"); more.className = "mag"; more.textContent = "+" + (all.length - 12) + " more"; box.appendChild(more); }
-    if(!all.length) box.innerHTML = emptyBox("✨", "Fridge is happy. Nothing on the list.");
-    return;
-  }
   var toBuy = sortedIds(function(i){ return !i.done; });
   var done = sortedIds(function(i){ return i.done; });
   var ul = $("toBuy"); ul.innerHTML = "";
   toBuy.forEach(function(id){ ul.appendChild(makeRow(id)); });
-  if(!toBuy.length) ul.innerHTML = done.length ? emptyBox("🎉", "Everything's in the trolley. Go pay!") : emptyBox("🧺", "Nothing to buy. Use the scanner in the kitchen.");
+  if(!toBuy.length) ul.innerHTML = done.length ? emptyBox("🎉", "Everything's in the trolley. Go pay!") : emptyBox("🧺", "Nothing to buy. Tap 📷 to scan something.");
   $("toBuyCount").textContent = toBuy.length;
   $("heroSub").textContent = toBuy.length ? toBuy.length + (toBuy.length === 1 ? " thing" : " things") + " ran out at home." : "All stocked up.";
   var dl = $("doneList"); dl.innerHTML = "";
   done.forEach(function(id){ dl.appendChild(makeRow(id)); });
   $("doneCount").textContent = done.length;
   $("doneWrap").className = done.length ? "" : "hidden";
+  if(idleOn) renderPeek();
 }
 
 /* ---------- wiring ---------- */
@@ -934,34 +944,32 @@ function setupVoiceInput(btn, input){
 
 function init(){
   if(!DB_URL || !LIST_KEY){ $("setup").className = "setup"; return; }
-  if(isScan){
-    $("tagline").innerHTML = "Finished it?<br>Scan it.";
-    $("switch").textContent = "🛒 List"; $("switch").href = "./";
-    $("scanView").className = "";
-    $("startBtn").onclick = startCamera;
-    $("captureBtn").onclick = captureAndIdentify;
-    $("camSwitch").onclick = function(){
-      facingMode = (facingMode === "user") ? "environment" : "user";
-      stopCamera();
-      setTimeout(startCamera, 300);
-    };
-    $("undoBtn").onclick = undo;
-    var addName = function(){ unlockAudio(); manualAdd($("nameIn")); };
-    $("nameBtn").onclick = addName; onEnter($("nameIn"), addName);
-    setupSuggest($("nameIn"), $("nameSuggest"), function(name){ $("nameIn").value = name; addName(); });
-    setupIdle();
-  } else {
-    $("cartView").className = "";
-    var add = function(){ manualAdd($("addIn")); };
-    $("addBtn").onclick = add; onEnter($("addIn"), add);
-    $("clearBtn").onclick = function(){
-      var patch = {}; sortedIds(function(i){ return i.done; }).forEach(function(id){ patch[id] = null; delete items[id]; });
-      render(); api("PATCH", "/items", patch).catch(refresh);
-    };
-    setupVoiceInput($("addMic"), $("addIn"));
-    setupSuggest($("addIn"), $("addSuggest"), function(name){ $("addIn").value = name; add(); });
-  }
+
+  $("fab").onclick = openScan;
+  $("scanClose").onclick = closeScan;
+  $("startBtn").onclick = startCamera;
+  $("captureBtn").onclick = captureAndIdentify;
+  $("camSwitch").onclick = function(){
+    facingMode = (facingMode === "user") ? "environment" : "user";
+    stopCamera();
+    setTimeout(startCamera, 300);
+  };
+  $("undoBtn").onclick = undo;
+  var addName = function(){ unlockAudio(); manualAdd($("nameIn")); };
+  $("nameBtn").onclick = addName; onEnter($("nameIn"), addName);
+  setupSuggest($("nameIn"), $("nameSuggest"), function(name){ $("nameIn").value = name; addName(); });
+
+  var add = function(){ manualAdd($("addIn")); };
+  $("addBtn").onclick = add; onEnter($("addIn"), add);
+  $("clearBtn").onclick = function(){
+    var patch = {}; sortedIds(function(i){ return i.done; }).forEach(function(id){ patch[id] = null; delete items[id]; });
+    render(); api("PATCH", "/items", patch).catch(refresh);
+  };
+  setupVoiceInput($("addMic"), $("addIn"));
+  setupSuggest($("addIn"), $("addSuggest"), function(name){ $("addIn").value = name; add(); });
   setupVoiceInput($("modalMic"), $("modalIn"));
+
+  setupIdle();
   refresh();
   var tick = 0;
   setInterval(function(){
