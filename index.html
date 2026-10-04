@@ -428,16 +428,23 @@ function rememberKnownName(name){
   knownNames[key] = name;
   api("PUT", "/knownNames/" + key, name).catch(function(){});
 }
+function wordsOf(s){ return normalizeKey(s).split(/\s+/).filter(Boolean); }
 function findKnownMatch(guess){
-  var gNorm = normalizeKey(guess);
-  if(!gNorm) return null;
-  var best = null;
+  var gWords = wordsOf(guess);
+  if(!gWords.length) return null;
+  var gSet = {}; gWords.forEach(function(w){ gSet[w] = true; });
+  var best = null, bestScore = 0;
   Object.keys(knownNames).forEach(function(k){
     var known = knownNames[k];
-    var kNorm = normalizeKey(known);
-    if(!kNorm) return;
-    if(kNorm === gNorm || kNorm.indexOf(gNorm) === 0 || gNorm.indexOf(kNorm) === 0){
-      if(!best || kNorm.length > normalizeKey(best).length) best = known;
+    var kWords = wordsOf(known);
+    if(!kWords.length) return;
+    var overlap = kWords.filter(function(w){ return gSet[w]; }).length;
+    var minLen = Math.min(gWords.length, kWords.length);
+    var score = overlap / minLen;
+    /* require strong word overlap (not just a shared prefix) so "Brand A white sugar"
+       still matches "white sugar" even though the brand is prepended, not appended */
+    if(score >= 0.66 && overlap >= 1 && score > bestScore){
+      bestScore = score; best = known;
     }
   });
   return best;
@@ -626,10 +633,11 @@ function identifyWithClaude(b64){
     body: JSON.stringify({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 15,
+      temperature: 0,
       messages: [{
         role: "user",
         content: [
-          {type: "text", text: "What household or grocery item is this? Use the SIMPLEST, plainest name a person would write on a shopping list — 2-3 words max, not a precise or technical description. Read any text on the packaging to help identify it, but keep the answer plain. Reply with ONLY the name, no brand, no punctuation, no extra explanation. Examples: Dishwashing liquid, White rice, Eggs, Shampoo, Toilet paper, Laundry detergent, Cooking oil, Milk, White sugar, Brown sugar. If you cannot identify it, reply: unknown"},
+          {type: "text", text: "What household or grocery item is this? Use the SIMPLEST, plainest name a person would write on a shopping list — 2-3 words max, not a precise or technical description. NEVER include a brand name or manufacturer name under any circumstance. Read any text on the packaging to help identify it, but keep the answer plain and generic. Reply with ONLY the name, no brand, no punctuation, no extra explanation. Examples: Dishwashing liquid, White rice, Eggs, Shampoo, Toilet paper, Laundry detergent, Cooking oil, Milk, White sugar, Brown sugar. If you cannot identify it, reply: unknown"},
           {type: "image", source: {type: "base64", media_type: "image/jpeg", data: b64}}
         ]
       }]
