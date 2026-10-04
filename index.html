@@ -154,6 +154,15 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 .row > input{flex:1;margin-right:10px}
 .berry{background:linear-gradient(135deg,var(--berry),var(--mint));color:#0A0A12;border:none;font-weight:700;box-shadow:var(--glow-berry)}
 
+.fieldWrap{position:relative}
+.suggest{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:6;background:#0E0E18;border:var(--b);border-radius:16px;
+  padding:6px;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 16px 40px rgba(0,0,0,.5),var(--glow-berry)}
+.suggestRow{display:flex;align-items:center;padding:10px 10px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.suggestRow:active{background:rgba(139,92,246,.18)}
+.suggestEmo{font-size:19px;margin-right:10px;flex:none}
+.suggestName{flex:1;font-size:15px;font-weight:500}
+.suggestMeta{font-size:12px;color:var(--soft);margin-left:8px;flex:none}
+
 h2{font-size:14px;font-weight:600;letter-spacing:.04em;margin:30px 0 12px;display:flex;align-items:center;color:var(--soft);text-transform:uppercase}
 h2 .count{display:inline-block;margin-left:10px;background:var(--paper);color:var(--mustard);border:1px solid rgba(251,191,36,.5);border-radius:999px;min-width:30px;
   text-align:center;padding:1px 9px;font-size:13px;box-shadow:var(--glow-amber)}
@@ -291,7 +300,10 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
     </div>
 
     <div class="panel">
-      <div class="row"><input id="nameIn" placeholder="No camera? Type the item here"><button id="nameBtn" class="berry">Add</button></div>
+      <div class="fieldWrap">
+        <div class="row"><input id="nameIn" placeholder="No camera? Type the item here" autocomplete="off"><button id="nameBtn" class="berry">Add</button></div>
+        <div id="nameSuggest" class="suggest hidden"></div>
+      </div>
     </div>
 
     <h2>On the list <span class="count" id="recentCount">0</span></h2>
@@ -304,7 +316,10 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
       <h1>Shopping list</h1>
       <p id="heroSub">Everything that ran out at home.</p>
     </div>
-    <div class="addBar"><input id="addIn" placeholder="Add something…"><button id="addMic" class="mic hidden" aria-label="Voice input">🎤</button><button id="addBtn" aria-label="Add">+</button></div>
+    <div class="fieldWrap">
+      <div class="addBar"><input id="addIn" placeholder="Add something…" autocomplete="off"><button id="addMic" class="mic hidden" aria-label="Voice input">🎤</button><button id="addBtn" aria-label="Add">+</button></div>
+      <div id="addSuggest" class="suggest hidden"></div>
+    </div>
     <h2>To buy <span class="count" id="toBuyCount">0</span></h2>
     <ul id="toBuy"></ul>
     <div id="doneWrap" class="hidden">
@@ -415,9 +430,15 @@ function timeout(p, ms){
 }
 function setSync(msg){ $("sync").textContent = msg; }
 
-/* ---------- remembered item names (so repeat scans land on the same item) ---------- */
+/* ---------- remembered item names (so repeat scans land on the same item, and to power "Add something" suggestions) ---------- */
 var knownNames = {};
 function normalizeKey(s){ return (s || "").toLowerCase().replace(/[^a-z0-9 ]+/g, "").trim(); }
+function wordsOf(s){ return normalizeKey(s).split(/\s+/).filter(Boolean); }
+function nameOf(entry){ return typeof entry === "string" ? entry : (entry && entry.name) || ""; }
+function statsOf(entry){
+  if(typeof entry === "string" || !entry) return {count: 1, lastUsed: 0};
+  return {count: entry.count || 1, lastUsed: entry.lastUsed || 0};
+}
 function loadKnownNames(){
   return api("GET", "/knownNames").then(function(d){ knownNames = d || {}; }).catch(function(){});
 }
@@ -425,17 +446,18 @@ function rememberKnownName(name){
   var norm = normalizeKey(name);
   if(!norm) return;
   var key = norm.replace(/\s+/g, "_");
-  knownNames[key] = name;
-  api("PUT", "/knownNames/" + key, name).catch(function(){});
+  var prevCount = statsOf(knownNames[key]).count;
+  var entry = {name: name, count: prevCount + 1, lastUsed: Date.now()};
+  knownNames[key] = entry;
+  api("PUT", "/knownNames/" + key, entry).catch(function(){});
 }
-function wordsOf(s){ return normalizeKey(s).split(/\s+/).filter(Boolean); }
 function findKnownMatch(guess){
   var gWords = wordsOf(guess);
   if(!gWords.length) return null;
   var gSet = {}; gWords.forEach(function(w){ gSet[w] = true; });
   var best = null, bestScore = 0;
   Object.keys(knownNames).forEach(function(k){
-    var known = knownNames[k];
+    var known = nameOf(knownNames[k]);
     var kWords = wordsOf(known);
     if(!kWords.length) return;
     var overlap = kWords.filter(function(w){ return gSet[w]; }).length;
@@ -448,6 +470,63 @@ function findKnownMatch(guess){
     }
   });
   return best;
+}
+
+/* ---------- smart suggestions for the manual "Add" fields ---------- */
+function scoreSuggestion(q, name){
+  var n = normalizeKey(name);
+  if(!n) return -1;
+  if(n === q) return 100;
+  if(n.indexOf(q) === 0) return 90;                 /* starts with the query */
+  var words = n.split(/\s+/);
+  for(var i = 0; i < words.length; i++){ if(words[i].indexOf(q) === 0) return 70; } /* a word starts with it */
+  if(n.indexOf(q) >= 0) return 50;                   /* appears anywhere */
+  return -1;
+}
+function getSuggestions(query, limit){
+  var q = normalizeKey(query || "");
+  var list = Object.keys(knownNames).map(function(k){
+    return {name: nameOf(knownNames[k]), stats: statsOf(knownNames[k])};
+  }).filter(function(e){ return e.name; });
+
+  if(q){
+    list = list.map(function(e){ return {e: e, score: scoreSuggestion(q, e.name)}; })
+      .filter(function(x){ return x.score >= 0; })
+      .sort(function(a, b){
+        if(b.score !== a.score) return b.score - a.score;
+        if(b.e.stats.count !== a.e.stats.count) return b.e.stats.count - a.e.stats.count;
+        return b.e.stats.lastUsed - a.e.stats.lastUsed;
+      })
+      .map(function(x){ return x.e; });
+  } else {
+    list.sort(function(a, b){
+      if(b.stats.count !== a.stats.count) return b.stats.count - a.stats.count;
+      return b.stats.lastUsed - a.stats.lastUsed;
+    });
+  }
+  return list.slice(0, limit || 6).map(function(e){ return e.name; });
+}
+function setupSuggest(input, box, onPick){
+  var wrap = input.closest(".fieldWrap");
+  function show(names){
+    box.innerHTML = "";
+    if(!names.length){ box.className = "suggest hidden"; return; }
+    names.forEach(function(name){
+      var row = document.createElement("div");
+      row.className = "suggestRow";
+      var emo = document.createElement("span"); emo.className = "suggestEmo"; emo.textContent = emojiFor(name);
+      var nm = document.createElement("span"); nm.className = "suggestName"; nm.textContent = name;
+      row.appendChild(emo); row.appendChild(nm);
+      row.onclick = function(){ onPick(name); box.className = "suggest hidden"; };
+      box.appendChild(row);
+    });
+    box.className = "suggest";
+  }
+  input.addEventListener("input", function(){ show(getSuggestions(input.value, 6)); });
+  input.addEventListener("focus", function(){ show(getSuggestions(input.value, 6)); });
+  document.addEventListener("click", function(e){
+    if(wrap && !wrap.contains(e.target)) box.className = "suggest hidden";
+  });
 }
 
 function refresh(){
@@ -869,6 +948,7 @@ function init(){
     $("undoBtn").onclick = undo;
     var addName = function(){ unlockAudio(); manualAdd($("nameIn")); };
     $("nameBtn").onclick = addName; onEnter($("nameIn"), addName);
+    setupSuggest($("nameIn"), $("nameSuggest"), function(name){ $("nameIn").value = name; addName(); });
     setupIdle();
   } else {
     $("cartView").className = "";
@@ -879,6 +959,7 @@ function init(){
       render(); api("PATCH", "/items", patch).catch(refresh);
     };
     setupVoiceInput($("addMic"), $("addIn"));
+    setupSuggest($("addIn"), $("addSuggest"), function(name){ $("addIn").value = name; add(); });
   }
   setupVoiceInput($("modalMic"), $("modalIn"));
   refresh();
