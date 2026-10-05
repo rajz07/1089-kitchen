@@ -281,6 +281,27 @@ body.light .status.thinking{color:#7C3AED}
   -webkit-animation:breathe 2.4s ease-in-out infinite;animation:breathe 2.4s ease-in-out infinite}
 @-webkit-keyframes breathe{50%{-webkit-transform:scale(1.05)}}
 @keyframes breathe{50%{transform:scale(1.05)}}
+
+/* ---------- Hemie mascot ---------- */
+.hemie{position:absolute;left:32px;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);opacity:.9}
+.hemie svg{display:block;-webkit-animation:hemieBob 4s ease-in-out infinite;animation:hemieBob 4s ease-in-out infinite}
+@-webkit-keyframes hemieBob{50%{-webkit-transform:translateY(-4px)}}
+@keyframes hemieBob{50%{transform:translateY(-4px)}}
+.zzz{position:absolute;top:-6px;right:-4px;font:600 15px var(--mono,var(--sans));color:var(--mustard);text-shadow:0 0 10px rgba(253,186,116,.6);
+  -webkit-animation:zzz 2.6s ease-out infinite;animation:zzz 2.6s ease-out infinite;opacity:0}
+.zzz:nth-child(2){-webkit-animation-delay:.6s;animation-delay:.6s;right:-10px}
+.zzz:nth-child(3){-webkit-animation-delay:1.2s;animation-delay:1.2s;right:-16px}
+@-webkit-keyframes zzz{0%{-webkit-transform:translate(0,0) scale(.6);opacity:0}20%{opacity:1}100%{-webkit-transform:translate(14px,-26px) scale(1.1);opacity:0}}
+@keyframes zzz{0%{transform:translate(0,0) scale(.6);opacity:0}20%{opacity:1}100%{transform:translate(14px,-26px) scale(1.1);opacity:0}}
+@media (prefers-reduced-motion: reduce){ .hemie svg,.zzz{animation:none} }
+
+.hemiePop{position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:11;display:flex;align-items:flex-end;
+  -webkit-transform:translateY(12px) scale(.85);transform:translateY(12px) scale(.85);opacity:0;pointer-events:none;
+  -webkit-transition:transform .25s cubic-bezier(.2,1.4,.3,1),opacity .25s;transition:transform .25s cubic-bezier(.2,1.4,.3,1),opacity .25s}
+.hemiePop.show{-webkit-transform:translateY(0) scale(1);transform:translateY(0) scale(1);opacity:1}
+.hemieBubble{background:var(--paper);color:var(--ink);border:var(--b);border-radius:14px 14px 4px 14px;padding:8px 14px;margin:0 0 30px -6px;
+  font-weight:600;font-size:14px;white-space:nowrap;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
+
 .idle-screen.night{background-color:#07050A;color:#453B4A}
 .night .logo,.night .card,.night .tapcue,.night .clock .ap{background:transparent;border-color:#241C29;box-shadow:none;color:#453B4A}
 .night .date,.night .wx .desc{color:#332A38}
@@ -331,6 +352,19 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
 </div>
 
 <button id="fab" class="fab" aria-label="Scan an item">📷</button>
+
+<div id="hemiePop" class="hemiePop hidden" aria-hidden="true">
+  <svg viewBox="0 0 100 100" width="56" height="56">
+    <ellipse cx="50" cy="58" rx="34" ry="30" fill="var(--mustard)"/>
+    <path d="M22 42 Q50 24 78 42 L78 48 Q50 34 22 48 Z" fill="var(--berry)"/>
+    <circle cx="36" cy="56" r="5" fill="var(--ink)"/>
+    <circle cx="64" cy="56" r="5" fill="var(--ink)"/>
+    <circle cx="30" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
+    <circle cx="70" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
+    <path d="M38 72 q12 10 24 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+  <div class="hemieBubble" id="hemieBubble"></div>
+</div>
 
 <!-- ================= SCAN PANEL (overlay, no navigation) ================= -->
 <div id="scanPanel" class="scanPanel hidden">
@@ -399,6 +433,18 @@ body:has(.idle-screen.night) .aurora{opacity:.15}
       <div class="head"><b>🛒 To buy</b><span class="big" id="peekCount">0</span></div>
       <div class="magnets" id="peek"></div>
     </div>
+  </div>
+  <div class="hemie hemie-sleep" aria-hidden="true">
+    <svg viewBox="0 0 100 100" width="86" height="86">
+      <ellipse cx="50" cy="58" rx="34" ry="30" fill="var(--mustard)"/>
+      <path d="M22 42 Q50 24 78 42 L78 48 Q50 34 22 48 Z" fill="var(--berry)"/>
+      <path d="M32 58 q6 6 12 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M56 58 q6 6 12 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="30" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
+      <circle cx="70" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
+      <path d="M40 74 q10 7 20 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+    <span class="zzz">z</span><span class="zzz">z</span><span class="zzz">z</span>
   </div>
   <div class="tapcue" id="tapcue">👆 Tap anywhere to continue</div>
 </div>
@@ -579,6 +625,7 @@ function addItem(id, name){
       items[id] = next;
       undoStack.push({id: id, prev: prev});
       showLast(next.name, next.qty);
+      showHemieReaction(next.name);
       beep(); render();
     });
   }).catch(function(e){ status("Couldn't add: " + e.message, true); });
@@ -607,6 +654,18 @@ function setLast(emo, title, sub, stamp){
 function showLast(name, qty){
   setLast(emojiFor(name), name, qty > 1 ? "Now ×" + qty + " on the list" : "Added to the shopping list", qty > 1 ? "+1 more!" : "Added!");
   $("undoBtn").className = "undo";
+}
+
+/* ---------- Hemie reaction popup ---------- */
+var hemieTimer = null;
+function showHemieReaction(name){
+  var pop = $("hemiePop");
+  $("hemieBubble").textContent = emojiFor(name) + " " + name + "!";
+  if(hemieTimer) clearTimeout(hemieTimer);
+  pop.className = "hemiePop hidden";
+  void pop.offsetWidth;
+  pop.className = "hemiePop show";
+  hemieTimer = setTimeout(function(){ pop.className = "hemiePop hidden"; }, 2200);
 }
 
 /* ---------- beep ---------- */
