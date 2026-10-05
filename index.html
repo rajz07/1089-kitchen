@@ -175,7 +175,6 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .blob1{width:110vmax;height:110vmax;top:-45vmax;right:-45vmax;background:radial-gradient(circle,var(--a1) 0%,transparent 60%);animation:hk-a1 34s ease-in-out infinite}
 .blob2{width:100vmax;height:100vmax;bottom:-45vmax;left:-40vmax;background:radial-gradient(circle,var(--a3) 0%,transparent 60%);animation:hk-a2 42s ease-in-out infinite}
 .blob3{width:80vmax;height:80vmax;top:30%;left:20%;background:radial-gradient(circle,var(--a2) 0%,transparent 60%);animation:hk-a3 50s ease-in-out infinite}
-.stage{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;pointer-events:none;z-index:3}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
 .saverLbl{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .dateLbl{font-size:16px;letter-spacing:.04em;color:var(--muted);margin-top:14px}
@@ -345,7 +344,6 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
     <div class="blob blob1"></div>
     <div class="blob blob2"></div>
     <div class="blob blob3"></div>
-    <div id="hemieStage" class="stage"></div>
     <div id="hemieShake" class="saverBody">
       <div class="saverLbl mono">Hemie's Kitchen</div>
       <div class="dateLbl mono" id="clkDate"></div>
@@ -373,8 +371,6 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 
 </div>
 
-<script>window.__resources = { walkSheet: "hemie-walk.png", helloSheet: "hemie-hello.png" };</script>
-<script src="hemie-actor.js"></script>
 <script>
 /* ===================== CONFIG ===================== */
 var DB_URL     = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -767,7 +763,6 @@ var MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct",
 function pad(n){ return (n < 10 ? "0" : "") + n; }
 function poke(){ lastActivity = Date.now(); }
 
-var hemie = null;
 function enterIdle(){
   if(idleOn || $("modal").className === "confirmWrap") return;
   idleOn = true;
@@ -775,16 +770,11 @@ function enterIdle(){
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   tickClock(); renderPeek(); loadWeather(false);
   $("idle").className = "saver on";
-  if(window.HemieActor && !hemie){
-    hemie = window.HemieActor.create({ stage: $("hemieStage"), strip: $("hemieStrip"), shake: $("hemieShake") });
-  }
-  if(hemie){ hemie.set({act:"random", gap:150, line:"Hi there!"}); hemie.start(3); }
 }
 function exitIdle(){
   if(!idleOn) return;
   idleOn = false; poke();
   $("idle").className = "saver";
-  if(hemie) hemie.stop();
 }
 var SEG_MAP = {
   "0":"abcdef", "1":"bc", "2":"abged", "3":"abgcd", "4":"fgbc",
