@@ -176,13 +176,13 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .blob2{width:100vmax;height:100vmax;bottom:-45vmax;left:-40vmax;background:radial-gradient(circle,var(--a3) 0%,transparent 60%);animation:hk-a2 42s ease-in-out infinite}
 .blob3{width:80vmax;height:80vmax;top:30%;left:20%;background:radial-gradient(circle,var(--a2) 0%,transparent 60%);animation:hk-a3 50s ease-in-out infinite}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
-.saverLbl{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-.dateLbl{font-size:16px;letter-spacing:.04em;color:var(--muted);margin-top:14px}
-.saverTime{display:flex;align-items:center;margin-top:10px}
-.saverTime .ap{font-size:calc(13px + .8vw);color:var(--accent-text);margin-left:16px;text-transform:uppercase}
+.saverLbl{font-size:23px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.dateLbl{font-size:18px;letter-spacing:.04em;color:var(--muted);margin-top:16px}
+.saverTime{display:flex;align-items:center;margin-top:22px}
+.saverTime .ap{font-size:calc(18px + .8vw);color:var(--accent-text);margin-left:22px;text-transform:uppercase}
 
 .clock7{display:flex;align-items:center}
-.digit{position:relative;width:58px;height:98px;margin:0 5px}
+.digit{position:relative;width:92px;height:156px;margin:0 8px}
 .digit.off{display:none}
 .digit .seg{position:absolute;border-radius:999px;background:var(--line);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.25);transition:background .15s,box-shadow .15s}
@@ -194,9 +194,9 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .digit .seg-b{top:6%;right:0;width:13%;height:39%}
 .digit .seg-e{bottom:6%;left:0;width:13%;height:39%}
 .digit .seg-c{bottom:6%;right:0;width:13%;height:39%}
-.colon{display:flex;flex-direction:column;justify-content:center;margin:0 4px}
-.colon span{width:11px;height:11px;border-radius:50%;background:linear-gradient(145deg,#ffe3ad,var(--accent));box-shadow:0 0 12px 2px var(--glow)}
-.colon span:first-child{margin-bottom:10px}
+.colon{display:flex;flex-direction:column;justify-content:center;margin:0 7px}
+.colon span{width:17px;height:17px;border-radius:50%;background:linear-gradient(145deg,#ffe3ad,var(--accent));box-shadow:0 0 12px 2px var(--glow)}
+.colon span:first-child{margin-bottom:16px}
 .strip{display:flex;align-items:center;padding:14px 18px;border-radius:26px;background:var(--card);border:1px solid var(--line);overflow:hidden}
 .strip .wx{flex:none;display:flex;flex-direction:column;margin-right:18px}
 .strip .wx .t{font-size:34px;font-weight:200;line-height:1}
@@ -345,7 +345,8 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
     <div class="blob blob2"></div>
     <div class="blob blob3"></div>
     <div id="hemieShake" class="saverBody">
-      <div class="saverLbl mono">Hemie's Kitchen</div>
+      <div style="flex:1;min-height:24px"></div>
+      <div class="saverLbl">Hemie's Kitchen</div>
       <div class="dateLbl mono" id="clkDate"></div>
       <div class="saverTime">
         <div class="clock7" id="clock7">
@@ -521,8 +522,14 @@ function setupSuggest(input, box, onPick){
   }
   input.addEventListener("input", function(){ show(getSuggestions(input.value, 6)); });
   input.addEventListener("focus", function(){ show(getSuggestions(input.value, 6)); });
-  document.addEventListener("click", function(e){
-    if(wrap && !wrap.contains(e.target)){ box.className = "suggest hidden"; input.blur(); }
+  // "click" alone misses most taps on iOS Safari: it only fires reliably on
+  // elements that already look interactive (links, buttons, [onclick]) -
+  // tapping plain background divs (exactly what "tap out to dismiss" is)
+  // silently does nothing. touchstart/mousedown fire for any tap target.
+  ["click", "touchstart", "mousedown"].forEach(function(ev){
+    document.addEventListener(ev, function(e){
+      if(wrap && !wrap.contains(e.target)){ box.className = "suggest hidden"; input.blur(); }
+    }, true);
   });
 }
 
