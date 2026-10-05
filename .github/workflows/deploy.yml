@@ -30,6 +30,7 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html _site/index.html
+          cp hemie-actor.js hemie-walk.png hemie-hello.png _site/
           sed -i "s|__CLAUDE_KEY__|${CLAUDE_KEY}|g" _site/index.html
 
       - name: Upload artifact

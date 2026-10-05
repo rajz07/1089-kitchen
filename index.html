@@ -5,460 +5,357 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#120D12">
+<meta name="theme-color" content="#0c0a10">
 <title>Hemie's Kitchen</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --ink:#FBF6EF; --paper:rgba(255,255,255,.05); --tile:#120D12; --soft:#B6A99E;
-  --tomato:#FF6B5B; --mustard:#FDBA74; --mint:#A3C585; --berry:#B388EB; --rose:#FB7185;
-  --border:rgba(255,255,255,.1);
-  --shadow:0 10px 36px rgba(0,0,0,.45);
-  --glow-mint:0 10px 32px rgba(163,197,133,.22);
-  --glow-berry:0 10px 32px rgba(179,136,235,.26);
-  --glow-rose:0 10px 32px rgba(251,113,133,.24);
-  --glow-amber:0 10px 32px rgba(253,186,116,.26);
-  --glow-red:0 10px 32px rgba(255,107,91,.26);
-  --clock-glow:0 0 50px rgba(179,136,235,.4);
-  --b:1px solid var(--border);
-  --sans:"Space Grotesk",-apple-system,"Helvetica Neue",Arial,sans-serif;
-  --serif:"Fraunces",Georgia,"Times New Roman",serif;
-}
-/* ---------- light mode (before 7pm) ---------- */
-body.light{
-  --ink:#2B2420; --paper:rgba(255,255,255,.62); --tile:#FBF3E7; --soft:#8A7A6E;
-  --border:rgba(43,36,32,.14);
-  --shadow:0 8px 28px rgba(120,90,60,.16);
-  --glow-mint:0 8px 24px rgba(107,143,74,.18);
-  --glow-berry:0 8px 24px rgba(149,100,219,.2);
-  --glow-rose:0 8px 24px rgba(230,90,110,.2);
-  --glow-amber:0 8px 24px rgba(220,150,70,.22);
-  --glow-red:0 8px 24px rgba(220,90,70,.2);
-  --clock-glow:none;
-}
-body.light::after{display:none}
-body.light .aurora i{mix-blend-mode:multiply;opacity:.22}
-body.light .sheet,body.light .suggest{background:#FFFDF9}
-body.light .logo{color:var(--ink)}
-body.light .hero h1{background:linear-gradient(135deg,var(--ink),var(--mustard) 55%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
-body.light .empty{background:rgba(43,36,32,.04);border-color:rgba(43,36,32,.16)}
-body.light input::placeholder{color:#A99584}
+html,body{margin:0;height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;background:#0c0a10}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;height:100%}
-body{
-  color:var(--ink);
-  font-family:var(--sans);
-  -webkit-text-size-adjust:100%;
-  background-color:var(--tile);
-  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
-  position:relative;
-  overflow-x:hidden;
-}
-body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse 120% 90% at 50% 40%, transparent 50%, rgba(0,0,0,.55) 100%)}
-/* ---------- aurora background ---------- */
-.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none;background:var(--tile)}
-.aurora i{position:absolute;border-radius:50%;filter:blur(64px);opacity:.45;mix-blend-mode:screen;font-style:normal}
-.aurora i:nth-child(1){width:58vmax;height:58vmax;left:-22vmax;top:-26vmax;background:radial-gradient(circle,var(--mustard),transparent 70%);
-  -webkit-animation:drift1 30s ease-in-out infinite;animation:drift1 30s ease-in-out infinite}
-.aurora i:nth-child(2){width:54vmax;height:54vmax;right:-20vmax;top:-14vmax;background:radial-gradient(circle,var(--rose),transparent 70%);
-  -webkit-animation:drift2 36s ease-in-out infinite;animation:drift2 36s ease-in-out infinite}
-.aurora i:nth-child(3){width:48vmax;height:48vmax;left:6vmax;bottom:-26vmax;background:radial-gradient(circle,var(--berry),transparent 70%);
-  -webkit-animation:drift3 42s ease-in-out infinite;animation:drift3 42s ease-in-out infinite}
-@-webkit-keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vmax,7vmax) scale(1.12)}}
-@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vmax,7vmax) scale(1.12)}}
-@-webkit-keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vmax,9vmax) scale(1.08)}}
-@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vmax,9vmax) scale(1.08)}}
-@-webkit-keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vmax,-8vmax) scale(1.15)}}
-@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vmax,-8vmax) scale(1.15)}}
-@media (prefers-reduced-motion: reduce){ .aurora i{animation:none} }
-
-button,input{font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
-button{cursor:pointer;border:var(--b);border-radius:16px;padding:12px 18px;font-weight:600;background:var(--paper);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);
-  -webkit-transition:transform .08s,box-shadow .15s,border-color .15s;transition:transform .08s,box-shadow .15s,border-color .15s}
-button:active{transform:translateY(1px)}
-input{border:var(--b);border-radius:16px;padding:13px 16px;background:rgba(255,255,255,.04);width:100%;font-size:17px;font-weight:500;
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-input::placeholder{color:#8A7A70;font-weight:400}
-input:focus{outline:none;border-color:rgba(179,136,235,.6);box-shadow:var(--glow-berry)}
-button:focus-visible{outline:2px solid var(--mustard);outline-offset:2px}
+button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:inherit;background:none;border:0}
 .hidden{display:none !important}
-.wrap{max-width:720px;margin:0 auto;padding:18px 16px 110px}
 
-/* header */
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.logo{display:inline-block;background:linear-gradient(135deg,rgba(253,186,116,.16),rgba(179,136,235,.16));color:#fff;font-weight:600;font-size:19px;letter-spacing:-.01em;
-  padding:6px 16px;border:var(--b);border-radius:14px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);font-family:var(--serif)}
+.hk{
+  --bg:#0c0a10;--ink:#f6f1ea;--muted:rgba(246,241,234,.64);--glass:rgba(255,255,255,.06);--glass-hi:rgba(255,255,255,.11);
+  --line:rgba(255,255,255,.13);--accent:#ffb35c;--accent-ink:#1a1208;--accent-text:#ffc27f;--glow:rgba(255,179,92,.45);
+  --rose:#ff7a9c;--mint:#6fe3c1;--mint-ink:#08201a;--a1:rgba(255,138,61,.5);--a2:rgba(255,84,136,.42);--a3:rgba(124,92,255,.42);
+  --scrim:rgba(5,4,8,.62);--panel:rgba(20,16,26,.86);--card:rgba(14,11,18,.62);--cam:#141118;
+}
+.hk.light{
+  --bg:#f3f0ec;--ink:#1b1622;--muted:rgba(27,22,34,.62);--glass:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.85);
+  --line:rgba(27,22,34,.11);--accent:#f08a2c;--accent-ink:#1a1208;--accent-text:#9a4a08;--glow:rgba(240,138,44,.35);
+  --rose:#e2557a;--mint:#1f9e7c;--mint-ink:#ffffff;--a1:rgba(255,170,100,.55);--a2:rgba(255,130,170,.42);--a3:rgba(150,130,255,.38);
+  --scrim:rgba(27,22,34,.42);--panel:rgba(248,246,250,.9);--card:rgba(255,255,255,.72);--cam:#1b1622;
+}
+.hk{position:relative;height:100%;min-height:100vh;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Sora',-apple-system,sans-serif;-webkit-transition:background-color .5s,color .5s;transition:background-color .5s,color .5s}
+.hk input::placeholder{color:var(--muted);opacity:1}
+.mono{font-family:'JetBrains Mono',monospace}
+.glass{-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.grad{background:linear-gradient(0deg,var(--accent),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
 
-.setup{background:var(--paper);border:1px solid rgba(255,107,91,.4);border-radius:18px;padding:20px;line-height:1.5;
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--glow-red)}
+@keyframes hk-a1{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-18vw,14vh) rotate(40deg)}}
+@keyframes hk-a2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(16vw,-12vh) scale(1.2)}}
+@keyframes hk-a3{0%,100%{transform:translate(0,0) scale(1.1)}50%{transform:translate(-10vw,-18vh) scale(.9)}}
+@keyframes hk-breathe{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes hk-ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
+@keyframes hk-scanline{0%{top:8%}50%{top:88%}100%{top:8%}}
+@keyframes hk-ripple{0%{transform:scale(.3);opacity:0}5%{transform:scale(.3);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+@keyframes hk-z{0%{transform:translate(0,0);opacity:0}20%{opacity:1}100%{transform:translate(34px,-64px);opacity:0}}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:.001s !important;animation-iteration-count:1 !important} }
 
-/* ---------- hero / list ---------- */
-.hero{margin:10px 0 20px}
-.hero h1{font-family:var(--serif);font-size:42px;line-height:1.05;letter-spacing:-.01em;margin:0;font-weight:600;
-  background:linear-gradient(135deg,#fff,var(--mustard) 55%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{margin:8px 0 0;color:var(--soft);font-weight:500;font-size:15px}
+.scroller{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.wrap{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 28px) 20px 170px}
 
-.fieldWrap{position:relative}
-.addBar{background:var(--paper);border:var(--b);border-radius:18px;padding:8px;display:flex;
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.addBar input{border:0;flex:1;margin-right:8px;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
-.addBar input:focus{box-shadow:none}
-.addBar button{background:linear-gradient(135deg,var(--berry),var(--mustard));color:#1A1116;font-size:24px;line-height:1;padding:8px 18px;border:none;box-shadow:var(--glow-berry)}
-.addBar .mic{background:var(--paper);color:var(--ink);font-size:18px;border-color:rgba(253,186,116,.5);box-shadow:var(--glow-amber);margin-right:8px}
-.addBar .mic.listening{border-color:rgba(255,107,91,.6);box-shadow:var(--glow-red);-webkit-animation:breathe 1s ease-in-out infinite;animation:breathe 1s ease-in-out infinite}
+.topline{display:flex;align-items:center;justify-content:space-between;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:26px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);margin-right:10px;display:inline-block}
+h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-spacing:-.03em}
+.sub{font-size:19px;color:var(--muted);margin:10px 0 26px}
 
-.suggest{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:6;background:#1A1318;border:var(--b);border-radius:16px;
-  padding:6px;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 16px 40px rgba(0,0,0,.5),var(--glow-berry)}
-.suggestRow{display:flex;align-items:center;padding:10px 10px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.suggestRow:active{background:rgba(179,136,235,.18)}
-.suggestEmo{font-size:19px;margin-right:10px;flex:none}
-.suggestName{flex:1;font-size:15px;font-weight:500}
+.addRow{display:flex;align-items:center;min-height:74px;padding:7px 7px 7px 22px;border-radius:24px;background:var(--glass);border:1.5px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.18);transition:border-color .2s}
+.addRow input{flex:1;min-width:0;background:transparent;outline:none;font:inherit;font-size:21px;color:var(--ink);padding:10px 4px}
+.iconBtn{width:60px;height:60px;flex:none;border-radius:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.iconBtn.mic{border:1px solid var(--line);background:var(--glass-hi);color:var(--ink)}
+.iconBtn.mic.on{background:var(--accent);color:var(--accent-ink);position:relative}
+.iconBtn.mic.on .ring{position:absolute;inset:0;border-radius:18px;border:2px solid var(--accent);animation:hk-ring 1.2s ease-out infinite}
 
-h2{font-size:14px;font-weight:600;letter-spacing:.04em;margin:30px 0 12px;display:flex;align-items:center;color:var(--soft);text-transform:uppercase}
-h2 .count{display:inline-block;margin-left:10px;background:var(--paper);color:var(--mustard);border:1px solid rgba(253,186,116,.5);border-radius:999px;min-width:30px;
-  text-align:center;padding:1px 9px;font-size:13px;box-shadow:var(--glow-amber)}
+.fieldWrap{position:relative;z-index:6;margin-bottom:22px}
+.suggest{position:absolute;top:84px;left:0;right:0;z-index:6;padding:8px;border-radius:24px;background:var(--panel);border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.suggest .lbl{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:10px 14px 8px}
+.suggestRow{display:flex;align-items:center;width:100%;min-height:62px;padding:6px 16px 6px 8px;border-radius:16px;cursor:pointer}
+.suggestRow:active{background:var(--glass-hi)}
+.suggestRow .ic{width:46px;height:46px;border-radius:14px;background:var(--glass-hi);display:flex;align-items:center;justify-content:center;font-size:24px;flex:none;margin-right:14px}
+.suggestRow .nm{flex:1;font-size:19px}
+.suggestRow .meta{font-size:13px;letter-spacing:.06em;color:var(--muted)}
 
-ul{list-style:none;margin:0;padding:0}
-li.item{display:flex;align-items:center;background:var(--paper);border:var(--b);border-radius:16px;margin-bottom:10px;
-  padding:6px 6px 6px 12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-user-select:none;user-select:none;cursor:pointer;
-  -webkit-tap-highlight-color:transparent;transition:border-color .15s,box-shadow .15s}
-li.item:active{border-color:rgba(179,136,235,.5);box-shadow:var(--glow-berry)}
-.check{width:28px;height:28px;border:1px solid rgba(255,255,255,.3);border-radius:9px;flex:none;margin-right:12px;display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:16px;background:transparent;color:var(--mint)}
-li.item .emo{font-size:24px;margin-right:10px;flex:none}
-li.item .name{flex:1;font-size:17px;font-weight:500;padding:12px 0;word-break:break-word;line-height:1.2}
-li.item .qty{background:var(--paper);color:var(--mustard);border:1px solid rgba(253,186,116,.5);font-weight:600;border-radius:999px;padding:1px 10px;margin-left:8px;font-size:13px;flex:none}
-li.item .del{border:0;box-shadow:none;background:transparent;color:var(--soft);font-size:24px;padding:6px 12px;font-weight:500}
-li.item.done{background:rgba(163,197,133,.06);border-color:rgba(163,197,133,.3)}
-li.item.done .check{background:var(--mint);border-color:var(--mint);color:#1A1116;box-shadow:var(--glow-mint)}
-li.item.done .name{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--tomato);text-decoration-thickness:2px;-webkit-text-decoration-color:var(--tomato)}
-li.item.done .emo{opacity:.5}
-.empty{text-align:center;padding:30px 16px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.2);border-radius:18px;font-weight:500;color:var(--soft)}
-.empty .big{font-size:38px;display:block;margin-bottom:8px}
-.clear{width:100%;margin-top:6px;background:var(--paper);color:var(--tomato);border-color:rgba(255,107,91,.5);box-shadow:var(--glow-red)}
-.sync{font-size:12px;text-align:center;margin-top:26px;color:var(--soft);font-weight:500}
+.usuals{display:flex;flex-wrap:wrap;margin:0 -8px 30px 0}
+.usual{display:flex;align-items:center;min-height:52px;padding:0 18px 0 12px;margin:0 8px 8px 0;border-radius:16px;border:1px solid var(--line);background:var(--glass);font-size:17px;cursor:pointer}
+.usual:active{background:var(--glass-hi);border-color:var(--accent)}
+.usual .em{font-size:22px;margin-right:8px}
+.usual .plus{color:var(--accent);margin-left:8px;font-size:20px;line-height:1}
 
-/* ---------- floating scan button ---------- */
-.fab{position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);z-index:10;width:64px;height:64px;border-radius:50%;
-  background:linear-gradient(135deg,var(--mustard),var(--rose));color:#1A1116;font-size:26px;display:flex;align-items:center;justify-content:center;
-  border:none;box-shadow:0 12px 32px rgba(251,113,133,.4),0 4px 14px rgba(0,0,0,.4);padding:0}
-.fab:active{transform:translateY(1px) scale(.97)}
+.sectLbl{display:flex;align-items:center;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.sectLbl .rule{flex:1;height:1px;background:var(--line);margin:0 14px}
+.sectLbl .num{color:var(--accent-text)}
 
-/* ---------- scan panel (full-screen overlay, no navigation) ---------- */
-.scanPanel{position:fixed;inset:0;z-index:15;background:var(--tile);overflow-y:auto;-webkit-overflow-scrolling:touch;
-  -webkit-transform:translateY(100%);transform:translateY(100%);-webkit-transition:transform .32s cubic-bezier(.2,.8,.2,1);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
-.scanPanel.open{-webkit-transform:translateY(0);transform:translateY(0)}
-.scanInner{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px 40px}
-.scanTop{display:flex;align-items:center;margin-bottom:16px}
-.scanClose{width:40px;height:40px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px;margin-right:12px}
-.scanTitle{font-family:var(--serif);font-size:22px;font-weight:600}
+.row{display:flex;align-items:center;min-height:82px;padding:8px 8px 8px 6px;margin-bottom:10px;border-radius:22px;background:var(--glass);border:1px solid var(--line);cursor:pointer}
+.row:active{background:var(--glass-hi)}
+.row .chk{width:60px;height:60px;display:flex;align-items:center;justify-content:center;flex:none}
+.row .chk span{width:32px;height:32px;border-radius:10px;border:2px solid var(--muted);display:block}
+.row .em{width:52px;height:52px;border-radius:16px;background:var(--glass-hi);display:flex;align-items:center;justify-content:center;font-size:28px;flex:none;margin-right:14px}
+.row .nm{flex:1;min-width:0;font-size:20px;line-height:1.25}
+.row .qty{min-width:60px;height:52px;padding:0 14px;margin-left:8px;border-radius:16px;border:1.5px solid var(--accent);background:transparent;color:var(--accent-text);font-size:18px;cursor:pointer;flex:none}
+.row .qty:active{background:var(--accent);color:var(--accent-ink)}
+.row .del{width:52px;height:52px;margin-left:4px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;flex:none}
+.row .del:active{background:var(--glass-hi);color:var(--rose)}
 
-/* ---------- camera box ---------- */
-.camBox{position:relative;width:100%;padding-top:66%;border:var(--b);border-radius:24px;overflow:hidden;
-  background:rgba(10,8,10,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
-/* iPad Mini 2 / old Safari: border-radius+overflow:hidden on a live <video> forces
-   software compositing and tanks framerate. Drop clipping while actually streaming. */
-.camBox.streaming{border-radius:0;overflow:visible}
-.camBox.streaming::before{content:"";position:absolute;left:0;right:0;height:2px;z-index:2;pointer-events:none;
-  background:linear-gradient(90deg,transparent,var(--mustard),transparent);box-shadow:0 0 14px 2px rgba(253,186,116,.7);
-  -webkit-animation:scanSweep 2.8s linear infinite;animation:scanSweep 2.8s linear infinite}
-@-webkit-keyframes scanSweep{0%{top:4%}100%{top:94%}}
-@keyframes scanSweep{0%{top:4%}100%{top:94%}}
-@media (prefers-reduced-motion: reduce){ .camBox.streaming::before{display:none} }
-.cam{position:absolute;top:0;left:0;right:0;bottom:0}
-.cam video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain}
-.cam.mirror video{transform:scaleX(-1)}
-.corners{position:absolute;left:14%;right:14%;top:26%;bottom:26%;z-index:2;pointer-events:none}
-.corners i{position:absolute;width:38px;height:38px;border:3px solid rgba(255,255,255,.75);filter:drop-shadow(0 0 6px rgba(179,136,235,.6))}
-.corners i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
-.corners i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
-.corners i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 10px}
-.corners i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 10px 0}
-.camBox.flash::after{content:"";position:absolute;inset:0;background:#fff;opacity:.6;z-index:5;pointer-events:none;
-  -webkit-animation:flashout .25s forwards;animation:flashout .25s forwards}
-@-webkit-keyframes flashout{to{opacity:0}}
-@keyframes flashout{to{opacity:0}}
+.empty{padding:30px 26px;border-radius:22px;border:1px dashed var(--line)}
+.empty .big{font-size:24px;font-weight:300}
+.empty .small{font-size:17px;color:var(--muted);margin-top:4px}
 
-.startBtn{position:absolute;top:50%;left:50%;z-index:3;transform:translate(-50%,-50%);
-  background:linear-gradient(135deg,var(--mustard),var(--berry));color:#1A1116;font-size:19px;font-weight:700;padding:16px 28px;border-radius:999px;
-  border:none;box-shadow:var(--glow-berry)}
-.startBtn:active{transform:translate(-50%,-50%) translateY(1px)}
+.doneRow{display:flex;align-items:center;min-height:66px;padding:4px 14px 4px 6px;border-radius:20px;cursor:pointer}
+.doneRow:active{background:var(--glass)}
+.doneRow .chk{width:60px;height:56px;display:flex;align-items:center;justify-content:center;flex:none}
+.doneRow .chk span{width:32px;height:32px;border-radius:10px;background:var(--mint);color:var(--mint-ink);box-shadow:0 0 14px var(--mint);display:flex;align-items:center;justify-content:center}
+.doneRow .em{width:44px;font-size:24px;flex:none;opacity:.55;text-align:center;margin-right:10px}
+.doneRow .nm{flex:1;min-width:0;font-size:18px;color:var(--muted);text-decoration:line-through}
+.doneRow .qty{font-size:15px;color:var(--muted)}
+.clearBtn{min-height:48px;padding:0 14px;border-radius:14px;color:var(--accent-text);font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.clearBtn:active{background:var(--glass-hi)}
 
-.captureBtn{position:absolute;bottom:16px;left:50%;z-index:3;transform:translateX(-50%);
-  background:linear-gradient(135deg,var(--berry),var(--rose));color:#fff;border-radius:999px;padding:14px 34px;font-size:18px;font-weight:700;
-  border:none;box-shadow:var(--glow-rose);white-space:nowrap}
-.captureBtn:active{transform:translateX(-50%) translateY(1px)}
-.captureBtn:disabled{opacity:.45;pointer-events:none}
+.fab{position:absolute;right:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);z-index:10;width:88px;height:88px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 8px var(--glow),0 16px 40px var(--glow);transition:transform .15s}
+.fab:active{transform:scale(.94)}
 
-.camSwitch{position:absolute;top:12px;right:12px;z-index:3;background:rgba(10,8,10,.6);
-  border-radius:999px;padding:9px 14px;font-size:18px;box-shadow:var(--shadow);border:var(--b);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.camSwitch:active{transform:translateY(1px)}
+.scrim{position:absolute;inset:0;z-index:30;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .4s}
+.scrim.on{opacity:1;pointer-events:auto}
 
-.countdown{position:absolute;inset:0;z-index:4;background:rgba(10,8,10,.6);display:flex;align-items:center;justify-content:center;
-  font-size:110px;font-weight:700;color:#fff;font-family:var(--serif);text-shadow:0 0 40px rgba(179,136,235,.7);
-  -webkit-animation:countPulse .75s ease-in-out;animation:countPulse .75s ease-in-out}
-@-webkit-keyframes countPulse{0%{-webkit-transform:scale(1.4);opacity:0}30%{-webkit-transform:scale(1);opacity:1}100%{-webkit-transform:scale(1);opacity:1}}
-@keyframes countPulse{0%{transform:scale(1.4);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:24px;z-index:31;border-radius:32px 32px 0 0;background:var(--panel);border-top:1px solid var(--line);transform:translateY(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sheet.open{transform:translateY(0)}
+.sheetInner{max-width:640px;margin:0 auto;padding:14px 20px calc(env(safe-area-inset-bottom,0px) + 30px)}
+.handle{display:flex;justify-content:center;margin-bottom:10px}
+.handle span{width:56px;height:5px;border-radius:3px;background:var(--line)}
+.sheetHead{display:flex;align-items:center;margin-bottom:18px}
+.sheetHead .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text)}
+.sheetHead .ttl{font-size:30px;font-weight:300;letter-spacing:-.02em}
 
-.status{display:table;margin:22px auto 0;background:var(--paper);color:var(--ink);border:var(--b);border-radius:999px;
-  padding:8px 18px;font-weight:500;font-size:14px;text-align:center;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.status.bad{color:var(--tomato);border-color:rgba(255,107,91,.5);box-shadow:var(--glow-red)}
-.status.thinking{color:#D6C2F7;border-color:rgba(179,136,235,.5);box-shadow:var(--glow-berry)}
-body.light .status.thinking{color:#7C3AED}
+.camBox{position:relative;width:100%;padding-top:100%;border-radius:28px;overflow:hidden;background:var(--cam)}
+.camBox video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.camBox video.mirror{transform:scaleX(-1)}
+.camPlaceholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(246,241,234,.55);background:radial-gradient(circle at 50% 45%,rgba(255,179,92,.14) 0%,transparent 60%);font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+.scanline{position:absolute;left:10%;right:10%;height:2px;top:50%;background:var(--accent);box-shadow:0 0 18px 3px var(--glow);animation:hk-scanline 3.2s ease-in-out infinite}
+.corner{position:absolute;width:64px;height:64px;border-color:var(--accent);border-style:solid;border-width:0}
+.corner.tl{top:22px;left:22px;border-top-width:4px;border-left-width:4px;border-radius:18px 0 0 0}
+.corner.tr{top:22px;right:22px;border-top-width:4px;border-right-width:4px;border-radius:0 18px 0 0}
+.corner.bl{bottom:22px;left:22px;border-bottom-width:4px;border-left-width:4px;border-radius:0 0 0 18px}
+.corner.br{bottom:22px;right:22px;border-bottom-width:4px;border-right-width:4px;border-radius:0 0 18px 0}
+.countdownWrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,4,8,.35)}
+.countdownWrap span{width:170px;height:170px;border-radius:50%;border:2px solid var(--accent);box-shadow:0 0 40px var(--glow),inset 0 0 30px var(--glow);color:#fff;display:flex;align-items:center;justify-content:center;font-size:96px;font-weight:200}
+.analysing{position:absolute;left:0;right:0;bottom:28px;display:flex;justify-content:center}
+.analysing span{padding:12px 22px;border-radius:14px;background:rgba(5,4,8,.72);color:#fff;font-size:14px;letter-spacing:.12em;text-transform:uppercase;animation:hk-breathe 1.2s ease-in-out infinite}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;transition:opacity .35s;pointer-events:none}
 
-.last{position:relative;margin:26px 4px 0;background:var(--paper);border:var(--b);border-radius:20px;padding:20px 22px;
-  display:flex;align-items:center;min-height:110px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.last .emo{font-size:48px;line-height:1;margin-right:16px}
-.last .txt{flex:1;font-size:23px;font-weight:600;line-height:1.2;letter-spacing:-.01em;word-break:break-word;font-family:var(--serif)}
-.last .txt small{display:block;font-size:14px;font-weight:500;color:var(--soft);margin-top:4px;letter-spacing:0;font-family:var(--sans)}
-.last .stamp{position:absolute;top:-13px;left:18px;background:#1A1116;color:var(--mint);border:1px solid rgba(163,197,133,.5);border-radius:999px;padding:2px 14px;
-  font-weight:600;font-size:13px;box-shadow:var(--glow-mint)}
-.last.pop{-webkit-animation:pop .4s ease-out;animation:pop .4s ease-out;box-shadow:var(--glow-mint);border-color:rgba(163,197,133,.5)}
-@-webkit-keyframes pop{0%{-webkit-transform:scale(.96)}100%{-webkit-transform:scale(1)}}
-@keyframes pop{0%{transform:scale(.96)}100%{transform:scale(1)}}
-.undo{background:var(--paper);color:var(--tomato);border-color:rgba(255,107,91,.5);box-shadow:var(--glow-red);font-size:16px;margin-left:12px}
+.camCtrl{display:flex;align-items:center;justify-content:space-between;margin:22px 0 24px}
+.flipBtn{width:72px;height:72px;border-radius:22px;border:1px solid var(--line);background:var(--glass-hi);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.captureBtn{width:104px;height:104px;border-radius:50%;border:3px solid var(--accent);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 30px var(--glow)}
+.captureBtn:active{transform:scale(.94)}
+.captureBtn:disabled{opacity:.4;pointer-events:none}
+.captureBtn .dot{width:78px;height:78px;border-radius:50%;background:var(--accent);display:block}
 
-.panel{margin-top:26px;background:var(--paper);border:var(--b);border-radius:20px;padding:16px;
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.row{display:flex}
-.row > input{flex:1;margin-right:10px}
-.berry{background:linear-gradient(135deg,var(--berry),var(--mustard));color:#1A1116;border:none;font-weight:700;box-shadow:var(--glow-berry)}
+.statusCard{padding:18px 20px;border-radius:22px;background:var(--glass);border:1px solid var(--line);margin-bottom:12px}
+.statusCard .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.statusCard .msg{font-size:20px;line-height:1.35}
 
-/* ---------- name prompt ---------- */
-.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,7,9,.72);display:flex;align-items:center;justify-content:center;padding:20px;z-index:19;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.sheet{background:#1A1318;border:var(--b);border-radius:24px;padding:24px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.6),var(--glow-berry)}
-.sheet .big{font-size:40px;margin-bottom:6px}
-.sheet h3{margin:0 0 6px;font-size:24px;letter-spacing:-.01em;font-weight:600;font-family:var(--serif)}
-.sheet p{margin:0 0 16px;color:var(--soft);font-weight:500;font-size:14px}
-.sheet .btns{display:flex;justify-content:flex-end;margin-top:16px}
-.sheet .btns button{margin-left:10px}
-.mint{background:linear-gradient(135deg,var(--mint),#D7E8B8);color:#1A1116;border:none;font-weight:700;box-shadow:var(--glow-mint)}
-.modalInRow{display:flex;align-items:center}
-.modalInRow input{flex:1}
-.mic{flex:none;margin-left:8px;padding:12px 16px;font-size:18px;background:var(--paper);border-color:rgba(253,186,116,.5);box-shadow:var(--glow-amber)}
-.mic.listening{border-color:rgba(255,107,91,.6);box-shadow:var(--glow-red);-webkit-animation:breathe 1s ease-in-out infinite;animation:breathe 1s ease-in-out infinite}
+.lastCard{display:flex;align-items:center;padding:12px;border-radius:22px;background:var(--glass);border:1px solid var(--mint);margin-bottom:12px}
+.lastCard .em{width:56px;height:56px;border-radius:16px;background:var(--glass-hi);display:flex;align-items:center;justify-content:center;font-size:30px;flex:none;margin-right:14px}
+.lastCard .mid{flex:1;min-width:0}
+.lastCard .lbl{display:block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
+.lastCard .nm{display:block;font-size:20px}
+.undoBtn{display:flex;align-items:center;height:56px;padding:0 18px;border-radius:16px;border:1px solid var(--line);background:var(--glass-hi);color:var(--ink);font-size:17px;cursor:pointer}
+.undoBtn svg{margin-right:8px}
 
-/* item chips (idle "to buy" peek) */
-.magnets{display:flex;flex-wrap:wrap;margin:-5px}
-.mag{margin:5px;border:var(--b);border-radius:14px;padding:8px 14px;font-weight:500;font-size:15px;background:var(--paper);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-.mag:nth-child(4n+1){border-color:rgba(253,186,116,.4)}
-.mag:nth-child(4n+2){border-color:rgba(179,136,235,.4)}
-.mag:nth-child(4n+3){border-color:rgba(251,113,133,.4)}
-.mag:nth-child(4n){border-color:rgba(163,197,133,.4)}
-.mag b{font-weight:700}
+.manualRow{display:flex;align-items:center;min-height:70px;padding:6px 6px 6px 20px;border-radius:22px;background:var(--glass);border:1px solid var(--line)}
+.manualRow input{flex:1;min-width:0;background:transparent;outline:none;font:inherit;font-size:19px;color:var(--ink)}
+.manualRow button{height:58px;padding:0 26px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font-size:18px;font-weight:600;cursor:pointer}
 
-/* ---------- idle screen (screensaver) ---------- */
-.idle-screen{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;overflow:hidden;cursor:pointer;
-  background-color:var(--tile);
-  padding:calc(env(safe-area-inset-top,0px) + 28px) 32px calc(env(safe-area-inset-bottom,0px) + 28px);
-  display:flex;flex-direction:column;-webkit-transition:background-color .6s;transition:background-color .6s}
-.idle-screen .logo{align-self:flex-start}
-.clock{margin-top:5vh;font-family:var(--serif);font-weight:600;letter-spacing:-.01em;line-height:.9;font-size:160px;display:flex;align-items:flex-end;
-  color:var(--ink);text-shadow:var(--clock-glow)}
-.clock .ap{font-size:34px;letter-spacing:-.01em;margin:0 0 18px 14px;background:var(--paper);color:var(--mustard);border:1px solid rgba(253,186,116,.5);
-  border-radius:14px;padding:2px 12px 4px;box-shadow:var(--glow-amber);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);font-family:var(--sans)}
-.date{font-size:22px;font-weight:500;margin-top:14px;color:var(--soft);letter-spacing:-.01em}
-.cards{margin-top:5vh}
-.card{background:var(--paper);border:var(--b);border-radius:22px;padding:22px 24px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);margin-bottom:24px}
-.wx{display:flex;align-items:center}
-.wx .icon{font-size:76px;line-height:1;margin-right:20px}
-.wx .temp{font-family:var(--serif);font-size:52px;font-weight:600;letter-spacing:-.01em;line-height:1}
-.wx .desc{font-size:17px;font-weight:500;color:var(--soft);margin-top:6px}
-.rain{display:inline-block;margin-top:16px;border:1px solid rgba(163,197,133,.5);color:var(--mint);border-radius:999px;padding:6px 16px;font-weight:600;font-size:15px;
-  background:var(--paper);box-shadow:var(--glow-mint)}
-.rain.wet{border-color:rgba(255,107,91,.5);color:var(--tomato);box-shadow:var(--glow-red)}
-.peek .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.peek .head b{font-size:18px;letter-spacing:-.01em;color:var(--soft);font-weight:500;text-transform:uppercase}
-.peek .big{font-family:var(--serif);font-size:46px;font-weight:600;line-height:1;letter-spacing:-.01em;color:var(--ink);text-shadow:var(--clock-glow)}
-.tapcue{margin-top:auto;align-self:center;background:var(--paper);color:var(--ink);border:var(--b);border-radius:999px;padding:14px 30px;
-  font-weight:600;font-size:16px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow);
-  -webkit-animation:breathe 2.4s ease-in-out infinite;animation:breathe 2.4s ease-in-out infinite}
-@-webkit-keyframes breathe{50%{-webkit-transform:scale(1.05)}}
-@keyframes breathe{50%{transform:scale(1.05)}}
+.confirmWrap{position:absolute;inset:0;z-index:40;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:20px}
+.confirmSheet{width:100%;max-width:520px;padding:28px;border-radius:30px;background:var(--panel);border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.confirmHead{display:flex;align-items:center;margin-bottom:22px}
+.confirmHead .em{width:88px;height:88px;border-radius:26px;background:var(--glass-hi);border:1.5px solid var(--accent);box-shadow:0 0 30px var(--glow);display:flex;align-items:center;justify-content:center;font-size:46px;flex:none;margin-right:18px}
+.confirmHead .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text)}
+.confirmHead .nm{font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.1;word-wrap:break-word}
+.confirmInputRow{display:flex;align-items:center;min-height:70px;padding:6px 6px 6px 20px;border-radius:20px;background:var(--glass);border:1px solid var(--line);margin-bottom:16px}
+.confirmInputRow input{flex:1;min-width:0;background:transparent;outline:none;font:inherit;font-size:20px;color:var(--ink)}
+.confirmBtns{display:flex}
+.ignoreBtn{flex:1;height:70px;margin-right:12px;border-radius:20px;border:1px solid var(--line);background:var(--glass-hi);color:var(--ink);font-size:20px;cursor:pointer}
+.addBtn{flex:1.5;height:70px;border-radius:20px;background:var(--accent);color:var(--accent-ink);font-size:20px;font-weight:600;cursor:pointer;box-shadow:0 10px 30px var(--glow)}
 
-/* ---------- Hemie mascot ---------- */
-.hemie{position:absolute;left:32px;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);opacity:.9}
-.hemie svg{display:block;-webkit-animation:hemieBob 4s ease-in-out infinite;animation:hemieBob 4s ease-in-out infinite}
-@-webkit-keyframes hemieBob{50%{-webkit-transform:translateY(-4px)}}
-@keyframes hemieBob{50%{transform:translateY(-4px)}}
-.zzz{position:absolute;top:-6px;right:-4px;font:600 15px var(--mono,var(--sans));color:var(--mustard);text-shadow:0 0 10px rgba(253,186,116,.6);
-  -webkit-animation:zzz 2.6s ease-out infinite;animation:zzz 2.6s ease-out infinite;opacity:0}
-.zzz:nth-child(2){-webkit-animation-delay:.6s;animation-delay:.6s;right:-10px}
-.zzz:nth-child(3){-webkit-animation-delay:1.2s;animation-delay:1.2s;right:-16px}
-@-webkit-keyframes zzz{0%{-webkit-transform:translate(0,0) scale(.6);opacity:0}20%{opacity:1}100%{-webkit-transform:translate(14px,-26px) scale(1.1);opacity:0}}
-@keyframes zzz{0%{transform:translate(0,0) scale(.6);opacity:0}20%{opacity:1}100%{transform:translate(14px,-26px) scale(1.1);opacity:0}}
-@media (prefers-reduced-motion: reduce){ .hemie svg,.zzz{animation:none} }
+.saver{position:absolute;inset:0;z-index:60;background:var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
+.saver.on{opacity:1;pointer-events:auto}
+.blob{position:absolute;border-radius:50%;will-change:transform}
+.blob1{width:110vmax;height:110vmax;top:-45vmax;right:-45vmax;background:radial-gradient(circle,var(--a1) 0%,transparent 60%);animation:hk-a1 34s ease-in-out infinite}
+.blob2{width:100vmax;height:100vmax;bottom:-45vmax;left:-40vmax;background:radial-gradient(circle,var(--a3) 0%,transparent 60%);animation:hk-a2 42s ease-in-out infinite}
+.blob3{width:80vmax;height:80vmax;top:30%;left:20%;background:radial-gradient(circle,var(--a2) 0%,transparent 60%);animation:hk-a3 50s ease-in-out infinite}
+.stage{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3}
+.saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
+.saverLbl{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.saverTime{display:flex;align-items:baseline;margin-top:10px}
+.saverTime .d{font-size:calc(22px + 1.8vw);font-weight:300}
+.saverTime .ap{font-size:calc(13px + .8vw);color:var(--accent-text);margin-left:14px;text-transform:uppercase}
+.strip{display:flex;align-items:center;padding:14px 18px;border-radius:26px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.strip .wx{flex:none;display:flex;flex-direction:column;margin-right:18px}
+.strip .wx .t{font-size:34px;font-weight:200;line-height:1}
+.strip .wx .r{font-size:12px;letter-spacing:.06em;color:var(--muted);margin-top:3px;white-space:nowrap}
+.divider{flex:none;width:1px;align-self:stretch;background:var(--line);margin-right:18px}
+.strip .cnt{flex:none;display:flex;flex-direction:column;margin-right:14px}
+.strip .cnt .n{font-size:26px;font-weight:300;line-height:1.05;white-space:nowrap}
+.strip .cnt .l{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.peekRow{flex:1;min-width:0;display:flex;overflow:hidden;white-space:nowrap}
+.peekChip{flex:none;display:flex;align-items:center;padding:7px 14px 7px 9px;margin-right:8px;border-radius:13px;background:var(--glass-hi);font-size:17px}
+.peekChip span{font-size:20px;margin-right:7px}
+.tapcue{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;justify-content:center;align-items:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);animation:hk-breathe 4s ease-in-out infinite}
+.tapcue .dot2{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);margin-right:12px}
 
-.hemiePop{position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:11;display:flex;align-items:flex-end;
-  -webkit-transform:translateY(12px) scale(.85);transform:translateY(12px) scale(.85);opacity:0;pointer-events:none;
-  -webkit-transition:transform .25s cubic-bezier(.2,1.4,.3,1),opacity .25s;transition:transform .25s cubic-bezier(.2,1.4,.3,1),opacity .25s}
-.hemiePop.show{-webkit-transform:translateY(0) scale(1);transform:translateY(0) scale(1);opacity:1}
-.hemieBubble{background:var(--paper);color:var(--ink);border:var(--b);border-radius:14px 14px 4px 14px;padding:8px 14px;margin:0 0 30px -6px;
-  font-weight:600;font-size:14px;white-space:nowrap;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
-
-.idle-screen.night{background-color:#07050A;color:#453B4A}
-.night .logo,.night .card,.night .tapcue,.night .clock .ap{background:transparent;border-color:#241C29;box-shadow:none;color:#453B4A}
-.night .date,.night .wx .desc{color:#332A38}
-.night .rain{background:transparent;border-color:#241C29;color:#453B4A}
-.night .mag{background:transparent !important;border-color:#241C29;box-shadow:none;color:#453B4A}
-.night .clock{color:#453B4A;text-shadow:none}
-.night .peek .big{color:#453B4A;text-shadow:none}
-.night .tapcue{-webkit-animation:none;animation:none}
-.night .wx .icon{opacity:.3}
-.night .cards{-webkit-filter:grayscale(1) brightness(.6);filter:grayscale(1) brightness(.6)}
-body:has(.idle-screen.night) .aurora{opacity:.15}
-
-@media (prefers-reduced-motion: reduce){ .last.pop,.tapcue{-webkit-animation:none;animation:none} }
+.setup{position:absolute;top:50%;left:20px;right:20px;transform:translateY(-50%);background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px;line-height:1.5;z-index:100}
 </style>
 </head>
 <body>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="hk" id="hk">
 
-<!-- ================= HOME: shopping list ================= -->
-<div class="wrap" id="listView">
-  <div class="top">
-    <span class="logo">Hemie's Kitchen</span>
-  </div>
+  <div class="scroller" id="listView">
+    <div class="wrap">
+      <div id="setup" class="setup hidden">
+        <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code>, <code>LIST_KEY</code>, and <code>CLAUDE_KEY</code> near the top of the script.
+      </div>
 
-  <div id="setup" class="setup hidden">
-    <b>Almost there.</b> Open <code>index.html</code> and fill in <code>DB_URL</code>, <code>LIST_KEY</code>, and <code>CLAUDE_KEY</code> near the top of the script.
-  </div>
+      <div class="topline">
+        <span style="display:flex;align-items:center"><span class="dot"></span><span id="syncLbl">Synced</span></span>
+        <span id="headDate" class="mono"></span>
+      </div>
 
-  <div class="hero">
-    <h1>Shopping list</h1>
-    <p id="heroSub">Everything that ran out at home.</p>
-  </div>
+      <h1>Hemie's <span class="grad" style="font-weight:600">Kitchen</span></h1>
+      <div class="sub" id="greetLine"></div>
 
-  <div class="fieldWrap">
-    <div class="addBar"><input id="addIn" placeholder="Add something…" autocomplete="off"><button id="addMic" class="mic hidden" aria-label="Voice input">🎤</button><button id="addBtn" aria-label="Add">+</button></div>
-    <div id="addSuggest" class="suggest hidden"></div>
-  </div>
-
-  <h2>To buy <span class="count" id="toBuyCount">0</span></h2>
-  <ul id="toBuy"></ul>
-  <div id="doneWrap" class="hidden">
-    <h2>In the trolley <span class="count" id="doneCount">0</span></h2>
-    <ul id="doneList"></ul>
-    <button id="clearBtn" class="clear">🧹 Clear ticked items</button>
-  </div>
-
-  <div id="sync" class="sync"></div>
-</div>
-
-<button id="fab" class="fab" aria-label="Scan an item">📷</button>
-
-<div id="hemiePop" class="hemiePop hidden" aria-hidden="true">
-  <svg viewBox="0 0 100 100" width="56" height="56">
-    <ellipse cx="50" cy="58" rx="34" ry="30" fill="var(--mustard)"/>
-    <path d="M22 42 Q50 24 78 42 L78 48 Q50 34 22 48 Z" fill="var(--berry)"/>
-    <circle cx="36" cy="56" r="5" fill="var(--ink)"/>
-    <circle cx="64" cy="56" r="5" fill="var(--ink)"/>
-    <circle cx="30" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
-    <circle cx="70" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
-    <path d="M38 72 q12 10 24 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
-  </svg>
-  <div class="hemieBubble" id="hemieBubble"></div>
-</div>
-
-<!-- ================= SCAN PANEL (overlay, no navigation) ================= -->
-<div id="scanPanel" class="scanPanel hidden">
-  <div class="scanInner">
-    <div class="scanTop">
-      <button id="scanClose" class="scanClose" aria-label="Close scanner">✕</button>
-      <span class="scanTitle">Scan an item</span>
-    </div>
-
-    <div id="camBox" class="camBox idle">
-      <div id="cam" class="cam"></div>
-      <div class="corners"><i></i><i></i><i></i><i></i></div>
-      <button id="startBtn" class="startBtn hidden">📷 Start camera</button>
-      <button id="captureBtn" class="captureBtn hidden">📷 Capture</button>
-      <button id="camSwitch" class="camSwitch hidden">🔄</button>
-      <div id="countdown" class="countdown hidden"></div>
-    </div>
-    <div style="text-align:center"><div id="status" class="status">Starting camera…</div></div>
-
-    <div id="last" class="last">
-      <span class="emo" id="lastEmo">🗑️</span>
-      <div class="txt" id="lastTxt">Nothing added yet<small>Point camera at any item and tap Capture.</small></div>
-      <button id="undoBtn" class="undo hidden">↩ Undo</button>
-    </div>
-
-    <div class="panel">
       <div class="fieldWrap">
-        <div class="row"><input id="nameIn" placeholder="No camera? Type the item here" autocomplete="off"><button id="nameBtn" class="berry">Add</button></div>
-        <div id="nameSuggest" class="suggest hidden"></div>
+        <div class="addRow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-right:10px"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          <input id="addIn" placeholder="Add something…" aria-label="Add something" autocomplete="off">
+          <button id="addMic" class="iconBtn mic hidden" aria-label="Speak an item"><span class="ring hidden" id="addMicRing"></span>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+          </button>
+        </div>
+        <div id="addSuggest" class="suggest hidden"></div>
+      </div>
+
+      <div class="usuals" id="usuals"></div>
+
+      <div class="sectLbl"><span>To buy</span><span class="rule"></span><span class="num" id="toBuyCount">0</span></div>
+      <div id="toBuy"></div>
+      <div id="emptyBox" class="empty hidden">
+        <div class="big">All stocked up.</div>
+        <div class="small">Add something above, or scan it.</div>
+      </div>
+
+      <div id="doneWrap" class="hidden" style="margin-top:34px">
+        <div class="sectLbl"><span>In the trolley</span><span class="num" id="doneCount" style="color:var(--mint);margin-left:12px"></span><span class="rule"></span><button id="clearBtn" class="clearBtn mono">Clear</button></div>
+        <div id="doneList"></div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- confirm modal -->
-<div id="modal" class="modal hidden">
-  <div class="sheet">
-    <div class="big">🤔</div>
-    <h3 id="modalTitle">What's this one?</h3>
-    <p id="modalCode"></p>
-    <div class="modalInRow">
-      <input id="modalIn" placeholder="e.g. Dishwashing liquid">
-      <button id="modalMic" class="mic hidden" aria-label="Voice input">🎤</button>
-    </div>
-    <div class="btns">
-      <button id="modalSkip">Ignore</button>
-      <button id="modalSave" class="mint">✓ Add to list</button>
-    </div>
-  </div>
-</div>
+  <button id="fab" class="fab" aria-label="Scan an item">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
+  </button>
 
-<!-- idle screen (screensaver) -->
-<div id="idle" class="idle-screen hidden">
-  <span class="logo">Hemie's Kitchen</span>
-  <div class="clock"><span id="clkTime">--:--</span><span class="ap" id="clkAp">am</span></div>
-  <div class="date" id="clkDate"></div>
-  <div class="cards">
-    <div class="card" id="wxCard">
-      <div class="wx">
-        <span class="icon" id="wxIcon">⛅</span>
-        <div><div class="temp" id="wxTemp">--°</div><div class="desc" id="wxDesc">Loading weather…</div></div>
+  <div id="scrim" class="scrim"></div>
+
+  <div id="sheet" class="sheet glass" role="dialog" aria-label="Scanner">
+    <div class="sheetInner">
+      <div class="handle"><span></span></div>
+      <div class="sheetHead">
+        <div style="flex:1">
+          <div class="lbl mono">AI scanner</div>
+          <div class="ttl">Scan an item</div>
+        </div>
+        <button id="scanClose" class="flipBtn" aria-label="Close scanner">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
-      <span class="rain" id="wxRain">…</span>
-    </div>
-    <div class="card peek">
-      <div class="head"><b>🛒 To buy</b><span class="big" id="peekCount">0</span></div>
-      <div class="magnets" id="peek"></div>
+
+      <div id="camBox" class="camBox">
+        <div id="cam"></div>
+        <div id="camPlaceholder" class="camPlaceholder">Camera preview · <span id="facingLabel">back</span></div>
+        <span class="scanline"></span>
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div id="countdown" class="countdownWrap hidden"><span></span></div>
+        <div id="analysing" class="analysing hidden"><span>Analysing…</span></div>
+        <div id="flash" class="flash"></div>
+      </div>
+
+      <div class="camCtrl">
+        <button id="camSwitch" class="flipBtn" aria-label="Flip camera">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/><path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/><circle cx="12" cy="12" r="3"/><path d="m18 22-3-3 3-3"/><path d="m6 2 3 3-3 3"/></svg>
+        </button>
+        <button id="captureBtn" class="captureBtn" aria-label="Capture"><span class="dot"></span></button>
+        <span style="width:72px"></span>
+      </div>
+
+      <div class="statusCard">
+        <div class="lbl mono">Status</div>
+        <div class="msg" id="status">Hold an item inside the frame, then tap the button.</div>
+      </div>
+
+      <div id="last" class="lastCard hidden">
+        <span class="em" id="lastEmo"></span>
+        <span class="mid"><span class="lbl mono" id="lastLbl">Added</span><span class="nm" id="lastTxt"></span></span>
+        <button id="undoBtn" class="undoBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>Undo
+        </button>
+      </div>
+
+      <div class="fieldWrap">
+        <div class="manualRow">
+          <input id="nameIn" placeholder="Or type it, e.g. Baking soda" aria-label="Type an item" autocomplete="off">
+          <button id="nameBtn">Add</button>
+        </div>
+        <div id="nameSuggest" class="suggest hidden" style="top:calc(100% + 8px)"></div>
+      </div>
     </div>
   </div>
-  <div class="hemie hemie-sleep" aria-hidden="true">
-    <svg viewBox="0 0 100 100" width="86" height="86">
-      <ellipse cx="50" cy="58" rx="34" ry="30" fill="var(--mustard)"/>
-      <path d="M22 42 Q50 24 78 42 L78 48 Q50 34 22 48 Z" fill="var(--berry)"/>
-      <path d="M32 58 q6 6 12 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M56 58 q6 6 12 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <circle cx="30" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
-      <circle cx="70" cy="68" r="5" fill="var(--rose)" opacity=".5"/>
-      <path d="M40 74 q10 7 20 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
-    </svg>
-    <span class="zzz">z</span><span class="zzz">z</span><span class="zzz">z</span>
+
+  <div id="modal" class="confirmWrap hidden">
+    <div class="confirmSheet">
+      <div class="confirmHead">
+        <span class="em" id="modalEmo"></span>
+        <div style="min-width:0">
+          <div class="lbl mono">AI thinks this is</div>
+          <div class="nm" id="modalCode"></div>
+        </div>
+      </div>
+      <div class="confirmInputRow">
+        <input id="modalIn" aria-label="Item name">
+        <button id="modalMic" class="iconBtn mic hidden" aria-label="Say it instead"><span class="ring hidden" id="modalMicRing"></span>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+        </button>
+      </div>
+      <div class="confirmBtns">
+        <button id="modalSkip" class="ignoreBtn">Ignore</button>
+        <button id="modalSave" class="addBtn">Add to list</button>
+      </div>
+    </div>
   </div>
-  <div class="tapcue" id="tapcue">👆 Tap anywhere to continue</div>
+
+  <div id="idle" class="saver">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div id="hemieStage" class="stage"></div>
+    <div id="hemieShake" class="saverBody">
+      <div class="saverLbl mono">Hemie's Kitchen</div>
+      <div class="saverTime"><span class="d" id="clkDate"></span><span class="ap mono" id="clkAp"></span></div>
+      <div style="flex:1;min-height:24px"></div>
+      <div id="hemieStrip" class="strip glass">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-right:12px"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+        <span class="wx"><span class="t" id="wxTemp">--°</span><span class="r mono" id="wxRange">H -- · L --</span></span>
+        <span class="divider"></span>
+        <span class="cnt"><span class="n" id="peekCount">0</span><span class="l mono">to buy</span></span>
+        <span class="peekRow" id="peek"></span>
+      </div>
+    </div>
+    <div class="tapcue"><span class="dot2"></span>Tap to continue</div>
+  </div>
+
 </div>
 
+<script>window.__resources = { walkSheet: "hemie-walk.png", helloSheet: "hemie-hello.png" };</script>
+<script src="hemie-actor.js"></script>
 <script>
 /* ===================== CONFIG ===================== */
 var DB_URL     = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
 var LIST_KEY   = "EtFnu4RVP0OF77liJLB7";
 var CLAUDE_KEY = "__CLAUDE_KEY__";
-/* Optional settings */
 var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;
 var IDLE_AFTER_SECONDS = 120;
-var NIGHT_FROM = 23, NIGHT_TO = 6;
-var LIGHT_UNTIL_HOUR = 19; /* light mode before 7pm, dark mode from 7pm onward */
+var LIGHT_UNTIL_HOUR = 19;
 /* ================================================== */
 
 (function(){
@@ -507,9 +404,9 @@ function api(method, path, body){
 function timeout(p, ms){
   return Promise.race([p, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error("timeout")); }, ms); })]);
 }
-function setSync(msg){ $("sync").textContent = msg; }
+function setSync(msg){ $("syncLbl").textContent = msg; }
 
-/* ---------- remembered item names (so repeat scans land on the same item, and to power "Add something" suggestions) ---------- */
+/* ---------- remembered item names ---------- */
 var knownNames = {};
 function normalizeKey(s){ return (s || "").toLowerCase().replace(/[^a-z0-9 ]+/g, "").trim(); }
 function wordsOf(s){ return normalizeKey(s).split(/\s+/).filter(Boolean); }
@@ -549,7 +446,7 @@ function findKnownMatch(guess){
   return best;
 }
 
-/* ---------- smart suggestions for the manual "Add" fields ---------- */
+/* ---------- suggestions ---------- */
 function scoreSuggestion(q, name){
   var n = normalizeKey(name);
   if(!n) return -1;
@@ -588,12 +485,12 @@ function setupSuggest(input, box, onPick){
   function show(names){
     box.innerHTML = "";
     if(!names.length){ box.className = "suggest hidden"; return; }
+    var lbl = document.createElement("div"); lbl.className = "lbl mono"; lbl.textContent = "Suggestions"; box.appendChild(lbl);
     names.forEach(function(name){
-      var row = document.createElement("div");
-      row.className = "suggestRow";
-      var emo = document.createElement("span"); emo.className = "suggestEmo"; emo.textContent = emojiFor(name);
-      var nm = document.createElement("span"); nm.className = "suggestName"; nm.textContent = name;
-      row.appendChild(emo); row.appendChild(nm);
+      var row = document.createElement("div"); row.className = "suggestRow";
+      var ic = document.createElement("span"); ic.className = "ic"; ic.textContent = emojiFor(name);
+      var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = name;
+      row.appendChild(ic); row.appendChild(nm);
       row.onclick = function(){ onPick(name); box.className = "suggest hidden"; };
       box.appendChild(row);
     });
@@ -610,8 +507,8 @@ function refresh(){
   return Promise.all([api("GET", "/items"), loadKnownNames()]).then(function(results){
     items = results[0] || {};
     render();
-    setSync("Synced " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}));
-  }).catch(function(e){ setSync("Can't reach the list (" + e.message + "). Retrying…"); });
+    setSync("Synced");
+  }).catch(function(e){ setSync("Offline"); });
 }
 
 /* ---------- add / undo ---------- */
@@ -625,10 +522,14 @@ function addItem(id, name){
       items[id] = next;
       undoStack.push({id: id, prev: prev});
       showLast(next.name, next.qty);
-      showHemieReaction(next.name);
       beep(); render();
     });
   }).catch(function(e){ status("Couldn't add: " + e.message, true); });
+}
+function incItem(id){
+  var it = items[id]; if(!it) return;
+  it.qty = (it.qty || 1) + 1; it.t = Date.now(); render();
+  api("PATCH", "/items/" + id, {qty: it.qty, t: it.t}).catch(refresh);
 }
 
 function undo(){
@@ -636,36 +537,19 @@ function undo(){
   var p = u.prev ? api("PUT", "/items/" + u.id, u.prev) : api("DELETE", "/items/" + u.id);
   p.then(function(){
     if(u.prev) items[u.id] = u.prev; else delete items[u.id];
-    setLast("↩️", u.prev ? "Back to ×" + (u.prev.qty || 1) : "Removed", "That one was undone.", null);
-    $("undoBtn").className = undoStack.length ? "undo" : "undo hidden";
+    setLast("↩️", u.prev ? "Back to ×" + (u.prev.qty || 1) : "Removed", null);
     render();
   });
 }
 
-function setLast(emo, title, sub, stamp){
+function setLast(emo, title, undoVisible){
   $("lastEmo").textContent = emo;
-  var t = $("lastTxt"); t.innerHTML = "";
-  t.appendChild(document.createTextNode(title));
-  var s = document.createElement("small"); s.textContent = sub; t.appendChild(s);
-  var box = $("last"), old = box.querySelector(".stamp"); if(old) box.removeChild(old);
-  if(stamp){ var st = document.createElement("span"); st.className = "stamp"; st.textContent = stamp; box.appendChild(st); }
-  box.className = "last"; void box.offsetWidth; box.className = stamp ? "last pop" : "last";
+  $("lastTxt").textContent = title;
+  $("last").className = "lastCard";
+  $("undoBtn").className = undoVisible === false ? "undoBtn hidden" : "undoBtn";
 }
 function showLast(name, qty){
-  setLast(emojiFor(name), name, qty > 1 ? "Now ×" + qty + " on the list" : "Added to the shopping list", qty > 1 ? "+1 more!" : "Added!");
-  $("undoBtn").className = "undo";
-}
-
-/* ---------- Hemie reaction popup ---------- */
-var hemieTimer = null;
-function showHemieReaction(name){
-  var pop = $("hemiePop");
-  $("hemieBubble").textContent = emojiFor(name) + " " + name + "!";
-  if(hemieTimer) clearTimeout(hemieTimer);
-  pop.className = "hemiePop hidden";
-  void pop.offsetWidth;
-  pop.className = "hemiePop show";
-  hemieTimer = setTimeout(function(){ pop.className = "hemiePop hidden"; }, 2200);
+  setLast(emojiFor(name), name + (qty > 1 ? " ×" + qty : ""), true);
 }
 
 /* ---------- beep ---------- */
@@ -685,48 +569,43 @@ function beep(){
 }
 
 /* ---------- camera ---------- */
-var stream = null, facingMode = "user";
-function status(msg, bad, thinking){
-  var s = $("status");
-  s.textContent = msg;
-  s.className = bad ? "status bad" : thinking ? "status thinking" : "status";
+var stream = null, facingMode = "user", scanOpen = false;
+function status(msg, bad){
+  $("status").textContent = msg;
+  $("status").style.color = bad ? "var(--rose)" : "var(--ink)";
 }
 
 function stopCamera(){
   if(stream){ stream.getTracks().forEach(function(t){ t.stop(); }); stream = null; }
   $("cam").innerHTML = "";
-  $("camBox").className = "camBox idle";
-  $("captureBtn").className = "captureBtn hidden";
-  $("camSwitch").className = "camSwitch hidden";
-  $("startBtn").className = "startBtn hidden";
+  $("camPlaceholder").className = "camPlaceholder";
+  $("captureBtn").disabled = true;
 }
 
 function startCamera(){
   unlockAudio();
   if(stream) return;
-  $("startBtn").className = "hidden";
+  $("facingLabel").textContent = facingMode === "user" ? "front" : "back";
   status("Starting camera…");
   navigator.mediaDevices.getUserMedia({
     video: { facingMode: facingMode, width: {ideal:480, max:480}, height: {ideal:360, max:360}, frameRate: {ideal:15, max:15} }
   }).then(function(s){
-    if(idleOn || !scanOpen){ s.getTracks().forEach(function(t){ t.stop(); }); return; }
+    if(!scanOpen){ s.getTracks().forEach(function(t){ t.stop(); }); return; }
     stream = s;
     var v = document.createElement("video");
     v.setAttribute("playsinline", "");
     v.setAttribute("autoplay", "");
     v.muted = true;
     v.srcObject = s;
+    v.className = facingMode === "user" ? "mirror" : "";
     $("cam").innerHTML = "";
-    $("cam").className = "cam" + (facingMode === "user" ? " mirror" : "");
     $("cam").appendChild(v);
-    $("camBox").className = "camBox streaming";
-    $("captureBtn").className = "captureBtn";
-    $("camSwitch").className = "camSwitch";
-    status("Point at an item and tap 📷 Capture");
+    $("camPlaceholder").className = "camPlaceholder hidden";
+    $("captureBtn").disabled = false;
+    status("Hold an item inside the frame, then tap the button.");
     poke();
   }).catch(function(){
-    $("startBtn").className = "startBtn";
-    status("Camera didn't start. Allow camera in Settings → Safari → Camera, then tap Start again.", true);
+    status("Camera unavailable. Allow camera access in Settings → Safari → Camera.", true);
   });
 }
 
@@ -738,30 +617,22 @@ function captureAndIdentify(){
   $("captureBtn").disabled = true;
 
   var n = 2;
-  var cd = $("countdown");
-  function tick(){
-    cd.className = "countdown hidden";
-    void cd.offsetWidth;
-    cd.textContent = n;
-    cd.className = "countdown";
-  }
-  tick();
+  var cd = $("countdown"), cdNum = cd.querySelector("span");
+  function tick(){ cdNum.textContent = n; }
+  cd.className = "countdownWrap"; tick();
   var timer = setInterval(function(){
     n--;
     if(n <= 0){
       clearInterval(timer);
-      cd.className = "countdown hidden";
+      cd.className = "countdownWrap hidden";
       doCapture(v);
-    } else {
-      tick();
-    }
+    } else { tick(); }
   }, 750);
 }
 
 function doCapture(v){
-  /* flash */
-  $("camBox").className = "camBox streaming flash";
-  setTimeout(function(){ $("camBox").className = "camBox streaming"; }, 300);
+  $("flash").style.opacity = ".9";
+  setTimeout(function(){ $("flash").style.opacity = "0"; }, 180);
 
   var canvas = document.createElement("canvas");
   canvas.width = Math.min(v.videoWidth, 800);
@@ -769,11 +640,13 @@ function doCapture(v){
   canvas.getContext("2d").drawImage(v, 0, 0, canvas.width, canvas.height);
   var b64 = canvas.toDataURL("image/jpeg", 0.85).split(",")[1];
 
-  status("AI is identifying…", false, true);
+  $("analysing").className = "analysing";
+  status("AI is identifying…");
 
   identifyWithClaude(b64).then(function(name){
     busy = false;
     $("captureBtn").disabled = false;
+    $("analysing").className = "analysing hidden";
     if(name){
       var matched = findKnownMatch(name);
       status(matched ? "Matches an item you've scanned before." : "Found: " + name + ". Confirm below.");
@@ -784,6 +657,7 @@ function doCapture(v){
   }).catch(function(e){
     busy = false;
     $("captureBtn").disabled = false;
+    $("analysing").className = "analysing hidden";
     status("AI unavailable. Type the item below.", true);
   });
 }
@@ -819,14 +693,14 @@ function identifyWithClaude(b64){
 }
 
 function showConfirm(suggestedName){
-  $("modalTitle").textContent = "I think this is…";
-  $("modalCode").textContent = "Edit the name if needed, then tap Add.";
+  $("modalEmo").textContent = emojiFor(suggestedName);
+  $("modalCode").textContent = suggestedName;
   $("modalIn").value = suggestedName;
-  $("modal").className = "modal";
+  $("modal").className = "confirmWrap";
   setTimeout(function(){ $("modalIn").focus(); $("modalIn").select(); }, 100);
 
   function close(name){
-    $("modal").className = "modal hidden";
+    $("modal").className = "confirmWrap hidden";
     $("modalSave").onclick = $("modalSkip").onclick = $("modalIn").onkeydown = null;
     var finalName = (name || "").trim();
     if(!finalName){ status("Item skipped."); return; }
@@ -835,25 +709,25 @@ function showConfirm(suggestedName){
     addItem(key, finalName).then(function(){ status("Ready — point at the next item."); });
   }
 
-  $("modalSave").textContent = "✓ Add to list";
-  $("modalSkip").textContent = "Ignore";
   $("modalSave").onclick = function(){ close($("modalIn").value.trim()); };
   $("modalSkip").onclick = function(){ close(""); };
   $("modalIn").onkeydown = function(e){ if(e.keyCode === 13) close($("modalIn").value.trim()); };
+  $("modalIn").oninput = function(){ $("modalCode").textContent = $("modalIn").value || suggestedName; $("modalEmo").textContent = emojiFor($("modalIn").value || suggestedName); };
 }
 
-/* ---------- scan panel open/close (no page navigation) ---------- */
-var scanOpen = false;
+/* ---------- scan panel open/close ---------- */
 function openScan(){
   scanOpen = true;
   poke();
-  $("scanPanel").className = "scanPanel open";
+  $("scrim").className = "scrim on";
+  $("sheet").className = "sheet glass open";
   startCamera();
 }
 function closeScan(){
   scanOpen = false;
   stopCamera();
-  $("scanPanel").className = "scanPanel hidden";
+  $("scrim").className = "scrim";
+  $("sheet").className = "sheet glass";
   poke();
   refresh();
 }
@@ -862,89 +736,74 @@ function closeScan(){
 var idleOn = false, lastActivity = Date.now();
 var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 function pad(n){ return (n < 10 ? "0" : "") + n; }
-function isNight(h){ return NIGHT_FROM > NIGHT_TO ? (h >= NIGHT_FROM || h < NIGHT_TO) : (h >= NIGHT_FROM && h < NIGHT_TO); }
 function poke(){ lastActivity = Date.now(); }
 
-/* ---------- light/dark theme by time of day ---------- */
-function applyTimeTheme(){
-  var light = new Date().getHours() < LIGHT_UNTIL_HOUR;
-  document.body.classList.toggle("light", light);
-  var meta = document.querySelector('meta[name="theme-color"]');
-  if(meta) meta.setAttribute("content", light ? "#FBF3E7" : "#120D12");
-}
-
+var hemie = null;
 function enterIdle(){
-  if(idleOn || !$("modal").className.match(/hidden/)) return;
+  if(idleOn || $("modal").className === "confirmWrap") return;
   idleOn = true;
   if(scanOpen) closeScan();
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   tickClock(); renderPeek(); loadWeather(false);
-  $("idle").className = "idle-screen" + (isNight(new Date().getHours()) ? " night" : "");
+  $("idle").className = "saver on";
+  if(window.HemieActor && !hemie){
+    hemie = window.HemieActor.create({ stage: $("hemieStage"), strip: $("hemieStrip"), shake: $("hemieShake") });
+  }
+  if(hemie){ hemie.set({act:"random", gap:150, line:"Hi there!"}); hemie.start(3); }
 }
 function exitIdle(){
   if(!idleOn) return;
   idleOn = false; poke();
-  $("idle").className = "idle-screen hidden";
+  $("idle").className = "saver";
+  if(hemie) hemie.stop();
 }
 function tickClock(){
   var d = new Date(), h = d.getHours();
-  $("clkTime").textContent = (h % 12 || 12) + ":" + pad(d.getMinutes());
-  $("clkAp").textContent = h < 12 ? "am" : "pm";
   $("clkDate").textContent = DAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()];
-  if(idleOn) $("idle").className = "idle-screen" + (isNight(h) ? " night" : "");
+  $("clkAp").textContent = (h % 12 || 12) + ":" + pad(d.getMinutes()) + " " + (h < 12 ? "am" : "pm");
+  $("headDate").textContent = DAYS[d.getDay()].slice(0,3) + ", " + d.getDate() + " " + MONTHS_SHORT[d.getMonth()] + " · " + (h % 12 || 12) + ":" + pad(d.getMinutes());
+}
+function greeting(){
+  var h = new Date().getHours();
+  if(h < 5) return "Still up?";
+  if(h < 12) return "Good morning.";
+  if(h < 17) return "Good afternoon.";
+  if(h < 21) return "Good evening.";
+  return "Winding down.";
 }
 function renderPeek(){
   var ids = sortedIds(function(i){ return !i.done; });
   $("peekCount").textContent = ids.length;
   var box = $("peek"); box.innerHTML = "";
-  ids.slice(0, 8).forEach(function(id){
-    var m = document.createElement("span"); m.className = "mag";
-    m.textContent = emojiFor(items[id].name) + " " + items[id].name + (items[id].qty > 1 ? " ×" + items[id].qty : "");
-    box.appendChild(m);
+  ids.slice(0, 6).forEach(function(id){
+    var c = document.createElement("span"); c.className = "peekChip";
+    var e = document.createElement("span"); e.textContent = emojiFor(items[id].name);
+    c.appendChild(e); c.appendChild(document.createTextNode(items[id].name));
+    box.appendChild(c);
   });
-  if(ids.length > 8){ var more = document.createElement("span"); more.className = "mag"; more.textContent = "+" + (ids.length - 8) + " more"; box.appendChild(more); }
-  if(!ids.length){ var ok = document.createElement("span"); ok.className = "mag"; ok.textContent = "✨ All stocked up"; box.appendChild(ok); }
+  if(!ids.length){ var ok = document.createElement("span"); ok.className = "peekChip"; ok.textContent = "✨ All stocked up"; box.appendChild(ok); }
 }
 
 /* weather via Open-Meteo */
 var wxLoaded = 0;
-function wxInfo(code, day){
-  if(code === 0) return day ? ["☀️","Clear and sunny"] : ["🌙","Clear night"];
-  if(code <= 2) return day ? ["🌤️","Partly cloudy"] : ["☁️","Partly cloudy"];
-  if(code === 3) return ["☁️","Cloudy"];
-  if(code === 45 || code === 48) return ["🌫️","Hazy / foggy"];
-  if(code >= 51 && code <= 57) return ["🌦️","Light drizzle"];
-  if(code >= 61 && code <= 67) return ["🌧️","Raining"];
-  if(code >= 80 && code <= 82) return ["🌦️","Rain showers"];
-  if(code >= 95) return ["⛈️","Thunderstorm"];
-  return ["⛅","Mixed weather"];
-}
-function hourLabel(h){ return (h % 12 || 12) + (h < 12 ? "am" : "pm"); }
 function loadWeather(force){
   if(!force && Date.now() - wxLoaded < 30 * 60 * 1000) return;
   var url = "https://api.open-meteo.com/v1/forecast?latitude=" + WEATHER_LAT + "&longitude=" + WEATHER_LON +
-    "&current=temperature_2m,weather_code,is_day&hourly=precipitation_probability" +
-    "&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=2";
+    "&current=temperature_2m&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
   timeout(fetch(url).then(function(r){ return r.json(); }), 10000).then(function(d){
-    var c = d.current, info = wxInfo(c.weather_code, c.is_day === 1);
-    $("wxIcon").textContent = info[0];
-    $("wxTemp").textContent = Math.round(c.temperature_2m) + "°";
-    $("wxDesc").textContent = info[1] + " · " + Math.round(d.daily.temperature_2m_min[0]) + "° – " + Math.round(d.daily.temperature_2m_max[0]) + "°";
-    var now = new Date();
-    var key = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + "T" + pad(now.getHours()) + ":00";
-    var t = d.hourly.time, p = d.hourly.precipitation_probability, start = t.indexOf(key), msg = "🌂 No rain expected soon", wet = false;
-    if(c.weather_code >= 51){ msg = "☔ Raining now. Bring the laundry in!"; wet = true; }
-    else if(start >= 0){
-      for(var i = start + 1; i < Math.min(start + 13, t.length); i++){
-        if(p[i] >= 60){ msg = "☔ Rain likely around " + hourLabel(parseInt(t[i].substr(11, 2), 10)) + " (" + p[i] + "%)"; wet = true; break; }
-      }
-    }
-    $("wxRain").textContent = msg; $("wxRain").className = "rain" + (wet ? " wet" : "");
+    $("wxTemp").textContent = Math.round(d.current.temperature_2m) + "°";
+    $("wxRange").textContent = "H " + Math.round(d.daily.temperature_2m_max[0]) + " · L " + Math.round(d.daily.temperature_2m_min[0]);
     wxLoaded = Date.now();
-  }).catch(function(){
-    if(!wxLoaded){ $("wxDesc").textContent = "Weather unavailable"; $("wxRain").className = "hidden"; }
-  });
+  }).catch(function(){});
+}
+
+function applyTimeTheme(){
+  var light = new Date().getHours() < LIGHT_UNTIL_HOUR;
+  $("hk").classList.toggle("light", light);
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content", light ? "#f3f0ec" : "#0c0a10");
 }
 
 function setupIdle(){
@@ -953,8 +812,8 @@ function setupIdle(){
   applyTimeTheme();
   setInterval(function(){
     applyTimeTheme();
-    if(idleOn){ tickClock(); loadWeather(false); }
-    else if(!busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
+    if(idleOn){ tickClock(); loadWeather(false); } else { tickClock(); }
+    if(!idleOn && !busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
   }, 5000);
   poke();
 }
@@ -965,14 +824,17 @@ function sortedIds(filter){
     .sort(function(a, b){ return (items[b].t || 0) - (items[a].t || 0); });
 }
 function makeRow(id){
-  var it = items[id], li = document.createElement("li");
-  li.className = "item" + (it.done ? " done" : "");
-  var ck = document.createElement("span"); ck.className = "check"; ck.textContent = it.done ? "✓" : "";
-  var em = document.createElement("span"); em.className = "emo"; em.textContent = emojiFor(it.name);
-  var nm = document.createElement("span"); nm.className = "name"; nm.textContent = it.name;
+  var it = items[id], li = document.createElement("div");
+  li.className = "row";
+  var ck = document.createElement("span"); ck.className = "chk"; ck.innerHTML = "<span></span>";
+  var em = document.createElement("span"); em.className = "em"; em.textContent = emojiFor(it.name);
+  var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = it.name;
   li.appendChild(ck); li.appendChild(em); li.appendChild(nm);
-  if(it.qty > 1){ var q = document.createElement("span"); q.className = "qty"; q.textContent = "×" + it.qty; li.appendChild(q); }
-  var del = document.createElement("button"); del.className = "del"; del.setAttribute("aria-label", "Remove " + it.name); del.textContent = "×";
+  var qty = document.createElement("button"); qty.className = "qty mono"; qty.textContent = "×" + (it.qty || 1);
+  qty.onclick = function(e){ e.stopPropagation(); incItem(id); };
+  li.appendChild(qty);
+  var del = document.createElement("button"); del.className = "del"; del.setAttribute("aria-label", "Remove " + it.name);
+  del.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
   del.onclick = function(e){ e.stopPropagation(); delete items[id]; render(); api("DELETE", "/items/" + id).catch(refresh); };
   li.appendChild(del);
   li.onclick = function(){
@@ -981,21 +843,54 @@ function makeRow(id){
   };
   return li;
 }
-function emptyBox(emo, msg){ return '<div class="empty"><span class="big">' + emo + '</span>' + msg + '</div>'; }
-
+function makeDoneRow(id){
+  var it = items[id], li = document.createElement("div");
+  li.className = "doneRow";
+  li.innerHTML = '<span class="chk"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>' +
+    '<span class="em">' + emojiFor(it.name) + '</span><span class="nm"></span><span class="qty mono">×' + (it.qty || 1) + '</span>';
+  li.querySelector(".nm").textContent = it.name;
+  li.onclick = function(){
+    it.done = !it.done; it.t = Date.now(); render();
+    api("PATCH", "/items/" + id, {done: it.done, t: it.t}).catch(refresh);
+  };
+  return li;
+}
 function render(){
   var toBuy = sortedIds(function(i){ return !i.done; });
   var done = sortedIds(function(i){ return i.done; });
   var ul = $("toBuy"); ul.innerHTML = "";
   toBuy.forEach(function(id){ ul.appendChild(makeRow(id)); });
-  if(!toBuy.length) ul.innerHTML = done.length ? emptyBox("🎉", "Everything's in the trolley. Go pay!") : emptyBox("🧺", "Nothing to buy. Tap 📷 to scan something.");
+  $("emptyBox").className = toBuy.length ? "empty hidden" : "empty";
   $("toBuyCount").textContent = toBuy.length;
-  $("heroSub").textContent = toBuy.length ? toBuy.length + (toBuy.length === 1 ? " thing" : " things") + " ran out at home." : "All stocked up.";
+  $("greetLine").textContent = greeting() + " " + (toBuy.length ? toBuy.length + (toBuy.length === 1 ? " thing to buy." : " things to buy.") : "All stocked up.");
   var dl = $("doneList"); dl.innerHTML = "";
-  done.forEach(function(id){ dl.appendChild(makeRow(id)); });
+  done.forEach(function(id){ dl.appendChild(makeDoneRow(id)); });
   $("doneCount").textContent = done.length;
   $("doneWrap").className = done.length ? "" : "hidden";
+  renderUsuals(toBuy);
   if(idleOn) renderPeek();
+}
+function renderUsuals(toBuyIds){
+  var inList = {};
+  toBuyIds.forEach(function(id){ inList[normalizeKey(items[id].name)] = true; });
+  var box = $("usuals"); box.innerHTML = "";
+  var picks = Object.keys(knownNames).map(function(k){ return {name: nameOf(knownNames[k]), stats: statsOf(knownNames[k])}; })
+    .filter(function(e){ return e.name && !inList[normalizeKey(e.name)]; })
+    .sort(function(a,b){ return b.stats.count - a.stats.count; })
+    .slice(0, 6);
+  if(!picks.length){ box.className = "usuals hidden"; return; }
+  box.className = "usuals";
+  picks.forEach(function(p){
+    var btn = document.createElement("button"); btn.className = "usual";
+    btn.innerHTML = '<span class="em"></span><span></span><span class="plus">+</span>';
+    btn.querySelector(".em").textContent = emojiFor(p.name);
+    btn.querySelectorAll("span")[1].textContent = p.name;
+    btn.onclick = function(){
+      var key = "n-" + p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("m" + Date.now());
+      addItem(key, p.name);
+    };
+    box.appendChild(btn);
+  });
 }
 
 /* ---------- wiring ---------- */
@@ -1009,10 +904,10 @@ function manualAdd(input){
 function onEnter(input, fn){ input.onkeydown = function(e){ if(e.keyCode === 13) fn(); }; }
 
 /* ---------- voice input ---------- */
-function setupVoiceInput(btn, input){
+function setupVoiceInput(btn, ring, input){
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR || !btn) return;
-  btn.className = "mic";
+  btn.className = "iconBtn mic";
   var rec = new SR();
   rec.lang = "en-US";
   rec.interimResults = false;
@@ -1023,13 +918,13 @@ function setupVoiceInput(btn, input){
     input.value = text.charAt(0).toUpperCase() + text.slice(1);
     input.focus();
   };
-  rec.onend = function(){ listening = false; btn.className = "mic"; };
-  rec.onerror = function(){ listening = false; btn.className = "mic"; };
+  rec.onend = function(){ listening = false; btn.className = "iconBtn mic"; ring.className = "ring hidden"; };
+  rec.onerror = function(){ listening = false; btn.className = "iconBtn mic"; ring.className = "ring hidden"; };
   btn.onclick = function(){
     unlockAudio();
     if(listening){ rec.stop(); return; }
-    listening = true; btn.className = "mic listening";
-    try{ rec.start(); }catch(e){ listening = false; btn.className = "mic"; }
+    listening = true; btn.className = "iconBtn mic on"; ring.className = "ring";
+    try{ rec.start(); }catch(e){ listening = false; btn.className = "iconBtn mic"; ring.className = "ring hidden"; }
   };
 }
 
@@ -1038,7 +933,7 @@ function init(){
 
   $("fab").onclick = openScan;
   $("scanClose").onclick = closeScan;
-  $("startBtn").onclick = startCamera;
+  $("scrim").onclick = closeScan;
   $("captureBtn").onclick = captureAndIdentify;
   $("camSwitch").onclick = function(){
     facingMode = (facingMode === "user") ? "environment" : "user";
@@ -1051,14 +946,14 @@ function init(){
   setupSuggest($("nameIn"), $("nameSuggest"), function(name){ $("nameIn").value = name; addName(); });
 
   var add = function(){ manualAdd($("addIn")); };
-  $("addBtn").onclick = add; onEnter($("addIn"), add);
+  $("addIn").onkeydown = function(e){ if(e.keyCode === 13) add(); };
   $("clearBtn").onclick = function(){
     var patch = {}; sortedIds(function(i){ return i.done; }).forEach(function(id){ patch[id] = null; delete items[id]; });
     render(); api("PATCH", "/items", patch).catch(refresh);
   };
-  setupVoiceInput($("addMic"), $("addIn"));
+  setupVoiceInput($("addMic"), $("addMicRing"), $("addIn"));
   setupSuggest($("addIn"), $("addSuggest"), function(name){ $("addIn").value = name; add(); });
-  setupVoiceInput($("modalMic"), $("modalIn"));
+  setupVoiceInput($("modalMic"), $("modalMicRing"), $("modalIn"));
 
   setupIdle();
   refresh();
@@ -1067,7 +962,7 @@ function init(){
     tick++;
     if(document.hidden || busy) return;
     if(idleOn && tick % 5) return;
-    if(stream && tick % 3) return; /* camera streaming: sync less often, keep CPU for video */
+    if(stream && tick % 3) return;
     refresh();
   }, 4000);
   document.addEventListener("visibilitychange", function(){ if(!document.hidden) refresh(); });
