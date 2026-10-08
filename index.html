@@ -19,8 +19,7 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
 .hk{
   --bg:#0c0a10;--ink:#f6f1ea;--muted:rgba(246,241,234,.64);--glass:rgba(255,255,255,.06);--glass-hi:rgba(255,255,255,.11);
   --line:rgba(255,255,255,.13);--accent:#ffb35c;--accent-ink:#1a1208;--accent-text:#ffc27f;--glow:rgba(255,179,92,.45);
-  --rose:#ff7a9c;--mint:#6fe3c1;--mint-ink:#08201a;--a1:rgba(255,138,61,.32);
-  --scrim:rgba(5,4,8,.62);--panel:rgba(20,16,26,.86);--card:rgba(14,11,18,.62);--cam:#141118;
+  --scrim:rgba(5,4,8,.62);--panel:rgba(20,16,26,.86);--cam:#141118;
   /* 7-segment clock "lit" gradient: a pale highlight fading to the accent
      reads as a bright glowing LED against this near-black background. */
   --seg-on-a:#ffe3ad;--seg-on-b:var(--accent);
@@ -28,8 +27,7 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
 .hk.light{
   --bg:#f3f0ec;--ink:#1b1622;--muted:rgba(27,22,34,.62);--glass:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.85);
   --line:rgba(27,22,34,.16);--accent:#f08a2c;--accent-ink:#1a1208;--accent-text:#9a4a08;--glow:rgba(240,138,44,.35);
-  --rose:#e2557a;--mint:#1f9e7c;--mint-ink:#ffffff;--a1:rgba(255,170,100,.38);
-  --scrim:rgba(27,22,34,.42);--panel:rgba(248,246,250,.9);--card:rgba(255,255,255,.72);--cam:#1b1622;
+  --scrim:rgba(27,22,34,.42);--panel:rgba(248,246,250,.9);--cam:#1b1622;
   /* The dark theme's pale-cream highlight is nearly invisible against this
      near-white background - use the darker accent-text tone instead so the
      lit segments stay clearly legible in daylight. */
@@ -39,7 +37,7 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
 .hk input::placeholder{color:var(--muted);opacity:1}
 .mono{font-family:'JetBrains Mono',monospace}
 .glass{-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
-.grad{background:linear-gradient(0deg,var(--accent),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad{color:var(--accent)}
 
 @keyframes hk-breathe{0%,100%{opacity:.4}50%{opacity:1}}
 @keyframes hk-ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
@@ -52,7 +50,7 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
 .wrap{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 28px) 20px 170px}
 
 .topline{display:flex;align-items:center;justify-content:space-between;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:26px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);margin-right:10px;display:inline-block}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:10px;display:inline-block}
 h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-spacing:-.03em}
 .sub{font-size:19px;color:var(--muted);margin:10px 0 26px}
 
@@ -91,7 +89,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .row .qty{min-width:60px;height:52px;padding:0 14px;margin-left:8px;border-radius:16px;border:1.5px solid var(--accent);background:transparent;color:var(--accent-text);font-size:18px;cursor:pointer;flex:none}
 .row .qty:active{background:var(--accent);color:var(--accent-ink)}
 .row .del{width:52px;height:52px;margin-left:4px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;flex:none}
-.row .del:active{background:var(--glass-hi);color:var(--rose)}
+.row .del:active{background:var(--glass-hi);color:var(--ink)}
 
 .empty{padding:30px 26px;border-radius:22px;border:1px dashed var(--line)}
 .empty .big{font-size:24px;font-weight:300}
@@ -100,7 +98,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .doneRow{display:flex;align-items:center;min-height:66px;padding:4px 14px 4px 6px;border-radius:20px;cursor:pointer}
 .doneRow:active{background:var(--glass)}
 .doneRow .chk{width:60px;height:56px;display:flex;align-items:center;justify-content:center;flex:none}
-.doneRow .chk span{width:32px;height:32px;border-radius:10px;background:var(--mint);color:var(--mint-ink);box-shadow:0 0 14px var(--mint);display:flex;align-items:center;justify-content:center}
+.doneRow .chk span{width:32px;height:32px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center}
 .doneRow .em{width:44px;font-size:24px;flex:none;opacity:.55;text-align:center;margin-right:10px}
 .doneRow .nm{flex:1;min-width:0;font-size:18px;color:var(--muted);text-decoration:line-through}
 .doneRow .qty{font-size:15px;color:var(--muted)}
@@ -149,10 +147,10 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .statusCard .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .statusCard .msg{font-size:20px;line-height:1.35}
 
-.lastCard{display:flex;align-items:center;padding:12px;border-radius:22px;background:var(--glass);border:1px solid var(--mint);margin-bottom:12px}
+.lastCard{display:flex;align-items:center;padding:12px;border-radius:22px;background:var(--glass);border:1px solid var(--accent);margin-bottom:12px}
 .lastCard .em{width:56px;height:56px;border-radius:16px;background:var(--glass-hi);display:flex;align-items:center;justify-content:center;font-size:30px;flex:none;margin-right:14px}
 .lastCard .mid{flex:1;min-width:0}
-.lastCard .lbl{display:block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
+.lastCard .lbl{display:block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text)}
 .lastCard .nm{display:block;font-size:20px}
 .undoBtn{display:flex;align-items:center;height:56px;padding:0 18px;border-radius:16px;border:1px solid var(--line);background:var(--glass-hi);color:var(--ink);font-size:17px;cursor:pointer}
 .undoBtn svg{margin-right:8px}
@@ -179,7 +177,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
    every composite even sitting still; a single background-image is painted
    once like any other background and needs no extra layer at all. Still
    reads as a soft, atmospheric glow - just one paint instead of three. */
-.saver{position:absolute;top:0;left:0;right:0;bottom:0;z-index:60;background:radial-gradient(ellipse 80% 55% at 50% 18%,var(--a1) 0%,transparent 60%),var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
+.saver{position:absolute;top:0;left:0;right:0;bottom:0;z-index:60;background:var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
 .saver.on{opacity:1;pointer-events:auto}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
 .saverLbl{font-size:clamp(18px,4.5vw,23px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
@@ -210,17 +208,6 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .colon{display:flex;flex-direction:column;justify-content:center;margin:0 clamp(4px,1.1vw,7px)}
 .colon span{width:clamp(9px,2vw,17px);height:clamp(9px,2vw,17px);border-radius:50%;background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b))}
 .colon span:first-child{margin-bottom:clamp(8px,2vw,16px)}
-.strip{display:flex;align-items:center;padding:14px 18px;border-radius:26px;background:var(--card);border:1px solid var(--line);overflow:hidden}
-.strip .wx{flex:none;display:flex;flex-direction:column;margin-right:18px}
-.strip .wx .t{font-size:34px;font-weight:200;line-height:1}
-.strip .wx .r{font-size:12px;letter-spacing:.06em;color:var(--muted);margin-top:3px;white-space:nowrap}
-.divider{flex:none;width:1px;align-self:stretch;background:var(--line);margin-right:18px}
-.strip .cnt{flex:none;display:flex;flex-direction:column;margin-right:14px}
-.strip .cnt .n{font-size:26px;font-weight:300;line-height:1.05;white-space:nowrap}
-.strip .cnt .l{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:3px}
-.peekRow{flex:1;min-width:0;display:flex;overflow:hidden;white-space:nowrap}
-.peekChip{flex:none;display:flex;align-items:center;padding:7px 14px 7px 9px;margin-right:8px;border-radius:13px;background:var(--glass-hi);font-size:17px}
-.peekChip span{font-size:20px;margin-right:7px}
 .tapcue{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;justify-content:center;align-items:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 /* Same "animation runs even while opacity:0" trap as the blobs - only
    breathe while the idle screen is actually the thing on screen. */
@@ -268,7 +255,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
       </div>
 
       <div id="doneWrap" class="hidden" style="margin-top:34px">
-        <div class="sectLbl"><span>In the trolley</span><span class="num" id="doneCount" style="color:var(--mint);margin-left:12px"></span><span class="rule"></span><button id="clearBtn" class="clearBtn mono">Clear</button></div>
+        <div class="sectLbl"><span>In the trolley</span><span class="num" id="doneCount" style="color:var(--accent-text);margin-left:12px"></span><span class="rule"></span><button id="clearBtn" class="clearBtn mono">Clear</button></div>
         <div id="doneList"></div>
       </div>
     </div>
@@ -372,13 +359,6 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
         <span class="ap mono" id="clkAp"></span>
       </div>
       <div style="flex:1;min-height:24px"></div>
-      <div id="hemieStrip" class="strip">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-right:12px"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
-        <span class="wx"><span class="t" id="wxTemp">--°</span><span class="r mono" id="wxRange">H -- · L --</span></span>
-        <span class="divider"></span>
-        <span class="cnt"><span class="n" id="peekCount">0</span><span class="l mono">to buy</span></span>
-        <span class="peekRow" id="peek"></span>
-      </div>
     </div>
     <div class="tapcue"><span class="dot2"></span>Tap to continue</div>
   </div>
@@ -390,7 +370,6 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 var DB_URL     = "https://home-inventory-4f61c-default-rtdb.asia-southeast1.firebasedatabase.app";
 var LIST_KEY   = "EtFnu4RVP0OF77liJLB7";
 var CLAUDE_KEY = "__CLAUDE_KEY__";
-var WEATHER_LAT = 2.7258, WEATHER_LON = 101.9424;
 var IDLE_AFTER_SECONDS = 20;
 var LIGHT_UNTIL_HOUR = 19;
 /* ================================================== */
@@ -621,7 +600,7 @@ function beep(){
 var stream = null, facingMode = "user", scanOpen = false;
 function status(msg, bad){
   $("status").textContent = msg;
-  $("status").style.color = bad ? "var(--rose)" : "var(--ink)";
+  $("status").style.color = bad ? "var(--accent-text)" : "var(--ink)";
 }
 
 function stopCamera(){
@@ -794,7 +773,7 @@ function enterIdle(){
   idleOn = true;
   if(scanOpen) closeScan();
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  tickClock(); renderPeek(); loadWeather(false);
+  tickClock();
   $("idle").className = "saver on";
 }
 function exitIdle(){
@@ -850,32 +829,6 @@ function greeting(){
   if(h < 21) return "Good evening.";
   return "Winding down.";
 }
-function renderPeek(){
-  var ids = sortedIds(function(i){ return !i.done; });
-  $("peekCount").textContent = ids.length;
-  var box = $("peek"); box.innerHTML = "";
-  ids.slice(0, 6).forEach(function(id){
-    var c = document.createElement("span"); c.className = "peekChip";
-    var e = document.createElement("span"); e.textContent = emojiFor(items[id].name);
-    c.appendChild(e); c.appendChild(document.createTextNode(items[id].name));
-    box.appendChild(c);
-  });
-  if(!ids.length){ var ok = document.createElement("span"); ok.className = "peekChip"; ok.textContent = "✨ All stocked up"; box.appendChild(ok); }
-}
-
-/* weather via Open-Meteo */
-var wxLoaded = 0;
-function loadWeather(force){
-  if(!force && Date.now() - wxLoaded < 30 * 60 * 1000) return;
-  var url = "https://api.open-meteo.com/v1/forecast?latitude=" + WEATHER_LAT + "&longitude=" + WEATHER_LON +
-    "&current=temperature_2m&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
-  timeout(fetch(url).then(function(r){ return r.json(); }), 10000).then(function(d){
-    $("wxTemp").textContent = Math.round(d.current.temperature_2m) + "°";
-    $("wxRange").textContent = "H " + Math.round(d.daily.temperature_2m_max[0]) + " · L " + Math.round(d.daily.temperature_2m_min[0]);
-    wxLoaded = Date.now();
-  }).catch(function(){});
-}
-
 function applyTimeTheme(){
   var light = new Date().getHours() < LIGHT_UNTIL_HOUR;
   $("hk").classList.toggle("light", light);
@@ -889,7 +842,7 @@ function setupIdle(){
   applyTimeTheme();
   setInterval(function(){
     applyTimeTheme();
-    if(idleOn){ tickClock(); loadWeather(false); } else { tickClock(); }
+    tickClock();
     if(!idleOn && !busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
   }, 5000);
   poke();
@@ -945,7 +898,6 @@ function render(){
   $("doneCount").textContent = done.length;
   $("doneWrap").className = done.length ? "" : "hidden";
   renderUsuals(toBuy);
-  if(idleOn) renderPeek();
   lastSyncHash = JSON.stringify(items) + "|" + JSON.stringify(knownNames);
 }
 function renderUsuals(toBuyIds){
