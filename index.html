@@ -19,7 +19,7 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
 .hk{
   --bg:#0c0a10;--ink:#f6f1ea;--muted:rgba(246,241,234,.64);--glass:rgba(255,255,255,.06);--glass-hi:rgba(255,255,255,.11);
   --line:rgba(255,255,255,.13);--accent:#ffb35c;--accent-ink:#1a1208;--accent-text:#ffc27f;--glow:rgba(255,179,92,.45);
-  --rose:#ff7a9c;--mint:#6fe3c1;--mint-ink:#08201a;--a1:rgba(255,138,61,.5);--a2:rgba(255,84,136,.42);--a3:rgba(124,92,255,.42);
+  --rose:#ff7a9c;--mint:#6fe3c1;--mint-ink:#08201a;--a1:rgba(255,138,61,.32);
   --scrim:rgba(5,4,8,.62);--panel:rgba(20,16,26,.86);--card:rgba(14,11,18,.62);--cam:#141118;
   /* 7-segment clock "lit" gradient: a pale highlight fading to the accent
      reads as a bright glowing LED against this near-black background. */
@@ -28,7 +28,7 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
 .hk.light{
   --bg:#f3f0ec;--ink:#1b1622;--muted:rgba(27,22,34,.62);--glass:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.85);
   --line:rgba(27,22,34,.16);--accent:#f08a2c;--accent-ink:#1a1208;--accent-text:#9a4a08;--glow:rgba(240,138,44,.35);
-  --rose:#e2557a;--mint:#1f9e7c;--mint-ink:#ffffff;--a1:rgba(255,170,100,.55);--a2:rgba(255,130,170,.42);--a3:rgba(150,130,255,.38);
+  --rose:#e2557a;--mint:#1f9e7c;--mint-ink:#ffffff;--a1:rgba(255,170,100,.38);
   --scrim:rgba(27,22,34,.42);--panel:rgba(248,246,250,.9);--card:rgba(255,255,255,.72);--cam:#1b1622;
   /* The dark theme's pale-cream highlight is nearly invisible against this
      near-white background - use the darker accent-text tone instead so the
@@ -107,7 +107,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .clearBtn{min-height:48px;padding:0 14px;border-radius:14px;color:var(--accent-text);font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .clearBtn:active{background:var(--glass-hi)}
 
-.fab{position:absolute;right:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);z-index:10;width:88px;height:88px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 8px var(--glow),0 16px 40px var(--glow);transition:transform .15s}
+.fab{position:absolute;right:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);z-index:10;width:88px;height:88px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.28);transition:transform .15s}
 .fab:active{transform:scale(.94)}
 
 .scrim{position:absolute;top:0;left:0;right:0;bottom:0;z-index:30;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .4s}
@@ -126,21 +126,21 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .camBox video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
 .camBox video.mirror{transform:scaleX(-1)}
 .camPlaceholder{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(246,241,234,.55);background:radial-gradient(circle at 50% 45%,rgba(255,179,92,.14) 0%,transparent 60%);font-size:13px;letter-spacing:.16em;text-transform:uppercase}
-.scanline{position:absolute;left:10%;right:10%;height:2px;top:50%;background:var(--accent);box-shadow:0 0 18px 3px var(--glow);animation:hk-scanline 3.2s ease-in-out infinite}
+.scanline{position:absolute;left:10%;right:10%;height:2px;top:50%;background:var(--accent);box-shadow:0 0 6px 1px var(--glow);animation:hk-scanline 3.2s ease-in-out infinite}
 .corner{position:absolute;width:64px;height:64px;border-color:var(--accent);border-style:solid;border-width:0}
 .corner.tl{top:22px;left:22px;border-top-width:4px;border-left-width:4px;border-radius:18px 0 0 0}
 .corner.tr{top:22px;right:22px;border-top-width:4px;border-right-width:4px;border-radius:0 18px 0 0}
 .corner.bl{bottom:22px;left:22px;border-bottom-width:4px;border-left-width:4px;border-radius:0 0 0 18px}
 .corner.br{bottom:22px;right:22px;border-bottom-width:4px;border-right-width:4px;border-radius:0 0 18px 0}
 .countdownWrap{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(5,4,8,.35)}
-.countdownWrap span{width:170px;height:170px;border-radius:50%;border:2px solid var(--accent);box-shadow:0 0 40px var(--glow),inset 0 0 30px var(--glow);color:#fff;display:flex;align-items:center;justify-content:center;font-size:96px;font-weight:200}
+.countdownWrap span{width:170px;height:170px;border-radius:50%;border:2px solid var(--accent);box-shadow:0 0 14px var(--glow),inset 0 0 10px var(--glow);color:#fff;display:flex;align-items:center;justify-content:center;font-size:96px;font-weight:200}
 .analysing{position:absolute;left:0;right:0;bottom:28px;display:flex;justify-content:center}
 .analysing span{padding:12px 22px;border-radius:14px;background:rgba(5,4,8,.72);color:#fff;font-size:14px;letter-spacing:.12em;text-transform:uppercase;animation:hk-breathe 1.2s ease-in-out infinite}
 .flash{position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;opacity:0;transition:opacity .35s;pointer-events:none}
 
 .camCtrl{display:flex;align-items:center;justify-content:space-between;margin:22px 0 24px}
 .flipBtn{width:72px;height:72px;border-radius:22px;border:1px solid var(--line);background:var(--glass-hi);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.captureBtn{width:104px;height:104px;border-radius:50%;border:3px solid var(--accent);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 30px var(--glow)}
+.captureBtn{width:104px;height:104px;border-radius:50%;border:3px solid var(--accent);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 10px var(--glow)}
 .captureBtn:active{transform:scale(.94)}
 .captureBtn:disabled{opacity:.4;pointer-events:none}
 .captureBtn .dot{width:78px;height:78px;border-radius:50%;background:var(--accent);display:block}
@@ -164,27 +164,23 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .confirmWrap{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:20px}
 .confirmSheet{width:100%;max-width:520px;padding:28px;border-radius:30px;background:var(--panel);border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.45)}
 .confirmHead{display:flex;align-items:center;margin-bottom:22px}
-.confirmHead .em{width:88px;height:88px;border-radius:26px;background:var(--glass-hi);border:1.5px solid var(--accent);box-shadow:0 0 30px var(--glow);display:flex;align-items:center;justify-content:center;font-size:46px;flex:none;margin-right:18px}
+.confirmHead .em{width:88px;height:88px;border-radius:26px;background:var(--glass-hi);border:1.5px solid var(--accent);box-shadow:0 0 10px var(--glow);display:flex;align-items:center;justify-content:center;font-size:46px;flex:none;margin-right:18px}
 .confirmHead .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text)}
 .confirmHead .nm{font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.1;word-wrap:break-word}
 .confirmInputRow{display:flex;align-items:center;min-height:70px;padding:6px 6px 6px 20px;border-radius:20px;background:var(--glass);border:1px solid var(--line);margin-bottom:16px}
 .confirmInputRow input{flex:1;min-width:0;background:transparent;outline:none;font:inherit;font-size:20px;color:var(--ink)}
 .confirmBtns{display:flex}
 .ignoreBtn{flex:1;height:70px;margin-right:12px;border-radius:20px;border:1px solid var(--line);background:var(--glass-hi);color:var(--ink);font-size:20px;cursor:pointer}
-.addBtn{flex:1.5;height:70px;border-radius:20px;background:var(--accent);color:var(--accent-ink);font-size:20px;font-weight:600;cursor:pointer;box-shadow:0 10px 30px var(--glow)}
+.addBtn{flex:1.5;height:70px;border-radius:20px;background:var(--accent);color:var(--accent-ink);font-size:20px;font-weight:600;cursor:pointer;box-shadow:0 6px 16px var(--glow)}
 
-.saver{position:absolute;top:0;left:0;right:0;bottom:0;z-index:60;background:var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
+/* One flat gradient painted directly on the element, instead of 3 separate
+   near-fullscreen blurred circles layered on top of a plain background.
+   Three overlapping alpha-blended 100vmax+ layers cost real GPU time on
+   every composite even sitting still; a single background-image is painted
+   once like any other background and needs no extra layer at all. Still
+   reads as a soft, atmospheric glow - just one paint instead of three. */
+.saver{position:absolute;top:0;left:0;right:0;bottom:0;z-index:60;background:radial-gradient(ellipse 80% 55% at 50% 18%,var(--a1) 0%,transparent 60%),var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
 .saver.on{opacity:1;pointer-events:auto}
-/* Static, not animated - these sit inside the idle screen, which is a 24/7
-   kiosk display. A CSS animation keeps running even while its element is
-   opacity:0 (hidden behind the main app), so 3 near-fullscreen blurred
-   gradients drifting forever was continuous GPU load around the clock -
-   likely the real source of the iPad heat, not just something visible
-   only while the screensaver shows. The gradient look is kept, just still. */
-.blob{position:absolute;border-radius:50%}
-.blob1{width:110vmax;height:110vmax;top:-45vmax;right:-45vmax;background:radial-gradient(circle,var(--a1) 0%,transparent 60%)}
-.blob2{width:100vmax;height:100vmax;bottom:-45vmax;left:-40vmax;background:radial-gradient(circle,var(--a3) 0%,transparent 60%)}
-.blob3{width:80vmax;height:80vmax;top:30%;left:20%;background:radial-gradient(circle,var(--a2) 0%,transparent 60%)}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
 .saverLbl{font-size:clamp(18px,4.5vw,23px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .dateLbl{font-size:clamp(14px,3vw,18px);letter-spacing:.04em;color:var(--muted);margin-top:16px}
@@ -199,7 +195,11 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .digit.off{display:none}
 .digit .seg{position:absolute;border-radius:999px;background:var(--line);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.25);transition:background .15s,box-shadow .15s}
-.digit .seg.on{background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:0 0 16px 3px var(--glow),inset 0 1px 2px rgba(255,255,255,.6)}
+/* Flat, not a blurred neon glow - a blurred box-shadow this large, repeated
+   across up to ~28 simultaneously-lit segments on a screen that's on 24/7,
+   is real continuous rasterization cost. The small 2px inset highlight
+   below is cheap (tiny blur radius) and keeps a touch of dimension. */
+.digit .seg.on{background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:inset 0 1px 2px rgba(255,255,255,.5)}
 .digit .seg-a{top:0;left:16%;right:16%;height:13%}
 .digit .seg-g{top:43.5%;left:16%;right:16%;height:13%}
 .digit .seg-d{bottom:0;left:16%;right:16%;height:13%}
@@ -208,7 +208,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .digit .seg-e{bottom:6%;left:0;width:13%;height:39%}
 .digit .seg-c{bottom:6%;right:0;width:13%;height:39%}
 .colon{display:flex;flex-direction:column;justify-content:center;margin:0 clamp(4px,1.1vw,7px)}
-.colon span{width:clamp(9px,2vw,17px);height:clamp(9px,2vw,17px);border-radius:50%;background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:0 0 12px 2px var(--glow)}
+.colon span{width:clamp(9px,2vw,17px);height:clamp(9px,2vw,17px);border-radius:50%;background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b))}
 .colon span:first-child{margin-bottom:clamp(8px,2vw,16px)}
 .strip{display:flex;align-items:center;padding:14px 18px;border-radius:26px;background:var(--card);border:1px solid var(--line);overflow:hidden}
 .strip .wx{flex:none;display:flex;flex-direction:column;margin-right:18px}
@@ -225,7 +225,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 /* Same "animation runs even while opacity:0" trap as the blobs - only
    breathe while the idle screen is actually the thing on screen. */
 .saver.on .tapcue{animation:hk-breathe 4s ease-in-out infinite}
-.tapcue .dot2{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);margin-right:12px}
+.tapcue .dot2{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 4px var(--accent);margin-right:12px}
 
 .setup{position:absolute;top:50%;left:20px;right:20px;transform:translateY(-50%);background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px;line-height:1.5;z-index:100}
 </style>
@@ -357,9 +357,6 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
   </div>
 
   <div id="idle" class="saver">
-    <div class="blob blob1"></div>
-    <div class="blob blob2"></div>
-    <div class="blob blob3"></div>
     <div id="hemieShake" class="saverBody">
       <div style="flex:1;min-height:24px"></div>
       <div class="saverLbl">Hemie's Kitchen</div>
