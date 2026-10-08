@@ -186,13 +186,16 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .blob2{width:100vmax;height:100vmax;bottom:-45vmax;left:-40vmax;background:radial-gradient(circle,var(--a3) 0%,transparent 60%)}
 .blob3{width:80vmax;height:80vmax;top:30%;left:20%;background:radial-gradient(circle,var(--a2) 0%,transparent 60%)}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
-.saverLbl{font-size:23px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
-.dateLbl{font-size:18px;letter-spacing:.04em;color:var(--muted);margin-top:16px}
+.saverLbl{font-size:clamp(18px,4.5vw,23px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.dateLbl{font-size:clamp(14px,3vw,18px);letter-spacing:.04em;color:var(--muted);margin-top:16px}
 .saverTime{display:flex;align-items:center;margin-top:22px}
-.saverTime .ap{font-size:calc(18px + .8vw);color:var(--accent-text);margin-left:22px;text-transform:uppercase}
+.saverTime .ap{font-size:clamp(15px,calc(12px + 1.6vw),30px);color:var(--accent-text);margin-left:clamp(10px,2.5vw,22px);text-transform:uppercase}
 
 .clock7{display:flex;align-items:center}
-.digit{position:relative;width:92px;height:156px;margin:0 8px}
+/* clamp(), not a fixed px, so this scales smoothly from phone widths up to
+   iPad instead of overflowing a narrow screen or looking tiny on a big one -
+   92px/156px (the iPad-tuned size) is still the ceiling. */
+.digit{position:relative;width:clamp(46px,11vw,92px);height:clamp(78px,18.7vw,156px);margin:0 clamp(4px,1.3vw,8px)}
 .digit.off{display:none}
 .digit .seg{position:absolute;border-radius:999px;background:var(--line);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.25);transition:background .15s,box-shadow .15s}
@@ -204,9 +207,9 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .digit .seg-b{top:6%;right:0;width:13%;height:39%}
 .digit .seg-e{bottom:6%;left:0;width:13%;height:39%}
 .digit .seg-c{bottom:6%;right:0;width:13%;height:39%}
-.colon{display:flex;flex-direction:column;justify-content:center;margin:0 7px}
-.colon span{width:17px;height:17px;border-radius:50%;background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:0 0 12px 2px var(--glow)}
-.colon span:first-child{margin-bottom:16px}
+.colon{display:flex;flex-direction:column;justify-content:center;margin:0 clamp(4px,1.1vw,7px)}
+.colon span{width:clamp(9px,2vw,17px);height:clamp(9px,2vw,17px);border-radius:50%;background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:0 0 12px 2px var(--glow)}
+.colon span:first-child{margin-bottom:clamp(8px,2vw,16px)}
 .strip{display:flex;align-items:center;padding:14px 18px;border-radius:26px;background:var(--card);border:1px solid var(--line);overflow:hidden}
 .strip .wx{flex:none;display:flex;flex-direction:column;margin-right:18px}
 .strip .wx .t{font-size:34px;font-weight:200;line-height:1}
@@ -218,7 +221,10 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .peekRow{flex:1;min-width:0;display:flex;overflow:hidden;white-space:nowrap}
 .peekChip{flex:none;display:flex;align-items:center;padding:7px 14px 7px 9px;margin-right:8px;border-radius:13px;background:var(--glass-hi);font-size:17px}
 .peekChip span{font-size:20px;margin-right:7px}
-.tapcue{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;justify-content:center;align-items:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);animation:hk-breathe 4s ease-in-out infinite}
+.tapcue{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;justify-content:center;align-items:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+/* Same "animation runs even while opacity:0" trap as the blobs - only
+   breathe while the idle screen is actually the thing on screen. */
+.saver.on .tapcue{animation:hk-breathe 4s ease-in-out infinite}
 .tapcue .dot2{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);margin-right:12px}
 
 .setup{position:absolute;top:50%;left:20px;right:20px;transform:translateY(-50%);background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px;line-height:1.5;z-index:100}
@@ -369,7 +375,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
         <span class="ap mono" id="clkAp"></span>
       </div>
       <div style="flex:1;min-height:24px"></div>
-      <div id="hemieStrip" class="strip glass">
+      <div id="hemieStrip" class="strip">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-right:12px"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
         <span class="wx"><span class="t" id="wxTemp">--°</span><span class="r mono" id="wxRange">H -- · L --</span></span>
         <span class="divider"></span>
@@ -543,10 +549,16 @@ function setupSuggest(input, box, onPick){
   });
 }
 
+/* This fires on a recurring poll, forever (there's no realtime subscription,
+   just REST). The common case is nothing changed since last time - rebuilding
+   the whole list DOM for an identical result is pure waste on a device
+   that's polling 24/7, so skip render() when the fetched data matches
+   what's already on screen. */
+var lastSyncHash = "";
 function refresh(){
   return Promise.all([api("GET", "/items"), loadKnownNames()]).then(function(results){
     items = results[0] || {};
-    render();
+    if(JSON.stringify(items) + "|" + JSON.stringify(knownNames) !== lastSyncHash) render();
     setSync("Synced");
   }).catch(function(e){ setSync("Offline"); });
 }
@@ -797,18 +809,31 @@ var SEG_MAP = {
   "0":"abcdef", "1":"bc", "2":"abged", "3":"abgcd", "4":"fgbc",
   "5":"afgcd", "6":"afgecd", "7":"abc", "8":"abcdefg", "9":"abcdfg"
 };
+/* This runs every tick (every few seconds, forever, on an always-on kiosk)
+   even though the displayed minute only actually changes once a minute -
+   skip the DOM work entirely when the value is unchanged, and cache the
+   segment node lookups instead of re-querying all 7 on every call. */
 function setDigit(el, val){
-  if(!el) return;
+  if(!el || el.dataset.v === val) return;
+  el.dataset.v = val;
+  if(!el._segNodes){
+    el._segNodes = {};
+    "abcdefg".split("").forEach(function(seg){ el._segNodes[seg] = el.querySelector(".seg-" + seg); });
+  }
   var on = SEG_MAP[val] || "";
   "abcdefg".split("").forEach(function(seg){
-    var node = el.querySelector(".seg-" + seg);
+    var node = el._segNodes[seg];
     if(node) node.classList.toggle("on", on.indexOf(seg) !== -1);
   });
 }
 function renderSegClock(h12, mm){
-  var hs = String(h12);
-  if(hs.length < 2){ $("h0").className = "digit off"; }
-  else { $("h0").className = "digit"; setDigit($("h0"), hs[0]); }
+  var hs = String(h12), h0 = $("h0");
+  if(hs.length < 2){
+    if(h0.className !== "digit off") h0.className = "digit off";
+  } else {
+    if(h0.className !== "digit") h0.className = "digit";
+    setDigit(h0, hs[0]);
+  }
   setDigit($("h1"), hs[hs.length - 1]);
   setDigit($("m0"), mm[0]);
   setDigit($("m1"), mm[1]);
@@ -924,6 +949,7 @@ function render(){
   $("doneWrap").className = done.length ? "" : "hidden";
   renderUsuals(toBuy);
   if(idleOn) renderPeek();
+  lastSyncHash = JSON.stringify(items) + "|" + JSON.stringify(knownNames);
 }
 function renderUsuals(toBuyIds){
   var inList = {};
@@ -1016,7 +1042,7 @@ function init(){
   setInterval(function(){
     tick++;
     if(document.hidden || busy) return;
-    if(idleOn && tick % 5) return;
+    if(idleOn && tick % 15) return; // idle most of the day on this kiosk - 60s is plenty fresh
     if(stream && tick % 3) return;
     refresh();
   }, 4000);
