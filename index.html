@@ -772,6 +772,14 @@ function applyTimeTheme(){
   if(meta) meta.setAttribute("content", light ? "#f3f0ec" : "#0c0a10");
 }
 
+/* This kiosk tab stays open 24/7 and is never manually reloaded, so a
+   stale cached copy of the page (old CSS/JS) can sit there silently
+   for days even after a fresh version has been deployed. Force a real
+   reload once a day, but only while the idle screen is showing (not
+   mid-use), so the page can never drift more than ~24h out of date. */
+var PAGE_LOAD_TIME = Date.now();
+var AUTO_RELOAD_AFTER_MS = 24 * 60 * 60 * 1000;
+
 function setupIdle(){
   ["touchstart","mousedown","keydown"].forEach(function(ev){ document.addEventListener(ev, poke, true); });
   $("idle").addEventListener("click", function(e){ e.preventDefault(); exitIdle(); });
@@ -781,6 +789,7 @@ function setupIdle(){
     applyTimeTheme();
     tickClock();
     if(!idleOn && !busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
+    if(idleOn && Date.now() - PAGE_LOAD_TIME > AUTO_RELOAD_AFTER_MS) location.reload();
   }, 5000);
   poke();
 }
