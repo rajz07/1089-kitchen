@@ -23,6 +23,10 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
   /* 7-segment clock "lit" gradient: a pale highlight fading to the accent
      reads as a bright glowing LED against this near-black background. */
   --seg-on-a:#ffe3ad;--seg-on-b:var(--accent);
+  /* The unlit segments need their own, more visible tone - var(--line) is
+     tuned for subtle borders elsewhere and is too faint for the clock to
+     read as a clock at a glance from across the kitchen. */
+  --seg-off:rgba(255,255,255,.22);
 }
 .hk.light{
   --bg:#f3f0ec;--ink:#1b1622;--muted:rgba(27,22,34,.62);--glass:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.85);
@@ -32,6 +36,7 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
      near-white background - use the darker accent-text tone instead so the
      lit segments stay clearly legible in daylight. */
   --seg-on-a:var(--accent-text);--seg-on-b:var(--accent);
+  --seg-off:rgba(27,22,34,.24);
 }
 .hk{position:relative;height:100%;min-height:100vh;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Sora',-apple-system,sans-serif;-webkit-transition:background-color .5s,color .5s;transition:background-color .5s,color .5s}
 .hk input::placeholder{color:var(--muted);opacity:1}
@@ -180,18 +185,18 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .saver{position:absolute;top:0;left:0;right:0;bottom:0;z-index:60;background:var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
 .saver.on{opacity:1;pointer-events:auto}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
-.saverLbl{font-size:clamp(18px,4.5vw,23px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
-.dateLbl{font-size:clamp(14px,3vw,18px);letter-spacing:.04em;color:var(--muted);margin-top:16px}
-.saverTime{display:flex;align-items:center;margin-top:22px}
+.saverLbl{font-size:clamp(30px,7vw,52px);font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.saverLbl .grad{font-weight:700}
+.dateLbl{font-size:clamp(14px,3vw,18px);letter-spacing:.04em;color:var(--muted);margin-top:14px}
+.saverTime{display:flex;align-items:center;margin-top:28px}
 .saverTime .ap{font-size:clamp(15px,calc(12px + 1.6vw),30px);color:var(--accent-text);margin-left:clamp(10px,2.5vw,22px);text-transform:uppercase}
 
 .clock7{display:flex;align-items:center}
 /* clamp(), not a fixed px, so this scales smoothly from phone widths up to
-   iPad instead of overflowing a narrow screen or looking tiny on a big one -
-   92px/156px (the iPad-tuned size) is still the ceiling. */
-.digit{position:relative;width:clamp(46px,11vw,92px);height:clamp(78px,18.7vw,156px);margin:0 clamp(4px,1.3vw,8px)}
+   iPad instead of overflowing a narrow screen or looking tiny on a big one. */
+.digit{position:relative;width:clamp(54px,13vw,108px);height:clamp(92px,22vw,184px);margin:0 clamp(4px,1.3vw,8px)}
 .digit.off{display:none}
-.digit .seg{position:absolute;border-radius:999px;background:var(--line);
+.digit .seg{position:absolute;border-radius:999px;background:var(--seg-off);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.25);transition:background .15s,box-shadow .15s}
 /* Flat, not a blurred neon glow - a blurred box-shadow this large, repeated
    across up to ~28 simultaneously-lit segments on a screen that's on 24/7,
@@ -346,7 +351,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
   <div id="idle" class="saver">
     <div id="hemieShake" class="saverBody">
       <div style="flex:1;min-height:24px"></div>
-      <div class="saverLbl">Hemie's Kitchen</div>
+      <div class="saverLbl">Hemie's <span class="grad">Kitchen</span></div>
       <div class="dateLbl mono" id="clkDate"></div>
       <div class="saverTime">
         <div class="clock7" id="clock7">
@@ -840,6 +845,7 @@ function setupIdle(){
   ["touchstart","mousedown","keydown"].forEach(function(ev){ document.addEventListener(ev, poke, true); });
   $("idle").addEventListener("click", function(e){ e.preventDefault(); exitIdle(); });
   applyTimeTheme();
+  tickClock();
   setInterval(function(){
     applyTimeTheme();
     tickClock();
