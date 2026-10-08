@@ -173,13 +173,17 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .saver{position:absolute;top:0;left:0;right:0;bottom:0;z-index:60;background:var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
 .saver.on{opacity:1;pointer-events:auto}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
-.saverLbl{font-size:clamp(30px,7vw,52px);font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+/* font-size: Xvw above each clamp() is a fallback for browsers that
+   don't resolve clamp() in this position - without it, an engine that
+   skips the clamp() declaration falls back to the inherited ~16px
+   body font instead of scaling with the viewport at all. */
+.saverLbl{font-size:7vw;font-size:clamp(30px,7vw,52px);font-weight:700;letter-spacing:-.01em;color:var(--ink)}
 .saverLbl .grad{font-weight:700}
-.dateLbl{font-size:clamp(14px,3vw,18px);letter-spacing:.04em;color:var(--muted);margin-top:14px}
+.dateLbl{font-size:3vw;font-size:clamp(14px,3vw,18px);letter-spacing:.04em;color:var(--muted);margin-top:14px}
 .saverTime{display:flex;align-items:baseline;margin-top:28px}
-.saverTime .ap{font-size:clamp(15px,calc(12px + 1.6vw),30px);color:var(--accent-text);margin-left:clamp(10px,2.5vw,22px);text-transform:uppercase}
+.saverTime .ap{font-size:4.5vw;font-size:clamp(15px,calc(12px + 1.6vw),30px);color:var(--accent-text);margin-left:2.5vw;margin-left:clamp(10px,2.5vw,22px);text-transform:uppercase}
 
-.clockTime{font-family:'Sora',-apple-system,sans-serif;font-weight:600;font-variant-numeric:tabular-nums;font-size:clamp(90px,24vw,220px);line-height:1;letter-spacing:-.02em;color:var(--ink)}
+.clockTime{font-family:'Sora',-apple-system,sans-serif;font-weight:600;font-variant-numeric:tabular-nums;font-size:24vw;font-size:clamp(90px,24vw,220px);line-height:1;letter-spacing:-.02em;color:var(--ink)}
 .tapcue{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;justify-content:center;align-items:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 /* Static, not a perpetual breathing animation - a 24/7 idle screen should
    ask nothing of the GPU between the once-a-minute clock update. */
