@@ -21,22 +21,26 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
   --line:rgba(255,255,255,.13);--accent:#ffb35c;--accent-ink:#1a1208;--accent-text:#ffc27f;--glow:rgba(255,179,92,.45);
   --rose:#ff7a9c;--mint:#6fe3c1;--mint-ink:#08201a;--a1:rgba(255,138,61,.5);--a2:rgba(255,84,136,.42);--a3:rgba(124,92,255,.42);
   --scrim:rgba(5,4,8,.62);--panel:rgba(20,16,26,.86);--card:rgba(14,11,18,.62);--cam:#141118;
+  /* 7-segment clock "lit" gradient: a pale highlight fading to the accent
+     reads as a bright glowing LED against this near-black background. */
+  --seg-on-a:#ffe3ad;--seg-on-b:var(--accent);
 }
 .hk.light{
   --bg:#f3f0ec;--ink:#1b1622;--muted:rgba(27,22,34,.62);--glass:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.85);
-  --line:rgba(27,22,34,.11);--accent:#f08a2c;--accent-ink:#1a1208;--accent-text:#9a4a08;--glow:rgba(240,138,44,.35);
+  --line:rgba(27,22,34,.16);--accent:#f08a2c;--accent-ink:#1a1208;--accent-text:#9a4a08;--glow:rgba(240,138,44,.35);
   --rose:#e2557a;--mint:#1f9e7c;--mint-ink:#ffffff;--a1:rgba(255,170,100,.55);--a2:rgba(255,130,170,.42);--a3:rgba(150,130,255,.38);
   --scrim:rgba(27,22,34,.42);--panel:rgba(248,246,250,.9);--card:rgba(255,255,255,.72);--cam:#1b1622;
+  /* The dark theme's pale-cream highlight is nearly invisible against this
+     near-white background - use the darker accent-text tone instead so the
+     lit segments stay clearly legible in daylight. */
+  --seg-on-a:var(--accent-text);--seg-on-b:var(--accent);
 }
 .hk{position:relative;height:100%;min-height:100vh;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Sora',-apple-system,sans-serif;-webkit-transition:background-color .5s,color .5s;transition:background-color .5s,color .5s}
 .hk input::placeholder{color:var(--muted);opacity:1}
 .mono{font-family:'JetBrains Mono',monospace}
-.glass{-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.glass{-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
 .grad{background:linear-gradient(0deg,var(--accent),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
 
-@keyframes hk-a1{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-18vw,14vh) rotate(40deg)}}
-@keyframes hk-a2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(16vw,-12vh) scale(1.2)}}
-@keyframes hk-a3{0%,100%{transform:translate(0,0) scale(1.1)}50%{transform:translate(-10vw,-18vh) scale(.9)}}
 @keyframes hk-breathe{0%,100%{opacity:.4}50%{opacity:1}}
 @keyframes hk-ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
 @keyframes hk-scanline{0%{top:8%}50%{top:88%}100%{top:8%}}
@@ -171,10 +175,16 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 
 .saver{position:absolute;top:0;left:0;right:0;bottom:0;z-index:60;background:var(--bg);overflow:hidden;opacity:0;pointer-events:none;transition:opacity 1s ease;cursor:pointer}
 .saver.on{opacity:1;pointer-events:auto}
-.blob{position:absolute;border-radius:50%;will-change:transform}
-.blob1{width:110vmax;height:110vmax;top:-45vmax;right:-45vmax;background:radial-gradient(circle,var(--a1) 0%,transparent 60%);animation:hk-a1 34s ease-in-out infinite}
-.blob2{width:100vmax;height:100vmax;bottom:-45vmax;left:-40vmax;background:radial-gradient(circle,var(--a3) 0%,transparent 60%);animation:hk-a2 42s ease-in-out infinite}
-.blob3{width:80vmax;height:80vmax;top:30%;left:20%;background:radial-gradient(circle,var(--a2) 0%,transparent 60%);animation:hk-a3 50s ease-in-out infinite}
+/* Static, not animated - these sit inside the idle screen, which is a 24/7
+   kiosk display. A CSS animation keeps running even while its element is
+   opacity:0 (hidden behind the main app), so 3 near-fullscreen blurred
+   gradients drifting forever was continuous GPU load around the clock -
+   likely the real source of the iPad heat, not just something visible
+   only while the screensaver shows. The gradient look is kept, just still. */
+.blob{position:absolute;border-radius:50%}
+.blob1{width:110vmax;height:110vmax;top:-45vmax;right:-45vmax;background:radial-gradient(circle,var(--a1) 0%,transparent 60%)}
+.blob2{width:100vmax;height:100vmax;bottom:-45vmax;left:-40vmax;background:radial-gradient(circle,var(--a3) 0%,transparent 60%)}
+.blob3{width:80vmax;height:80vmax;top:30%;left:20%;background:radial-gradient(circle,var(--a2) 0%,transparent 60%)}
 .saverBody{position:relative;z-index:1;height:100%;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 5vh) 24px calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;flex-direction:column;pointer-events:none;transition:transform .08s}
 .saverLbl{font-size:23px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .dateLbl{font-size:18px;letter-spacing:.04em;color:var(--muted);margin-top:16px}
@@ -186,7 +196,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .digit.off{display:none}
 .digit .seg{position:absolute;border-radius:999px;background:var(--line);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.25);transition:background .15s,box-shadow .15s}
-.digit .seg.on{background:linear-gradient(145deg,#ffe3ad,var(--accent));box-shadow:0 0 16px 3px var(--glow),inset 0 1px 2px rgba(255,255,255,.6)}
+.digit .seg.on{background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:0 0 16px 3px var(--glow),inset 0 1px 2px rgba(255,255,255,.6)}
 .digit .seg-a{top:0;left:16%;right:16%;height:13%}
 .digit .seg-g{top:43.5%;left:16%;right:16%;height:13%}
 .digit .seg-d{bottom:0;left:16%;right:16%;height:13%}
@@ -195,7 +205,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .digit .seg-e{bottom:6%;left:0;width:13%;height:39%}
 .digit .seg-c{bottom:6%;right:0;width:13%;height:39%}
 .colon{display:flex;flex-direction:column;justify-content:center;margin:0 7px}
-.colon span{width:17px;height:17px;border-radius:50%;background:linear-gradient(145deg,#ffe3ad,var(--accent));box-shadow:0 0 12px 2px var(--glow)}
+.colon span{width:17px;height:17px;border-radius:50%;background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:0 0 12px 2px var(--glow)}
 .colon span:first-child{margin-bottom:16px}
 .strip{display:flex;align-items:center;padding:14px 18px;border-radius:26px;background:var(--card);border:1px solid var(--line);overflow:hidden}
 .strip .wx{flex:none;display:flex;flex-direction:column;margin-right:18px}
