@@ -20,23 +20,11 @@ button,input{-webkit-appearance:none;appearance:none;font-family:inherit;color:i
   --bg:#0c0a10;--ink:#f6f1ea;--muted:rgba(246,241,234,.64);--glass:rgba(255,255,255,.06);--glass-hi:rgba(255,255,255,.11);
   --line:rgba(255,255,255,.13);--accent:#ffb35c;--accent-ink:#1a1208;--accent-text:#ffc27f;--glow:rgba(255,179,92,.45);
   --scrim:rgba(5,4,8,.62);--panel:rgba(20,16,26,.86);--cam:#141118;
-  /* 7-segment clock "lit" gradient: a pale highlight fading to the accent
-     reads as a bright glowing LED against this near-black background. */
-  --seg-on-a:#ffe3ad;--seg-on-b:var(--accent);
-  /* The unlit segments need their own, more visible tone - var(--line) is
-     tuned for subtle borders elsewhere and is too faint for the clock to
-     read as a clock at a glance from across the kitchen. */
-  --seg-off:rgba(255,255,255,.22);
 }
 .hk.light{
   --bg:#f3f0ec;--ink:#1b1622;--muted:rgba(27,22,34,.62);--glass:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.85);
   --line:rgba(27,22,34,.16);--accent:#f08a2c;--accent-ink:#1a1208;--accent-text:#9a4a08;--glow:rgba(240,138,44,.35);
   --scrim:rgba(27,22,34,.42);--panel:rgba(248,246,250,.9);--cam:#1b1622;
-  /* The dark theme's pale-cream highlight is nearly invisible against this
-     near-white background - use the darker accent-text tone instead so the
-     lit segments stay clearly legible in daylight. */
-  --seg-on-a:var(--accent-text);--seg-on-b:var(--accent);
-  --seg-off:rgba(27,22,34,.24);
 }
 .hk{position:relative;height:100%;min-height:100vh;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Sora',-apple-system,sans-serif;-webkit-transition:background-color .5s,color .5s;transition:background-color .5s,color .5s}
 .hk input::placeholder{color:var(--muted);opacity:1}
@@ -188,30 +176,10 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .saverLbl{font-size:clamp(30px,7vw,52px);font-weight:700;letter-spacing:-.01em;color:var(--ink)}
 .saverLbl .grad{font-weight:700}
 .dateLbl{font-size:clamp(14px,3vw,18px);letter-spacing:.04em;color:var(--muted);margin-top:14px}
-.saverTime{display:flex;align-items:center;margin-top:28px}
+.saverTime{display:flex;align-items:baseline;margin-top:28px}
 .saverTime .ap{font-size:clamp(15px,calc(12px + 1.6vw),30px);color:var(--accent-text);margin-left:clamp(10px,2.5vw,22px);text-transform:uppercase}
 
-.clock7{display:flex;align-items:center}
-/* clamp(), not a fixed px, so this scales smoothly from phone widths up to
-   iPad instead of overflowing a narrow screen or looking tiny on a big one. */
-.digit{position:relative;width:clamp(54px,13vw,108px);height:clamp(92px,22vw,184px);margin:0 clamp(4px,1.3vw,8px)}
-.digit.off{display:none}
-.digit .seg{position:absolute;border-radius:999px;background:var(--seg-off);
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.25);transition:background .15s,box-shadow .15s}
-/* Flat, not a blurred neon glow - a blurred box-shadow this large, repeated
-   across up to ~28 simultaneously-lit segments on a screen that's on 24/7,
-   is real continuous rasterization cost. The small 2px inset highlight
-   below is cheap (tiny blur radius) and keeps a touch of dimension. */
-.digit .seg.on{background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b));box-shadow:inset 0 1px 2px rgba(255,255,255,.5)}
-.digit .seg-a{top:0;left:16%;right:16%;height:13%}
-.digit .seg-g{top:43.5%;left:16%;right:16%;height:13%}
-.digit .seg-d{bottom:0;left:16%;right:16%;height:13%}
-.digit .seg-f{top:6%;left:0;width:13%;height:39%}
-.digit .seg-b{top:6%;right:0;width:13%;height:39%}
-.digit .seg-e{bottom:6%;left:0;width:13%;height:39%}
-.digit .seg-c{bottom:6%;right:0;width:13%;height:39%}
-.colon{display:flex;flex-direction:column;justify-content:center;margin:0 clamp(4px,1.1vw,7px)}
-.colon span{width:clamp(9px,2vw,17px);height:clamp(9px,2vw,17px);border-radius:50%;background:linear-gradient(145deg,var(--seg-on-a),var(--seg-on-b))}
+.clockTime{font-family:'Sora',-apple-system,sans-serif;font-weight:600;font-variant-numeric:tabular-nums;font-size:clamp(90px,24vw,220px);line-height:1;letter-spacing:-.02em;color:var(--ink)}
 .colon span:first-child{margin-bottom:clamp(8px,2vw,16px)}
 .tapcue{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;justify-content:center;align-items:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 /* Same "animation runs even while opacity:0" trap as the blobs - only
@@ -354,13 +322,7 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
       <div class="saverLbl">Hemie's <span class="grad">Kitchen</span></div>
       <div class="dateLbl mono" id="clkDate"></div>
       <div class="saverTime">
-        <div class="clock7" id="clock7">
-          <div class="digit" id="h0"><i class="seg seg-a"></i><i class="seg seg-b"></i><i class="seg seg-c"></i><i class="seg seg-d"></i><i class="seg seg-e"></i><i class="seg seg-f"></i><i class="seg seg-g"></i></div>
-          <div class="digit" id="h1"><i class="seg seg-a"></i><i class="seg seg-b"></i><i class="seg seg-c"></i><i class="seg seg-d"></i><i class="seg seg-e"></i><i class="seg seg-f"></i><i class="seg seg-g"></i></div>
-          <div class="colon"><span></span><span></span></div>
-          <div class="digit" id="m0"><i class="seg seg-a"></i><i class="seg seg-b"></i><i class="seg seg-c"></i><i class="seg seg-d"></i><i class="seg seg-e"></i><i class="seg seg-f"></i><i class="seg seg-g"></i></div>
-          <div class="digit" id="m1"><i class="seg seg-a"></i><i class="seg seg-b"></i><i class="seg seg-c"></i><i class="seg seg-d"></i><i class="seg seg-e"></i><i class="seg seg-f"></i><i class="seg seg-g"></i></div>
-        </div>
+        <div class="clockTime" id="clockTime"></div>
         <span class="ap mono" id="clkAp"></span>
       </div>
       <div style="flex:1;min-height:24px"></div>
@@ -786,44 +748,13 @@ function exitIdle(){
   idleOn = false; poke();
   $("idle").className = "saver";
 }
-var SEG_MAP = {
-  "0":"abcdef", "1":"bc", "2":"abged", "3":"abgcd", "4":"fgbc",
-  "5":"afgcd", "6":"afgecd", "7":"abc", "8":"abcdefg", "9":"abcdfg"
-};
-/* This runs every tick (every few seconds, forever, on an always-on kiosk)
-   even though the displayed minute only actually changes once a minute -
-   skip the DOM work entirely when the value is unchanged, and cache the
-   segment node lookups instead of re-querying all 7 on every call. */
-function setDigit(el, val){
-  if(!el || el.dataset.v === val) return;
-  el.dataset.v = val;
-  if(!el._segNodes){
-    el._segNodes = {};
-    "abcdefg".split("").forEach(function(seg){ el._segNodes[seg] = el.querySelector(".seg-" + seg); });
-  }
-  var on = SEG_MAP[val] || "";
-  "abcdefg".split("").forEach(function(seg){
-    var node = el._segNodes[seg];
-    if(node) node.classList.toggle("on", on.indexOf(seg) !== -1);
-  });
-}
-function renderSegClock(h12, mm){
-  var hs = String(h12), h0 = $("h0");
-  if(hs.length < 2){
-    if(h0.className !== "digit off") h0.className = "digit off";
-  } else {
-    if(h0.className !== "digit") h0.className = "digit";
-    setDigit(h0, hs[0]);
-  }
-  setDigit($("h1"), hs[hs.length - 1]);
-  setDigit($("m0"), mm[0]);
-  setDigit($("m1"), mm[1]);
-}
 function tickClock(){
   var d = new Date(), h = d.getHours(), h12 = h % 12 || 12;
+  var timeStr = h12 + ":" + pad(d.getMinutes());
   $("clkDate").textContent = DAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()];
   $("clkAp").textContent = h < 12 ? "am" : "pm";
-  renderSegClock(h12, pad(d.getMinutes()));
+  var clockEl = $("clockTime");
+  if(clockEl.textContent !== timeStr) clockEl.textContent = timeStr;
   $("headDate").textContent = DAYS[d.getDay()].slice(0,3) + ", " + d.getDate() + " " + MONTHS_SHORT[d.getMonth()] + " · " + h12 + ":" + pad(d.getMinutes());
 }
 function greeting(){
