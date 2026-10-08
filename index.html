@@ -180,12 +180,10 @@ h1{margin:0;font-weight:300;font-size:calc(34px + 3vw);line-height:1.02;letter-s
 .saverTime .ap{font-size:clamp(15px,calc(12px + 1.6vw),30px);color:var(--accent-text);margin-left:clamp(10px,2.5vw,22px);text-transform:uppercase}
 
 .clockTime{font-family:'Sora',-apple-system,sans-serif;font-weight:600;font-variant-numeric:tabular-nums;font-size:clamp(90px,24vw,220px);line-height:1;letter-spacing:-.02em;color:var(--ink)}
-.colon span:first-child{margin-bottom:clamp(8px,2vw,16px)}
 .tapcue{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;justify-content:center;align-items:center;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-/* Same "animation runs even while opacity:0" trap as the blobs - only
-   breathe while the idle screen is actually the thing on screen. */
-.saver.on .tapcue{animation:hk-breathe 4s ease-in-out infinite}
-.tapcue .dot2{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 4px var(--accent);margin-right:12px}
+/* Static, not a perpetual breathing animation - a 24/7 idle screen should
+   ask nothing of the GPU between the once-a-minute clock update. */
+.tapcue .dot2{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:12px}
 
 .setup{position:absolute;top:50%;left:20px;right:20px;transform:translateY(-50%);background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px;line-height:1.5;z-index:100}
 </style>
@@ -599,8 +597,17 @@ function startCamera(){
     $("captureBtn").disabled = false;
     status("Hold an item inside the frame, then tap the button.");
     poke();
-  }).catch(function(){
-    status("Camera unavailable. Allow camera access in Settings → Safari → Camera.", true);
+  }).catch(function(e){
+    /* iOS treats a Home Screen "Add to Home Screen" app as a separate,
+       isolated context from Safari - it has no entry under Settings →
+       Safari → Camera, and on some iOS versions can't access the camera
+       from a standalone web app at all. Point at the right fix instead
+       of a Safari setting that doesn't exist for this context. */
+    if(window.navigator.standalone){
+      status("Camera isn't available in the Home Screen app. Open this site in Safari directly to scan items.", true);
+    } else {
+      status("Camera unavailable (" + (e && e.name || "error") + "). Allow camera access in Settings → Safari → Camera.", true);
+    }
   });
 }
 
@@ -765,8 +772,11 @@ function greeting(){
   if(h < 21) return "Good evening.";
   return "Winding down.";
 }
+var lastThemeLight = null;
 function applyTimeTheme(){
   var light = new Date().getHours() < LIGHT_UNTIL_HOUR;
+  if(light === lastThemeLight) return;
+  lastThemeLight = light;
   $("hk").classList.toggle("light", light);
   var meta = document.querySelector('meta[name="theme-color"]');
   if(meta) meta.setAttribute("content", light ? "#f3f0ec" : "#0c0a10");
@@ -785,12 +795,17 @@ function setupIdle(){
   $("idle").addEventListener("click", function(e){ e.preventDefault(); exitIdle(); });
   applyTimeTheme();
   tickClock();
+  /* The clock only needs minute-level precision, so waking up every 5s
+     was 12x more often than the display could ever show a change - each
+     wake-up is a timer fire, a Date read, and a style recalc even when
+     nothing ends up changing on screen. 15s still enters idle within a
+     few seconds of the 20s threshold and is imperceptible for a clock. */
   setInterval(function(){
     applyTimeTheme();
     tickClock();
     if(!idleOn && !busy && Date.now() - lastActivity > IDLE_AFTER_SECONDS * 1000) enterIdle();
     if(idleOn && Date.now() - PAGE_LOAD_TIME > AUTO_RELOAD_AFTER_MS) location.reload();
-  }, 5000);
+  }, 15000);
   poke();
 }
 
@@ -846,11 +861,38 @@ function render(){
   renderUsuals(toBuy);
   lastSyncHash = JSON.stringify(items) + "|" + JSON.stringify(knownNames);
 }
+var LONG_PRESS_MS = 550;
+/* Press-and-hold to permanently forget a suggestion, instead of the one
+   false move a plain tap/click delete risks on a kiosk screen people
+   brush past all day. A fired long-press also suppresses the click that
+   would otherwise follow it (so letting go doesn't also add the item). */
+function setupLongPress(el, onLongPress){
+  var timer = null, fired = false;
+  function start(e){
+    fired = false;
+    timer = setTimeout(function(){ fired = true; onLongPress(e); }, LONG_PRESS_MS);
+  }
+  function cancel(){ clearTimeout(timer); }
+  el.addEventListener("touchstart", start, {passive: true});
+  el.addEventListener("touchend", cancel);
+  el.addEventListener("touchmove", cancel);
+  el.addEventListener("touchcancel", cancel);
+  el.addEventListener("mousedown", start);
+  el.addEventListener("mouseup", cancel);
+  el.addEventListener("mouseleave", cancel);
+  el.addEventListener("click", function(e){ if(fired){ e.stopPropagation(); e.preventDefault(); } }, true);
+}
+function forgetKnownName(key, name){
+  if(!confirm('Remove "' + name + '" from suggestions? This can\'t be undone.')) return;
+  delete knownNames[key];
+  renderUsuals(sortedIds(function(it){ return !it.done; }));
+  api("DELETE", "/knownNames/" + key).catch(refresh);
+}
 function renderUsuals(toBuyIds){
   var inList = {};
   toBuyIds.forEach(function(id){ inList[normalizeKey(items[id].name)] = true; });
   var box = $("usuals"); box.innerHTML = "";
-  var picks = Object.keys(knownNames).map(function(k){ return {name: nameOf(knownNames[k]), stats: statsOf(knownNames[k])}; })
+  var picks = Object.keys(knownNames).map(function(k){ return {key: k, name: nameOf(knownNames[k]), stats: statsOf(knownNames[k])}; })
     .filter(function(e){ return e.name && !inList[normalizeKey(e.name)]; })
     .sort(function(a,b){ return b.stats.count - a.stats.count; })
     .slice(0, 6);
@@ -865,6 +907,7 @@ function renderUsuals(toBuyIds){
       var key = "n-" + p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || ("m" + Date.now());
       addItem(key, p.name);
     };
+    setupLongPress(btn, function(){ forgetKnownName(p.key, p.name); });
     box.appendChild(btn);
   });
 }
